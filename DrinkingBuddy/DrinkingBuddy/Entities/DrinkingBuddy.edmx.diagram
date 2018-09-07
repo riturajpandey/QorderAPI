@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d229983304a14feeb146c31791799ea1" Name="Diagram1" ZoomLevel="82">
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.AspNetUser" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.DrinkStandardImage" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.FAKE_MonthlySales" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.FAKE_MonthlySales2" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelBarSale" Width="1.5" PointX="5.25" PointY="43.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelBarSalesDetail" Width="1.5" PointX="7.5" PointY="41" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelDiscountReason" Width="1.5" PointX="5.25" PointY="47" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelDiscountsGiven" Width="1.5" PointX="13.5" PointY="50.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelEmployee" Width="1.5" PointX="8.25" PointY="50.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelEmployeesAvailabilityTime" Width="1.5" PointX="15.5" PointY="54" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelEmployeesRoster" Width="1.5" PointX="10.5" PointY="67.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelInventory" Width="1.5" PointX="5.25" PointY="50.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingCoupon" Width="1.5" PointX="19.5" PointY="34.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingCouponsPatron" Width="1.5" PointX="21.75" PointY="44.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingNewsletter" Width="1.5" PointX="5.25" PointY="54.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingNewslettersPatron" Width="1.5" PointX="7.5" PointY="57.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingPushNotification" Width="1.5" PointX="15.5" PointY="57.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingPushNotificationsPatron" Width="1.5" PointX="17.75" PointY="58.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingSm" Width="1.5" PointX="16.5" PointY="49.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingSmsPatron" Width="1.5" PointX="18.75" PointY="50.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMenu" Width="1.5" PointX="7.5" PointY="61.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMenusCategory" Width="1.5" PointX="5.25" PointY="77" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMenusExtraDetail" Width="1.5" PointX="9.75" PointY="71.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMenusInventoryUse" Width="1.5" PointX="10.5" PointY="51" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMenusSubCategory" Width="1.5" PointX="5.25" PointY="80.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelOpenHour" Width="1.5" PointX="5.25" PointY="65.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelRefundReason" Width="1.5" PointX="5.25" PointY="70.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.Hotel" Width="1.5" PointX="3" PointY="52.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelSavedOrder" Width="1.5" PointX="10.5" PointY="47.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelSavedOrdersDetail" Width="1.5" PointX="12.75" PointY="47.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelSpecial" Width="1.5" PointX="15.75" PointY="62.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelSpecialsMeta" Width="1.5" PointX="18" PointY="61.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelTaxGroup" Width="1.5" PointX="5.25" PointY="73.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.Patron" Width="1.5" PointX="16.5" PointY="42.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsGroup" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsGroupsMember" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsHotelLogIn" Width="1.5" PointX="5.25" PointY="59.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsHotelSubscription" Width="1.5" PointX="10.25" PointY="57.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsOrder" Width="1.5" PointX="13.25" PointY="54" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsOrdersDetail" Width="1.5" PointX="21" PointY="56" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsOrdersFastestWay" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsOrdersRefund" Width="1.5" PointX="10.5" PointY="61.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsOrdersRefundsDetail" Width="1.5" PointX="12.75" PointY="60.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsPaymentMethod" Width="1.5" PointX="18.75" PointY="42.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsPreference" Width="1.5" PointX="18.75" PointY="46.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsSessionToken" Width="1.5" PointX="18.75" PointY="53.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.StatesG" Width="1.5" PointX="0.75" PointY="48.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsResetPasswordToken" Width="1.5" PointX="18.75" PointY="39.75" IsExpanded="true" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelBarSales_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelBarSalesDetails_HotelBarSales" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelBarSalesDetails_HotelMenus" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelDiscountReasons_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelDiscountsGiven_HotelDiscountReasons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelDiscountsGiven_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelDiscountsGiven_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelEmployees_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelEmployees_StatesG" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelEmployeesAvailabilityTime_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelEmployeesRoster_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingPushNotifications_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingPushNotifications_HotelEmployees1" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingSms_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingSms_HotelEmployees1" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSavedOrders_HotelEmployees" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelEmployeesAvailabilityTime_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelInventory_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenusInventoryUse_HotelInventory" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingCouponsPatrons_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingNewsletters_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingNewslettersPatrons_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingPushNotifications_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingPushNotificationsPatrons_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingSms_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingSmsPatrons_HotelMarketingSms" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMarketingSmsPatrons_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenus_HotelMenusCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenus_HotelMenusSubCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenus_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenus_HotelTaxGroups" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenusExtraDetails_HotelMenus" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenusInventoryUse_HotelMenus" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSpecials_HotelMenus" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersDetails_HotelMenus" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelMenusSubCategories_HotelMenusCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSpecials_HotelMenusCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSpecials_HotelMenusSubCategories" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelOpenHours_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelRefundReasons_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersRefunds_HotelRefundReasons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_Hotels_StatesG" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSavedOrders_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelTaxGroups_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsHotelLogIns_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsHotelSubscriptions_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrders_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersRefunds_Hotels" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSavedOrdersDetails_HotelSavedOrders" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_HotelSpecialsMeta_HotelSpecials" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersDetails_HotelSpecials" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsHotelLogIns_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsHotelSubscriptions_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrders_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersRefunds_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsPaymentMethods_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsPreferences_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsResetPasswordTokens_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsSessionTokens_Patrons" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersDetails_PatronsOrders" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds" ManuallyRouted="false" />
+        <AssociationConnector Association="DrinkingBuddyEntity.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

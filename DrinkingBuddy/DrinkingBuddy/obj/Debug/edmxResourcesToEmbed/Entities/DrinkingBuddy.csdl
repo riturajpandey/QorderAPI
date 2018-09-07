@@ -1,0 +1,2024 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DrinkingBuddyEntity" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="C__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+    <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AspNetRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUserClaim">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUserLogin">
+    <Key>
+      <PropertyRef Name="LoginProvider" />
+      <PropertyRef Name="ProviderKey" />
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+  </EntityType>
+  <EntityType Name="AspNetUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+    <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+    <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+    <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+    <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+  </EntityType>
+  <EntityType Name="DrinkStandardImage">
+    <Key>
+      <PropertyRef Name="DrinkStandardImageID" />
+    </Key>
+    <Property Name="DrinkStandardImageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DrinkImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="DrinkImageCategoryID" Type="Int32" />
+    <Property Name="DrinkImageSubCategoryID" Type="Int32" />
+    <Property Name="DrinkImageDescription" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="FAKE_MonthlySales">
+    <Key>
+      <PropertyRef Name="FAKE_MonthlySalesID" />
+    </Key>
+    <Property Name="FAKE_MonthlySalesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MonthG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MonthlySales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MonthlyProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MonthlyCatID" Type="Int32" />
+    <Property Name="MonthOrder" Type="Int32" />
+  </EntityType>
+  <EntityType Name="FAKE_MonthlySales2">
+    <Key>
+      <PropertyRef Name="FAKE_MonthlySales2ID" />
+    </Key>
+    <Property Name="FAKE_MonthlySales2ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="JanSales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="JanProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="FebSales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="FebProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MarSales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MarProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="AprilSales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="AprilProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MaySales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="MayProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="JuneSales" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="JuneProfit" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="CatID" Type="Int32" />
+  </EntityType>
+  <EntityType Name="HotelBarSale">
+    <Key>
+      <PropertyRef Name="HotelBarSalesID" />
+    </Key>
+    <Property Name="HotelBarSalesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="DateTimeOfOrder" Type="DateTime" Precision="3" />
+    <Property Name="EmployeeIDCompletedOrder" Type="Int32" Nullable="false" />
+    <Property Name="FinalAmountOfOrder" Type="Decimal" Precision="9" Scale="2" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelBarSales_Hotels" FromRole="HotelBarSales" ToRole="Hotels" />
+    <NavigationProperty Name="HotelBarSalesDetails" Relationship="Self.FK_HotelBarSalesDetails_HotelBarSales" FromRole="HotelBarSales" ToRole="HotelBarSalesDetails" />
+  </EntityType>
+  <EntityType Name="HotelBarSalesDetail">
+    <Key>
+      <PropertyRef Name="HotelBarSalesDetailsID" />
+    </Key>
+    <Property Name="HotelBarSalesDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelBarSalesID" Type="Int32" Nullable="false" />
+    <Property Name="HotelMenuItemID" Type="Int32" Nullable="false" />
+    <Property Name="QTYOrdered" Type="Int32" />
+    <Property Name="HotelSpecialID" Type="Int32" />
+    <Property Name="AcceptedPricePerItem" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfMenuIteAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="ItemNameAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="HotelSpecialsIDAtTimeOfBuying" Type="Int32" />
+    <Property Name="PriceAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="SizeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountTypeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountPercentAtTimeOfBuying" Type="Int32" />
+    <Property Name="NewAmountAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DescriptionOfSpecialAtTimeOfBuying" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="StartDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="EndDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="StartTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="EndTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="RepeatIntervalAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RepeatEveryXWeeksAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatEveryXWeeksMondayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksTuesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksWednesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksThursdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksFridayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSaturdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSundayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatMonthlyDayAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatYearlyDateAtTimeOfBuying" Type="DateTime" Precision="3" />
+    <Property Name="RepeatDailyEveryDayAtTimeOfBuying" Type="Boolean" />
+    <NavigationProperty Name="HotelBarSale" Relationship="Self.FK_HotelBarSalesDetails_HotelBarSales" FromRole="HotelBarSalesDetails" ToRole="HotelBarSales" />
+    <NavigationProperty Name="HotelMenu" Relationship="Self.FK_HotelBarSalesDetails_HotelMenus" FromRole="HotelBarSalesDetails" ToRole="HotelMenus" />
+  </EntityType>
+  <EntityType Name="HotelDiscountReason">
+    <Key>
+      <PropertyRef Name="HotelDiscountReasonID" />
+    </Key>
+    <Property Name="HotelDiscountReasonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="DiscountReason" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="AmountOrPercent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountAmount" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DiscountPercent" Type="Int32" />
+    <Property Name="AllowUserOverride" Type="Boolean" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelDiscountReasons_Hotels" FromRole="HotelDiscountReasons" ToRole="Hotels" />
+    <NavigationProperty Name="HotelDiscountsGivens" Relationship="Self.FK_HotelDiscountsGiven_HotelDiscountReasons" FromRole="HotelDiscountReasons" ToRole="HotelDiscountsGiven" />
+  </EntityType>
+  <EntityType Name="HotelDiscountsGiven">
+    <Key>
+      <PropertyRef Name="HotelDiscountsGivenID" />
+    </Key>
+    <Property Name="HotelDiscountsGivenID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="HotelEmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="HotelDiscountReasonID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelDiscountReason" Relationship="Self.FK_HotelDiscountsGiven_HotelDiscountReasons" FromRole="HotelDiscountsGiven" ToRole="HotelDiscountReasons" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelDiscountsGiven_HotelEmployees" FromRole="HotelDiscountsGiven" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelDiscountsGiven_Hotels" FromRole="HotelDiscountsGiven" ToRole="Hotels" />
+  </EntityType>
+  <EntityType Name="HotelEmployee">
+    <Key>
+      <PropertyRef Name="HotelEmployeeID" />
+    </Key>
+    <Property Name="HotelEmployeeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelEmployeeGUID" Type="Guid" />
+    <Property Name="HotelID" Type="Int32" />
+    <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Suburb" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="PostCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="StateID" Type="Int32" />
+    <Property Name="SecretPin" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MasterPassword" Type="String" MaxLength="900" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelDiscountsGivens" Relationship="Self.FK_HotelDiscountsGiven_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelDiscountsGiven" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelEmployees_Hotels" FromRole="HotelEmployees" ToRole="Hotels" />
+    <NavigationProperty Name="StatesG" Relationship="Self.FK_HotelEmployees_StatesG" FromRole="HotelEmployees" ToRole="StatesG" />
+    <NavigationProperty Name="HotelEmployeesAvailabilityTimes" Relationship="Self.FK_HotelEmployeesAvailabilityTime_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelEmployeesAvailabilityTime" />
+    <NavigationProperty Name="HotelEmployeesRosters" Relationship="Self.FK_HotelEmployeesRoster_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelEmployeesRoster" />
+    <NavigationProperty Name="HotelMarketingPushNotifications" Relationship="Self.FK_HotelMarketingPushNotifications_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelMarketingPushNotifications" />
+    <NavigationProperty Name="HotelMarketingPushNotifications1" Relationship="Self.FK_HotelMarketingPushNotifications_HotelEmployees1" FromRole="HotelEmployees" ToRole="HotelMarketingPushNotifications" />
+    <NavigationProperty Name="HotelMarketingSms" Relationship="Self.FK_HotelMarketingSms_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelMarketingSms" />
+    <NavigationProperty Name="HotelMarketingSms1" Relationship="Self.FK_HotelMarketingSms_HotelEmployees1" FromRole="HotelEmployees" ToRole="HotelMarketingSms" />
+    <NavigationProperty Name="HotelSavedOrders" Relationship="Self.FK_HotelSavedOrders_HotelEmployees" FromRole="HotelEmployees" ToRole="HotelSavedOrders" />
+  </EntityType>
+  <EntityType Name="HotelEmployeesAvailabilityTime">
+    <Key>
+      <PropertyRef Name="HotelEmployeesAvailabilityTimeID" />
+    </Key>
+    <Property Name="HotelEmployeesAvailabilityTimeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="DayOfWeek" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ActiveStartDate" Type="DateTime" Precision="3" />
+    <Property Name="ActiveEndDate" Type="DateTime" Precision="3" />
+    <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelEmployeesAvailabilityTime_HotelEmployees" FromRole="HotelEmployeesAvailabilityTime" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelEmployeesAvailabilityTime_Hotels" FromRole="HotelEmployeesAvailabilityTime" ToRole="Hotels" />
+  </EntityType>
+  <EntityType Name="HotelEmployeesRoster">
+    <Key>
+      <PropertyRef Name="HotelEmployeesRosterID" />
+    </Key>
+    <Property Name="HotelEmployeesRosterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelEmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="DateOfShift" Type="DateTime" Precision="3" />
+    <Property Name="StartTime" Type="DateTime" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Precision="3" />
+    <Property Name="OngoingWeekly" Type="Boolean" Nullable="false" />
+    <Property Name="PaidBreakMins" Type="Int32" />
+    <Property Name="UnPaidBreakMins" Type="Int32" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelEmployeesRoster_HotelEmployees" FromRole="HotelEmployeesRoster" ToRole="HotelEmployees" />
+  </EntityType>
+  <EntityType Name="HotelInventory">
+    <Key>
+      <PropertyRef Name="HotelInventoryID" />
+    </Key>
+    <Property Name="HotelInventoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="InventoryItemName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="InventoryItemSize" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
+    <Property Name="MlLitreOrUnit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="InventoryItemPrice" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="CurrentQty" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DateTimeLastUpdate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelInventory_Hotels" FromRole="HotelInventory" ToRole="Hotels" />
+    <NavigationProperty Name="HotelMenusInventoryUses" Relationship="Self.FK_HotelMenusInventoryUse_HotelInventory" FromRole="HotelInventory" ToRole="HotelMenusInventoryUse" />
+  </EntityType>
+  <EntityType Name="HotelMarketingCoupon">
+    <Key>
+      <PropertyRef Name="HotelMarketingCouponID" />
+    </Key>
+    <Property Name="HotelMarketingCouponID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="CouponName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="CouponCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="SentBy" Type="Int32" />
+    <Property Name="SentDate" Type="DateTime" Precision="3" />
+    <Property Name="CouponStartate" Type="DateTime" Precision="3" />
+    <Property Name="CouponEndDate" Type="DateTime" Precision="3" />
+    <Property Name="CouponStartTime" Type="DateTime" Precision="3" />
+    <Property Name="CouponEndTime" Type="DateTime" Precision="3" />
+    <Property Name="DiscountOrFreeItem" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountAmountOrPercent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SpecificPatronsOrAll" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountPercent" Type="Int32" />
+    <Property Name="NewAmount" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="FreeItemMenuID" Type="Int32" />
+    <Property Name="FreeItemQty" Type="Int32" />
+    <NavigationProperty Name="HotelMarketingCouponsPatrons" Relationship="Self.FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons" FromRole="HotelMarketingCoupons" ToRole="HotelMarketingCouponsPatrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingCouponsPatron">
+    <Key>
+      <PropertyRef Name="HotelMarketingCouponsPatronsID" />
+    </Key>
+    <Property Name="HotelMarketingCouponsPatronsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMarketingCouponID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelMarketingCoupon" Relationship="Self.FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons" FromRole="HotelMarketingCouponsPatrons" ToRole="HotelMarketingCoupons" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_HotelMarketingCouponsPatrons_Patrons" FromRole="HotelMarketingCouponsPatrons" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingNewsletter">
+    <Key>
+      <PropertyRef Name="HotelMarketingNewsletterID" />
+    </Key>
+    <Property Name="HotelMarketingNewsletterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="NewsletterName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="NewsletterSubject" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="NewsletterContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="SentBy" Type="Int32" />
+    <Property Name="SentDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelMarketingNewsletters_Hotels" FromRole="HotelMarketingNewsletters" ToRole="Hotels" />
+    <NavigationProperty Name="HotelMarketingNewslettersPatrons" Relationship="Self.FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters" FromRole="HotelMarketingNewsletters" ToRole="HotelMarketingNewslettersPatrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingNewslettersPatron">
+    <Key>
+      <PropertyRef Name="HotelMarketingNewsletterPatronsID" />
+    </Key>
+    <Property Name="HotelMarketingNewsletterPatronsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMarketingNewsletterID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelMarketingNewsletter" Relationship="Self.FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters" FromRole="HotelMarketingNewslettersPatrons" ToRole="HotelMarketingNewsletters" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_HotelMarketingNewslettersPatrons_Patrons" FromRole="HotelMarketingNewslettersPatrons" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingPushNotification">
+    <Key>
+      <PropertyRef Name="HotelMarketingPushNotificationID" />
+    </Key>
+    <Property Name="HotelMarketingPushNotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" />
+    <Property Name="NotificationName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="NotificationContent" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="SentBy" Type="Int32" />
+    <Property Name="SentDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelMarketingPushNotifications_HotelEmployees" FromRole="HotelMarketingPushNotifications" ToRole="HotelEmployees" />
+    <NavigationProperty Name="HotelEmployee1" Relationship="Self.FK_HotelMarketingPushNotifications_HotelEmployees1" FromRole="HotelMarketingPushNotifications" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelMarketingPushNotifications_Hotels" FromRole="HotelMarketingPushNotifications" ToRole="Hotels" />
+    <NavigationProperty Name="HotelMarketingPushNotificationsPatrons" Relationship="Self.FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications" FromRole="HotelMarketingPushNotifications" ToRole="HotelMarketingPushNotificationsPatrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingPushNotificationsPatron">
+    <Key>
+      <PropertyRef Name="HotelMarketingPushNotificationsPatronID" />
+    </Key>
+    <Property Name="HotelMarketingPushNotificationsPatronID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMarketingPushNotificationsID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelMarketingPushNotification" Relationship="Self.FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications" FromRole="HotelMarketingPushNotificationsPatrons" ToRole="HotelMarketingPushNotifications" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_HotelMarketingPushNotificationsPatrons_Patrons" FromRole="HotelMarketingPushNotificationsPatrons" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingSm">
+    <Key>
+      <PropertyRef Name="HotelMarketingSmsID" />
+    </Key>
+    <Property Name="HotelMarketingSmsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" />
+    <Property Name="SmsName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="SmsContent" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="SentBy" Type="Int32" />
+    <Property Name="SentDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelMarketingSms_HotelEmployees" FromRole="HotelMarketingSms" ToRole="HotelEmployees" />
+    <NavigationProperty Name="HotelEmployee1" Relationship="Self.FK_HotelMarketingSms_HotelEmployees1" FromRole="HotelMarketingSms" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelMarketingSms_Hotels" FromRole="HotelMarketingSms" ToRole="Hotels" />
+    <NavigationProperty Name="HotelMarketingSmsPatrons" Relationship="Self.FK_HotelMarketingSmsPatrons_HotelMarketingSms" FromRole="HotelMarketingSms" ToRole="HotelMarketingSmsPatrons" />
+  </EntityType>
+  <EntityType Name="HotelMarketingSmsPatron">
+    <Key>
+      <PropertyRef Name="HotelMarketingSmsPatronID" />
+    </Key>
+    <Property Name="HotelMarketingSmsPatronID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMarketingSmsID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelMarketingSm" Relationship="Self.FK_HotelMarketingSmsPatrons_HotelMarketingSms" FromRole="HotelMarketingSmsPatrons" ToRole="HotelMarketingSms" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_HotelMarketingSmsPatrons_Patrons" FromRole="HotelMarketingSmsPatrons" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="HotelMenu">
+    <Key>
+      <PropertyRef Name="HotelMenuID" />
+    </Key>
+    <Property Name="HotelMenuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="HotelCategoryID" Type="Int32" Nullable="false" />
+    <Property Name="HotelSubCategoryID" Type="Int32" />
+    <Property Name="DrinkName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="DrinkSize" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DrinkUnitMlLitreUnit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DrinkPrice" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DrinkImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="MinutesToServeItem" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CostOfItem" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="OnBarSalesQuickList" Type="Boolean" Nullable="false" />
+    <Property Name="HotelTaxGroupID" Type="Int32" />
+    <Property Name="IngredientsForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="WhereFromForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="PercentAlcoholForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelBarSalesDetails" Relationship="Self.FK_HotelBarSalesDetails_HotelMenus" FromRole="HotelMenus" ToRole="HotelBarSalesDetails" />
+    <NavigationProperty Name="HotelMenusCategory" Relationship="Self.FK_HotelMenus_HotelMenusCategories" FromRole="HotelMenus" ToRole="HotelMenusCategories" />
+    <NavigationProperty Name="HotelMenusSubCategory" Relationship="Self.FK_HotelMenus_HotelMenusSubCategories" FromRole="HotelMenus" ToRole="HotelMenusSubCategories" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelMenus_Hotels" FromRole="HotelMenus" ToRole="Hotels" />
+    <NavigationProperty Name="HotelTaxGroup" Relationship="Self.FK_HotelMenus_HotelTaxGroups" FromRole="HotelMenus" ToRole="HotelTaxGroups" />
+    <NavigationProperty Name="HotelMenusExtraDetails" Relationship="Self.FK_HotelMenusExtraDetails_HotelMenus" FromRole="HotelMenus" ToRole="HotelMenusExtraDetails" />
+    <NavigationProperty Name="HotelMenusInventoryUses" Relationship="Self.FK_HotelMenusInventoryUse_HotelMenus" FromRole="HotelMenus" ToRole="HotelMenusInventoryUse" />
+    <NavigationProperty Name="HotelSpecials" Relationship="Self.FK_HotelSpecials_HotelMenus" FromRole="HotelMenus" ToRole="HotelSpecials" />
+    <NavigationProperty Name="PatronsOrdersDetails" Relationship="Self.FK_PatronsOrdersDetails_HotelMenus" FromRole="HotelMenus" ToRole="PatronsOrdersDetails" />
+  </EntityType>
+  <EntityType Name="HotelMenusCategory">
+    <Key>
+      <PropertyRef Name="HotelMenuCategoryID" />
+    </Key>
+    <Property Name="HotelMenuCategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="CategoryName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CategoryImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="ViewOrder" Type="Int32" />
+    <Property Name="ReportOrder" Type="Int32" />
+    <NavigationProperty Name="HotelMenus" Relationship="Self.FK_HotelMenus_HotelMenusCategories" FromRole="HotelMenusCategories" ToRole="HotelMenus" />
+    <NavigationProperty Name="HotelMenusSubCategories" Relationship="Self.FK_HotelMenusSubCategories_HotelMenusCategories" FromRole="HotelMenusCategories" ToRole="HotelMenusSubCategories" />
+    <NavigationProperty Name="HotelSpecials" Relationship="Self.FK_HotelSpecials_HotelMenusCategories" FromRole="HotelMenusCategories" ToRole="HotelSpecials" />
+  </EntityType>
+  <EntityType Name="HotelMenusExtraDetail">
+    <Key>
+      <PropertyRef Name="HotelMenusExtraDetailsID" />
+    </Key>
+    <Property Name="HotelMenusExtraDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMenuID" Type="Int32" Nullable="false" />
+    <Property Name="IngredientsForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="WhereFromForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="PercentAlcoholForPatronsApp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelMenu" Relationship="Self.FK_HotelMenusExtraDetails_HotelMenus" FromRole="HotelMenusExtraDetails" ToRole="HotelMenus" />
+  </EntityType>
+  <EntityType Name="HotelMenusInventoryUse">
+    <Key>
+      <PropertyRef Name="HotelMenusInventoryUseID" />
+    </Key>
+    <Property Name="HotelMenusInventoryUseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelMenuID" Type="Int32" Nullable="false" />
+    <Property Name="HotelInventoryID" Type="Int32" Nullable="false" />
+    <Property Name="UseQty" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
+    <Property Name="MlLtrOrUnit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="HotelInventory" Relationship="Self.FK_HotelMenusInventoryUse_HotelInventory" FromRole="HotelMenusInventoryUse" ToRole="HotelInventory" />
+    <NavigationProperty Name="HotelMenu" Relationship="Self.FK_HotelMenusInventoryUse_HotelMenus" FromRole="HotelMenusInventoryUse" ToRole="HotelMenus" />
+  </EntityType>
+  <EntityType Name="HotelMenusSubCategory">
+    <Key>
+      <PropertyRef Name="HotelMenusSubCategoryID" />
+    </Key>
+    <Property Name="HotelMenusSubCategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="HotelMenuCategoryID" Type="Int32" Nullable="false" />
+    <Property Name="SubCategoryName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="SubCategoryImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="HotelMenus" Relationship="Self.FK_HotelMenus_HotelMenusSubCategories" FromRole="HotelMenusSubCategories" ToRole="HotelMenus" />
+    <NavigationProperty Name="HotelMenusCategory" Relationship="Self.FK_HotelMenusSubCategories_HotelMenusCategories" FromRole="HotelMenusSubCategories" ToRole="HotelMenusCategories" />
+    <NavigationProperty Name="HotelSpecials" Relationship="Self.FK_HotelSpecials_HotelMenusSubCategories" FromRole="HotelMenusSubCategories" ToRole="HotelSpecials" />
+  </EntityType>
+  <EntityType Name="HotelOpenHour">
+    <Key>
+      <PropertyRef Name="HotelOpenHoursID" />
+    </Key>
+    <Property Name="HotelOpenHoursID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="MondayOpen" Type="DateTime" Precision="3" />
+    <Property Name="MondayClose" Type="DateTime" Precision="3" />
+    <Property Name="TuesdayOpen" Type="DateTime" Precision="3" />
+    <Property Name="TuesdayClose" Type="DateTime" Precision="3" />
+    <Property Name="WednesdayOpen" Type="DateTime" Precision="3" />
+    <Property Name="WednesdayClose" Type="DateTime" Precision="3" />
+    <Property Name="ThursdayOpen" Type="DateTime" Precision="3" />
+    <Property Name="ThursdayClose" Type="DateTime" Precision="3" />
+    <Property Name="FridayOpen" Type="DateTime" Precision="3" />
+    <Property Name="FridayClose" Type="DateTime" Precision="3" />
+    <Property Name="SaturdayOpen" Type="DateTime" Precision="3" />
+    <Property Name="SaturdayClose" Type="DateTime" Precision="3" />
+    <Property Name="SundayOpen" Type="DateTime" Precision="3" />
+    <Property Name="SundayClose" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelOpenHours_Hotels" FromRole="HotelOpenHours" ToRole="Hotels" />
+  </EntityType>
+  <EntityType Name="HotelRefundReason">
+    <Key>
+      <PropertyRef Name="HotelRefundReasonID" />
+    </Key>
+    <Property Name="HotelRefundReasonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="RefundReason" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelRefundReasons_Hotels" FromRole="HotelRefundReasons" ToRole="Hotels" />
+    <NavigationProperty Name="PatronsOrdersRefunds" Relationship="Self.FK_PatronsOrdersRefunds_HotelRefundReasons" FromRole="HotelRefundReasons" ToRole="PatronsOrdersRefunds" />
+  </EntityType>
+  <EntityType Name="Hotel">
+    <Key>
+      <PropertyRef Name="HotelID" />
+    </Key>
+    <Property Name="HotelID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="HotelAddress1" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="HotelAddress2" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="HotelSuburb" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="HotelPostcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HotelStateID" Type="Int32" />
+    <Property Name="HotelLogo" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="UseStartOrder" Type="Boolean" Nullable="false" />
+    <Property Name="UseSpecialCodeForPickup" Type="Boolean" Nullable="false" />
+    <Property Name="FacebookLink" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="TwitterAccount" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="HotelLat" Type="Decimal" Precision="9" Scale="6" />
+    <Property Name="HotelLong" Type="Decimal" Precision="9" Scale="6" />
+    <Property Name="OptionBarSalesFirstOrderOrFastestWay" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UseLocationsForOrders" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="HotelBarSales" Relationship="Self.FK_HotelBarSales_Hotels" FromRole="Hotels" ToRole="HotelBarSales" />
+    <NavigationProperty Name="HotelDiscountReasons" Relationship="Self.FK_HotelDiscountReasons_Hotels" FromRole="Hotels" ToRole="HotelDiscountReasons" />
+    <NavigationProperty Name="HotelDiscountsGivens" Relationship="Self.FK_HotelDiscountsGiven_Hotels" FromRole="Hotels" ToRole="HotelDiscountsGiven" />
+    <NavigationProperty Name="HotelEmployees" Relationship="Self.FK_HotelEmployees_Hotels" FromRole="Hotels" ToRole="HotelEmployees" />
+    <NavigationProperty Name="HotelEmployeesAvailabilityTimes" Relationship="Self.FK_HotelEmployeesAvailabilityTime_Hotels" FromRole="Hotels" ToRole="HotelEmployeesAvailabilityTime" />
+    <NavigationProperty Name="HotelInventories" Relationship="Self.FK_HotelInventory_Hotels" FromRole="Hotels" ToRole="HotelInventory" />
+    <NavigationProperty Name="HotelMarketingNewsletters" Relationship="Self.FK_HotelMarketingNewsletters_Hotels" FromRole="Hotels" ToRole="HotelMarketingNewsletters" />
+    <NavigationProperty Name="HotelMarketingPushNotifications" Relationship="Self.FK_HotelMarketingPushNotifications_Hotels" FromRole="Hotels" ToRole="HotelMarketingPushNotifications" />
+    <NavigationProperty Name="HotelMarketingSms" Relationship="Self.FK_HotelMarketingSms_Hotels" FromRole="Hotels" ToRole="HotelMarketingSms" />
+    <NavigationProperty Name="HotelMenus" Relationship="Self.FK_HotelMenus_Hotels" FromRole="Hotels" ToRole="HotelMenus" />
+    <NavigationProperty Name="HotelOpenHours" Relationship="Self.FK_HotelOpenHours_Hotels" FromRole="Hotels" ToRole="HotelOpenHours" />
+    <NavigationProperty Name="HotelRefundReasons" Relationship="Self.FK_HotelRefundReasons_Hotels" FromRole="Hotels" ToRole="HotelRefundReasons" />
+    <NavigationProperty Name="StatesG" Relationship="Self.FK_Hotels_StatesG" FromRole="Hotels" ToRole="StatesG" />
+    <NavigationProperty Name="HotelSavedOrders" Relationship="Self.FK_HotelSavedOrders_Hotels" FromRole="Hotels" ToRole="HotelSavedOrders" />
+    <NavigationProperty Name="HotelTaxGroups" Relationship="Self.FK_HotelTaxGroups_Hotels" FromRole="Hotels" ToRole="HotelTaxGroups" />
+    <NavigationProperty Name="PatronsHotelLogIns" Relationship="Self.FK_PatronsHotelLogIns_Hotels" FromRole="Hotels" ToRole="PatronsHotelLogIns" />
+    <NavigationProperty Name="PatronsHotelSubscriptions" Relationship="Self.FK_PatronsHotelSubscriptions_Hotels" FromRole="Hotels" ToRole="PatronsHotelSubscriptions" />
+    <NavigationProperty Name="PatronsOrders" Relationship="Self.FK_PatronsOrders_Hotels" FromRole="Hotels" ToRole="PatronsOrders" />
+    <NavigationProperty Name="PatronsOrdersRefunds" Relationship="Self.FK_PatronsOrdersRefunds_Hotels" FromRole="Hotels" ToRole="PatronsOrdersRefunds" />
+  </EntityType>
+  <EntityType Name="HotelSavedOrder">
+    <Key>
+      <PropertyRef Name="HotelSavedOrderID" />
+    </Key>
+    <Property Name="HotelSavedOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="HotelEmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="DateOrderSaved" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="HotelEmployee" Relationship="Self.FK_HotelSavedOrders_HotelEmployees" FromRole="HotelSavedOrders" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelSavedOrders_Hotels" FromRole="HotelSavedOrders" ToRole="Hotels" />
+    <NavigationProperty Name="HotelSavedOrdersDetails" Relationship="Self.FK_HotelSavedOrdersDetails_HotelSavedOrders" FromRole="HotelSavedOrders" ToRole="HotelSavedOrdersDetails" />
+  </EntityType>
+  <EntityType Name="HotelSavedOrdersDetail">
+    <Key>
+      <PropertyRef Name="HotelSavedOrderDetailsID" />
+    </Key>
+    <Property Name="HotelSavedOrderDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelSavedOrderID" Type="Int32" Nullable="false" />
+    <Property Name="HotelMenuID" Type="Int32" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="PriceAtTimeOfSave" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="OtherDescription" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelSavedOrder" Relationship="Self.FK_HotelSavedOrdersDetails_HotelSavedOrders" FromRole="HotelSavedOrdersDetails" ToRole="HotelSavedOrders" />
+  </EntityType>
+  <EntityType Name="HotelSpecial">
+    <Key>
+      <PropertyRef Name="HotelSpecialID" />
+    </Key>
+    <Property Name="HotelSpecialID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="CategoryID" Type="Int32" />
+    <Property Name="SubCategoryID" Type="Int32" />
+    <Property Name="HotelMenuID" Type="Int32" />
+    <Property Name="WillRepeat" Type="Boolean" Nullable="false" />
+    <Property Name="DiscountType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountPercent" Type="Int32" />
+    <Property Name="DiscountAmountNOTINUSE" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="NewAmount" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DescriptionOfSpecial" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelMenu" Relationship="Self.FK_HotelSpecials_HotelMenus" FromRole="HotelSpecials" ToRole="HotelMenus" />
+    <NavigationProperty Name="HotelMenusCategory" Relationship="Self.FK_HotelSpecials_HotelMenusCategories" FromRole="HotelSpecials" ToRole="HotelMenusCategories" />
+    <NavigationProperty Name="HotelMenusSubCategory" Relationship="Self.FK_HotelSpecials_HotelMenusSubCategories" FromRole="HotelSpecials" ToRole="HotelMenusSubCategories" />
+    <NavigationProperty Name="HotelSpecialsMetas" Relationship="Self.FK_HotelSpecialsMeta_HotelSpecials" FromRole="HotelSpecials" ToRole="HotelSpecialsMeta" />
+    <NavigationProperty Name="PatronsOrdersDetails" Relationship="Self.FK_PatronsOrdersDetails_HotelSpecials" FromRole="HotelSpecials" ToRole="PatronsOrdersDetails" />
+  </EntityType>
+  <EntityType Name="HotelSpecialsMeta">
+    <Key>
+      <PropertyRef Name="HotelSpecialsMetaID" />
+    </Key>
+    <Property Name="HotelSpecialsMetaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelSpecialID" Type="Int32" Nullable="false" />
+    <Property Name="StartDate" Type="DateTime" Precision="0" />
+    <Property Name="EndDate" Type="DateTime" Precision="0" />
+    <Property Name="StartTime" Type="DateTime" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Precision="3" />
+    <Property Name="RepeatInterval" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RepeatEveryXWeeks" Type="Int32" />
+    <Property Name="RepeatEveryXWeeksMonday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksTuesday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksWednesday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksThursday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksFriday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSaturday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSunday" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatMonthlyDay" Type="Int32" />
+    <Property Name="RepeatYearlyDate" Type="DateTime" Precision="3" />
+    <Property Name="RepeatDailyEveryDay" Type="Boolean" />
+    <NavigationProperty Name="HotelSpecial" Relationship="Self.FK_HotelSpecialsMeta_HotelSpecials" FromRole="HotelSpecialsMeta" ToRole="HotelSpecials" />
+  </EntityType>
+  <EntityType Name="HotelTaxGroup">
+    <Key>
+      <PropertyRef Name="HotelTaxGroupID" />
+    </Key>
+    <Property Name="HotelTaxGroupID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" />
+    <Property Name="TaxGroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TaxGroupPercentage" Type="Int32" />
+    <Property Name="PriceIsTaxInclusive" Type="Boolean" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="StateID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HotelMenus" Relationship="Self.FK_HotelMenus_HotelTaxGroups" FromRole="HotelTaxGroups" ToRole="HotelMenus" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_HotelTaxGroups_Hotels" FromRole="HotelTaxGroups" ToRole="Hotels" />
+  </EntityType>
+  <EntityType Name="Patron">
+    <Key>
+      <PropertyRef Name="PatronsID" />
+    </Key>
+    <Property Name="PatronsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Suburb" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="PostCode" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="StateID" Type="Int32" />
+    <Property Name="OptInForMarketing" Type="Boolean" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+    <Property Name="EmailAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Gassword" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="HotelMarketingCouponsPatrons" Relationship="Self.FK_HotelMarketingCouponsPatrons_Patrons" FromRole="Patrons" ToRole="HotelMarketingCouponsPatrons" />
+    <NavigationProperty Name="HotelMarketingNewslettersPatrons" Relationship="Self.FK_HotelMarketingNewslettersPatrons_Patrons" FromRole="Patrons" ToRole="HotelMarketingNewslettersPatrons" />
+    <NavigationProperty Name="HotelMarketingPushNotificationsPatrons" Relationship="Self.FK_HotelMarketingPushNotificationsPatrons_Patrons" FromRole="Patrons" ToRole="HotelMarketingPushNotificationsPatrons" />
+    <NavigationProperty Name="HotelMarketingSmsPatrons" Relationship="Self.FK_HotelMarketingSmsPatrons_Patrons" FromRole="Patrons" ToRole="HotelMarketingSmsPatrons" />
+    <NavigationProperty Name="PatronsHotelLogIns" Relationship="Self.FK_PatronsHotelLogIns_Patrons" FromRole="Patrons" ToRole="PatronsHotelLogIns" />
+    <NavigationProperty Name="PatronsHotelSubscriptions" Relationship="Self.FK_PatronsHotelSubscriptions_Patrons" FromRole="Patrons" ToRole="PatronsHotelSubscriptions" />
+    <NavigationProperty Name="PatronsOrders" Relationship="Self.FK_PatronsOrders_Patrons" FromRole="Patrons" ToRole="PatronsOrders" />
+    <NavigationProperty Name="PatronsOrdersRefunds" Relationship="Self.FK_PatronsOrdersRefunds_Patrons" FromRole="Patrons" ToRole="PatronsOrdersRefunds" />
+    <NavigationProperty Name="PatronsPaymentMethods" Relationship="Self.FK_PatronsPaymentMethods_Patrons" FromRole="Patrons" ToRole="PatronsPaymentMethods" />
+    <NavigationProperty Name="PatronsPreferences" Relationship="Self.FK_PatronsPreferences_Patrons" FromRole="Patrons" ToRole="PatronsPreferences" />
+    <NavigationProperty Name="PatronsResetPasswordTokens" Relationship="Self.FK_PatronsResetPasswordTokens_Patrons" FromRole="Patrons" ToRole="PatronsResetPasswordTokens" />
+    <NavigationProperty Name="PatronsSessionTokens" Relationship="Self.FK_PatronsSessionTokens_Patrons" FromRole="Patrons" ToRole="PatronsSessionTokens" />
+  </EntityType>
+  <EntityType Name="PatronsGroup">
+    <Key>
+      <PropertyRef Name="PatronsGroupID" />
+    </Key>
+    <Property Name="PatronsGroupID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" />
+    <Property Name="MasterPatronID" Type="Int32" />
+    <Property Name="GroupStartedDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="PatronsGroupsMember">
+    <Key>
+      <PropertyRef Name="PatronsGroupsMembersID" />
+    </Key>
+    <Property Name="PatronsGroupsMembersID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronsGroupID" Type="Int32" Nullable="false" />
+    <Property Name="MemberPatronID" Type="Int32" Nullable="false" />
+    <Property Name="DateTimeJoinedGroup" Type="DateTime" Precision="3" />
+    <Property Name="DateTimeLeftGroup" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="PatronsHotelLogIn">
+    <Key>
+      <PropertyRef Name="PatronsHotelLogInsID" />
+    </Key>
+    <Property Name="PatronsHotelLogInsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="LoginDateTime" Type="DateTime" Precision="3" />
+    <Property Name="LogoutDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_PatronsHotelLogIns_Hotels" FromRole="PatronsHotelLogIns" ToRole="Hotels" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsHotelLogIns_Patrons" FromRole="PatronsHotelLogIns" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="PatronsHotelSubscription">
+    <Key>
+      <PropertyRef Name="PatronsHotelSubscriptionID" />
+    </Key>
+    <Property Name="PatronsHotelSubscriptionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="SubscribeSMS" Type="Boolean" Nullable="false" />
+    <Property Name="SubsribeEmail" Type="Boolean" Nullable="false" />
+    <Property Name="SubsribePushNotifications" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_PatronsHotelSubscriptions_Hotels" FromRole="PatronsHotelSubscriptions" ToRole="Hotels" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsHotelSubscriptions_Patrons" FromRole="PatronsHotelSubscriptions" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="PatronsOrder">
+    <Key>
+      <PropertyRef Name="PatronsOrdersID" />
+    </Key>
+    <Property Name="PatronsOrdersID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="DateTimeOfOrder" Type="DateTime" Precision="3" />
+    <Property Name="BarAcceptedOrder" Type="Boolean" Nullable="false" />
+    <Property Name="BarStartedOrder" Type="Boolean" Nullable="false" />
+    <Property Name="BarCompletedOrder" Type="Boolean" Nullable="false" />
+    <Property Name="OrderCollected" Type="Boolean" />
+    <Property Name="DateTimeCollected" Type="DateTime" Precision="3" />
+    <Property Name="SpecialCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ScanOfCodeCollected" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FinalAmountForOrder" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="Paid" Type="Boolean" Nullable="false" />
+    <Property Name="PaymentGatewayReturnID" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="PatronsOrderNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="BarStaffWhoStartedOrder" Type="Int32" />
+    <Property Name="BarStaffWhoCompletedOrder" Type="Int32" />
+    <Property Name="BarStaffWhoDeliveredOrder" Type="Int32" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_PatronsOrders_Hotels" FromRole="PatronsOrders" ToRole="Hotels" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsOrders_Patrons" FromRole="PatronsOrders" ToRole="Patrons" />
+    <NavigationProperty Name="PatronsOrdersDetails" Relationship="Self.FK_PatronsOrdersDetails_PatronsOrders" FromRole="PatronsOrders" ToRole="PatronsOrdersDetails" />
+  </EntityType>
+  <EntityType Name="PatronsOrdersDetail">
+    <Key>
+      <PropertyRef Name="PatronsOrdersDetailsID" />
+    </Key>
+    <Property Name="PatronsOrdersDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronsOrdersID" Type="Int32" Nullable="false" />
+    <Property Name="HotelMenuItemID" Type="Int32" Nullable="false" />
+    <Property Name="QTYOrdered" Type="Int32" />
+    <Property Name="HotelSpecialID" Type="Int32" />
+    <Property Name="AcceptedPricePerItem" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="AbleToMakeByHotel" Type="Boolean" Nullable="false" />
+    <Property Name="BarStarted" Type="Boolean" Nullable="false" />
+    <Property Name="BarCompleted" Type="Boolean" Nullable="false" />
+    <Property Name="DeliveredByHotel" Type="Boolean" Nullable="false" />
+    <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfMenuIteAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="ItemNameAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="HotelSpecialsIDAtTimeOfBuying" Type="Int32" />
+    <Property Name="PriceAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="SizeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountTypeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountPercentAtTimeOfBuying" Type="Int32" />
+    <Property Name="NewAmountAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DescriptionOfSpecialAtTimeOfBuying" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="StartDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="EndDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="StartTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="EndTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="RepeatIntervalAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RepeatEveryXWeeksAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatEveryXWeeksMondayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksTuesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksWednesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksThursdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksFridayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSaturdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSundayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatMonthlyDayAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatYearlyDateAtTimeOfBuying" Type="DateTime" Precision="3" />
+    <Property Name="RepeatDailyEveryDayAtTimeOfBuying" Type="Boolean" />
+    <Property Name="PatronsOrderDetailsNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelMenu" Relationship="Self.FK_PatronsOrdersDetails_HotelMenus" FromRole="PatronsOrdersDetails" ToRole="HotelMenus" />
+    <NavigationProperty Name="HotelSpecial" Relationship="Self.FK_PatronsOrdersDetails_HotelSpecials" FromRole="PatronsOrdersDetails" ToRole="HotelSpecials" />
+    <NavigationProperty Name="PatronsOrder" Relationship="Self.FK_PatronsOrdersDetails_PatronsOrders" FromRole="PatronsOrdersDetails" ToRole="PatronsOrders" />
+  </EntityType>
+  <EntityType Name="PatronsOrdersFastestWay">
+    <Key>
+      <PropertyRef Name="PatronsOrdersFastestWayID" />
+    </Key>
+    <Property Name="PatronsOrdersFastestWayID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="PatronsOrderID" Type="Int32" Nullable="false" />
+    <Property Name="PatronsOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="MenuItemID" Type="Int32" Nullable="false" />
+    <Property Name="QtyOrdered" Type="Int32" />
+    <Property Name="StartedG" Type="Boolean" Nullable="false" />
+    <Property Name="CompletedG" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PatronsOrdersRefund">
+    <Key>
+      <PropertyRef Name="PatronsOrdersRefundID" />
+    </Key>
+    <Property Name="PatronsOrdersRefundID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HotelID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="HotelRefundReasonID" Type="Int32" />
+    <Property Name="DateTimeOfRefund" Type="DateTime" Precision="3" />
+    <Property Name="EmployeeIDdoingRefund" Type="Int32" />
+    <Property Name="BarCompletedOrder" Type="Boolean" Nullable="false" />
+    <Property Name="OrderCollected" Type="Boolean" />
+    <Property Name="DateTimeCollected" Type="DateTime" Precision="3" />
+    <Property Name="FinalAmountForOrder" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="RefundAmount" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
+    <Property Name="Refunded" Type="Boolean" Nullable="false" />
+    <Property Name="PaymentGatewayReturnID" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="HotelRefundReason" Relationship="Self.FK_PatronsOrdersRefunds_HotelRefundReasons" FromRole="PatronsOrdersRefunds" ToRole="HotelRefundReasons" />
+    <NavigationProperty Name="Hotel" Relationship="Self.FK_PatronsOrdersRefunds_Hotels" FromRole="PatronsOrdersRefunds" ToRole="Hotels" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsOrdersRefunds_Patrons" FromRole="PatronsOrdersRefunds" ToRole="Patrons" />
+    <NavigationProperty Name="PatronsOrdersRefundsDetails" Relationship="Self.FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds" FromRole="PatronsOrdersRefunds" ToRole="PatronsOrdersRefundsDetails" />
+  </EntityType>
+  <EntityType Name="PatronsOrdersRefundsDetail">
+    <Key>
+      <PropertyRef Name="PatronsOrdersRefundsDetailsID" />
+    </Key>
+    <Property Name="PatronsOrdersRefundsDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronsOrdersRefundID" Type="Int32" Nullable="false" />
+    <Property Name="PatronsOrdersID" Type="Int32" Nullable="false" />
+    <Property Name="HotelMenuItemID" Type="Int32" Nullable="false" />
+    <Property Name="QTYOrdered" Type="Int32" />
+    <Property Name="HotelSpecialID" Type="Int32" />
+    <Property Name="AcceptedPricePerItem" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="AbleToMakeByHotel" Type="Boolean" Nullable="false" />
+    <Property Name="BarStarted" Type="Boolean" Nullable="false" />
+    <Property Name="BarCompleted" Type="Boolean" Nullable="false" />
+    <Property Name="DeliveredByHotel" Type="Boolean" Nullable="false" />
+    <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfMenuIteAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="ItemNameAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="HotelSpecialsIDAtTimeOfBuying" Type="Int32" />
+    <Property Name="PriceAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="SizeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="SubCategoryNameOfSpecialAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountTypeAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DiscountPercentAtTimeOfBuying" Type="Int32" />
+    <Property Name="NewAmountAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="DescriptionOfSpecialAtTimeOfBuying" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="StartDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="EndDateAtTimeOfBuying" Type="DateTime" Precision="0" />
+    <Property Name="StartTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="EndTimeAtTimeOfBuying" Type="Time" Precision="7" />
+    <Property Name="RepeatIntervalAtTimeOfBuying" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RepeatEveryXWeeksAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatEveryXWeeksMondayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksTuesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksWednesdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksThursdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksFridayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSaturdayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatEveryXWeeksSundayAtTimeOfBuying" Type="Boolean" Nullable="false" />
+    <Property Name="RepeatMonthlyDayAtTimeOfBuying" Type="Int32" />
+    <Property Name="RepeatYearlyDateAtTimeOfBuying" Type="DateTime" Precision="3" />
+    <Property Name="RepeatDailyEveryDayAtTimeOfBuying" Type="Boolean" />
+    <NavigationProperty Name="PatronsOrdersRefund" Relationship="Self.FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds" FromRole="PatronsOrdersRefundsDetails" ToRole="PatronsOrdersRefunds" />
+  </EntityType>
+  <EntityType Name="PatronsPaymentMethod">
+    <Key>
+      <PropertyRef Name="PatronsPaymentMethodID" />
+    </Key>
+    <Property Name="PatronsPaymentMethodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="PaymentType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PaymentCardholderName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="PaymentCardType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PaymentCardNumberEncrypted" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
+    <Property Name="PaymentCardCvvCodeEncrypted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PaymentCardExpiryEncrypted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsPaymentMethods_Patrons" FromRole="PatronsPaymentMethods" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="PatronsPreference">
+    <Key>
+      <PropertyRef Name="PatronsPreferencesID" />
+    </Key>
+    <Property Name="PatronsPreferencesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsPreferences_Patrons" FromRole="PatronsPreferences" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="PatronsSessionToken">
+    <Key>
+      <PropertyRef Name="PatronsSessionTokenID" />
+    </Key>
+    <Property Name="PatronsSessionTokenID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="SessionToken" Type="Guid" Nullable="false" />
+    <Property Name="DateTimeGiven" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DateTimeExpiry" Type="DateTime" Precision="3" />
+    <Property Name="fbLogin" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsSessionTokens_Patrons" FromRole="PatronsSessionTokens" ToRole="Patrons" />
+  </EntityType>
+  <EntityType Name="StatesG">
+    <Key>
+      <PropertyRef Name="StateID" />
+    </Key>
+    <Property Name="StateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StateName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="StateNameAbbreviation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="StateCentreLat" Type="Decimal" Precision="10" Scale="7" />
+    <Property Name="StateCentreLong" Type="Decimal" Precision="10" Scale="7" />
+    <Property Name="StateCityLat" Type="Decimal" Precision="10" Scale="7" />
+    <Property Name="StateCityLong" Type="Decimal" Precision="10" Scale="7" />
+    <NavigationProperty Name="HotelEmployees" Relationship="Self.FK_HotelEmployees_StatesG" FromRole="StatesG" ToRole="HotelEmployees" />
+    <NavigationProperty Name="Hotels" Relationship="Self.FK_Hotels_StatesG" FromRole="StatesG" ToRole="Hotels" />
+  </EntityType>
+  <EntityType Name="PatronsResetPasswordToken">
+    <Key>
+      <PropertyRef Name="PatronsResetPasswordTokenID" />
+      <PropertyRef Name="PatronID" />
+      <PropertyRef Name="DateTimeExpiry" />
+      <PropertyRef Name="ResetToken" />
+    </Key>
+    <Property Name="PatronsResetPasswordTokenID" Type="Int32" Nullable="false" />
+    <Property Name="PatronID" Type="Int32" Nullable="false" />
+    <Property Name="DateTimeExpiry" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ResetToken" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsResetPasswordTokens_Patrons" FromRole="PatronsResetPasswordTokens" ToRole="Patrons" />
+  </EntityType>
+  <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserClaims" Type="Self.AspNetUserClaim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserClaims">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AspNetUserLogins" Type="Self.AspNetUserLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUsers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AspNetUserLogins">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelBarSales_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelBarSales" Type="Self.HotelBarSale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelBarSales">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelBarSalesDetails_HotelBarSales">
+    <End Role="HotelBarSales" Type="Self.HotelBarSale" Multiplicity="1" />
+    <End Role="HotelBarSalesDetails" Type="Self.HotelBarSalesDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelBarSales">
+        <PropertyRef Name="HotelBarSalesID" />
+      </Principal>
+      <Dependent Role="HotelBarSalesDetails">
+        <PropertyRef Name="HotelBarSalesID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelBarSalesDetails_HotelMenus">
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="1" />
+    <End Role="HotelBarSalesDetails" Type="Self.HotelBarSalesDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenus">
+        <PropertyRef Name="HotelMenuID" />
+      </Principal>
+      <Dependent Role="HotelBarSalesDetails">
+        <PropertyRef Name="HotelMenuItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelDiscountReasons_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelDiscountReasons" Type="Self.HotelDiscountReason" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelDiscountReasons">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelDiscountsGiven_HotelDiscountReasons">
+    <End Role="HotelDiscountReasons" Type="Self.HotelDiscountReason" Multiplicity="1" />
+    <End Role="HotelDiscountsGiven" Type="Self.HotelDiscountsGiven" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelDiscountReasons">
+        <PropertyRef Name="HotelDiscountReasonID" />
+      </Principal>
+      <Dependent Role="HotelDiscountsGiven">
+        <PropertyRef Name="HotelDiscountReasonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelDiscountsGiven_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="1" />
+    <End Role="HotelDiscountsGiven" Type="Self.HotelDiscountsGiven" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelDiscountsGiven">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelDiscountsGiven_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelDiscountsGiven" Type="Self.HotelDiscountsGiven" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelDiscountsGiven">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelEmployees_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="0..1" />
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelEmployees">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelEmployees_StatesG">
+    <End Role="StatesG" Type="Self.StatesG" Multiplicity="0..1" />
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="StatesG">
+        <PropertyRef Name="StateID" />
+      </Principal>
+      <Dependent Role="HotelEmployees">
+        <PropertyRef Name="StateID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelEmployeesAvailabilityTime_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="1" />
+    <End Role="HotelEmployeesAvailabilityTime" Type="Self.HotelEmployeesAvailabilityTime" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelEmployeesAvailabilityTime">
+        <PropertyRef Name="EmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelEmployeesRoster_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="1" />
+    <End Role="HotelEmployeesRoster" Type="Self.HotelEmployeesRoster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelEmployeesRoster">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingPushNotifications_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="0..1" />
+    <End Role="HotelMarketingPushNotifications" Type="Self.HotelMarketingPushNotification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelMarketingPushNotifications">
+        <PropertyRef Name="CreatedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingPushNotifications_HotelEmployees1">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="0..1" />
+    <End Role="HotelMarketingPushNotifications" Type="Self.HotelMarketingPushNotification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelMarketingPushNotifications">
+        <PropertyRef Name="SentBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingSms_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="0..1" />
+    <End Role="HotelMarketingSms" Type="Self.HotelMarketingSm" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelMarketingSms">
+        <PropertyRef Name="CreatedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingSms_HotelEmployees1">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="0..1" />
+    <End Role="HotelMarketingSms" Type="Self.HotelMarketingSm" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelMarketingSms">
+        <PropertyRef Name="SentBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSavedOrders_HotelEmployees">
+    <End Role="HotelEmployees" Type="Self.HotelEmployee" Multiplicity="1" />
+    <End Role="HotelSavedOrders" Type="Self.HotelSavedOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelEmployees">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Principal>
+      <Dependent Role="HotelSavedOrders">
+        <PropertyRef Name="HotelEmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelEmployeesAvailabilityTime_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelEmployeesAvailabilityTime" Type="Self.HotelEmployeesAvailabilityTime" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelEmployeesAvailabilityTime">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelInventory_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelInventory" Type="Self.HotelInventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelInventory">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenusInventoryUse_HotelInventory">
+    <End Role="HotelInventory" Type="Self.HotelInventory" Multiplicity="1" />
+    <End Role="HotelMenusInventoryUse" Type="Self.HotelMenusInventoryUse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelInventory">
+        <PropertyRef Name="HotelInventoryID" />
+      </Principal>
+      <Dependent Role="HotelMenusInventoryUse">
+        <PropertyRef Name="HotelInventoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons">
+    <End Role="HotelMarketingCoupons" Type="Self.HotelMarketingCoupon" Multiplicity="1" />
+    <End Role="HotelMarketingCouponsPatrons" Type="Self.HotelMarketingCouponsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMarketingCoupons">
+        <PropertyRef Name="HotelMarketingCouponID" />
+      </Principal>
+      <Dependent Role="HotelMarketingCouponsPatrons">
+        <PropertyRef Name="HotelMarketingCouponID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingCouponsPatrons_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="HotelMarketingCouponsPatrons" Type="Self.HotelMarketingCouponsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="HotelMarketingCouponsPatrons">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingNewsletters_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelMarketingNewsletters" Type="Self.HotelMarketingNewsletter" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelMarketingNewsletters">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters">
+    <End Role="HotelMarketingNewsletters" Type="Self.HotelMarketingNewsletter" Multiplicity="1" />
+    <End Role="HotelMarketingNewslettersPatrons" Type="Self.HotelMarketingNewslettersPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMarketingNewsletters">
+        <PropertyRef Name="HotelMarketingNewsletterID" />
+      </Principal>
+      <Dependent Role="HotelMarketingNewslettersPatrons">
+        <PropertyRef Name="HotelMarketingNewsletterID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingNewslettersPatrons_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="HotelMarketingNewslettersPatrons" Type="Self.HotelMarketingNewslettersPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="HotelMarketingNewslettersPatrons">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingPushNotifications_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="0..1" />
+    <End Role="HotelMarketingPushNotifications" Type="Self.HotelMarketingPushNotification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelMarketingPushNotifications">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications">
+    <End Role="HotelMarketingPushNotifications" Type="Self.HotelMarketingPushNotification" Multiplicity="1" />
+    <End Role="HotelMarketingPushNotificationsPatrons" Type="Self.HotelMarketingPushNotificationsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMarketingPushNotifications">
+        <PropertyRef Name="HotelMarketingPushNotificationID" />
+      </Principal>
+      <Dependent Role="HotelMarketingPushNotificationsPatrons">
+        <PropertyRef Name="HotelMarketingPushNotificationsID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingPushNotificationsPatrons_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="HotelMarketingPushNotificationsPatrons" Type="Self.HotelMarketingPushNotificationsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="HotelMarketingPushNotificationsPatrons">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingSms_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="0..1" />
+    <End Role="HotelMarketingSms" Type="Self.HotelMarketingSm" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelMarketingSms">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingSmsPatrons_HotelMarketingSms">
+    <End Role="HotelMarketingSms" Type="Self.HotelMarketingSm" Multiplicity="1" />
+    <End Role="HotelMarketingSmsPatrons" Type="Self.HotelMarketingSmsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMarketingSms">
+        <PropertyRef Name="HotelMarketingSmsID" />
+      </Principal>
+      <Dependent Role="HotelMarketingSmsPatrons">
+        <PropertyRef Name="HotelMarketingSmsID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMarketingSmsPatrons_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="HotelMarketingSmsPatrons" Type="Self.HotelMarketingSmsPatron" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="HotelMarketingSmsPatrons">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenus_HotelMenusCategories">
+    <End Role="HotelMenusCategories" Type="Self.HotelMenusCategory" Multiplicity="1" />
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenusCategories">
+        <PropertyRef Name="HotelMenuCategoryID" />
+      </Principal>
+      <Dependent Role="HotelMenus">
+        <PropertyRef Name="HotelCategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenus_HotelMenusSubCategories">
+    <End Role="HotelMenusSubCategories" Type="Self.HotelMenusSubCategory" Multiplicity="0..1" />
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenusSubCategories">
+        <PropertyRef Name="HotelMenusSubCategoryID" />
+      </Principal>
+      <Dependent Role="HotelMenus">
+        <PropertyRef Name="HotelSubCategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenus_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelMenus">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenus_HotelTaxGroups">
+    <End Role="HotelTaxGroups" Type="Self.HotelTaxGroup" Multiplicity="0..1" />
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelTaxGroups">
+        <PropertyRef Name="HotelTaxGroupID" />
+      </Principal>
+      <Dependent Role="HotelMenus">
+        <PropertyRef Name="HotelTaxGroupID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenusExtraDetails_HotelMenus">
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="1" />
+    <End Role="HotelMenusExtraDetails" Type="Self.HotelMenusExtraDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenus">
+        <PropertyRef Name="HotelMenuID" />
+      </Principal>
+      <Dependent Role="HotelMenusExtraDetails">
+        <PropertyRef Name="HotelMenuID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenusInventoryUse_HotelMenus">
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="1" />
+    <End Role="HotelMenusInventoryUse" Type="Self.HotelMenusInventoryUse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenus">
+        <PropertyRef Name="HotelMenuID" />
+      </Principal>
+      <Dependent Role="HotelMenusInventoryUse">
+        <PropertyRef Name="HotelMenuID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSpecials_HotelMenus">
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="0..1" />
+    <End Role="HotelSpecials" Type="Self.HotelSpecial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenus">
+        <PropertyRef Name="HotelMenuID" />
+      </Principal>
+      <Dependent Role="HotelSpecials">
+        <PropertyRef Name="HotelMenuID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersDetails_HotelMenus">
+    <End Role="HotelMenus" Type="Self.HotelMenu" Multiplicity="1" />
+    <End Role="PatronsOrdersDetails" Type="Self.PatronsOrdersDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenus">
+        <PropertyRef Name="HotelMenuID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersDetails">
+        <PropertyRef Name="HotelMenuItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelMenusSubCategories_HotelMenusCategories">
+    <End Role="HotelMenusCategories" Type="Self.HotelMenusCategory" Multiplicity="1" />
+    <End Role="HotelMenusSubCategories" Type="Self.HotelMenusSubCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenusCategories">
+        <PropertyRef Name="HotelMenuCategoryID" />
+      </Principal>
+      <Dependent Role="HotelMenusSubCategories">
+        <PropertyRef Name="HotelMenuCategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSpecials_HotelMenusCategories">
+    <End Role="HotelMenusCategories" Type="Self.HotelMenusCategory" Multiplicity="0..1" />
+    <End Role="HotelSpecials" Type="Self.HotelSpecial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenusCategories">
+        <PropertyRef Name="HotelMenuCategoryID" />
+      </Principal>
+      <Dependent Role="HotelSpecials">
+        <PropertyRef Name="CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSpecials_HotelMenusSubCategories">
+    <End Role="HotelMenusSubCategories" Type="Self.HotelMenusSubCategory" Multiplicity="0..1" />
+    <End Role="HotelSpecials" Type="Self.HotelSpecial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelMenusSubCategories">
+        <PropertyRef Name="HotelMenusSubCategoryID" />
+      </Principal>
+      <Dependent Role="HotelSpecials">
+        <PropertyRef Name="SubCategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelOpenHours_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelOpenHours" Type="Self.HotelOpenHour" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelOpenHours">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelRefundReasons_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelRefundReasons" Type="Self.HotelRefundReason" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelRefundReasons">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersRefunds_HotelRefundReasons">
+    <End Role="HotelRefundReasons" Type="Self.HotelRefundReason" Multiplicity="0..1" />
+    <End Role="PatronsOrdersRefunds" Type="Self.PatronsOrdersRefund" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelRefundReasons">
+        <PropertyRef Name="HotelRefundReasonID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersRefunds">
+        <PropertyRef Name="HotelRefundReasonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Hotels_StatesG">
+    <End Role="StatesG" Type="Self.StatesG" Multiplicity="0..1" />
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="StatesG">
+        <PropertyRef Name="StateID" />
+      </Principal>
+      <Dependent Role="Hotels">
+        <PropertyRef Name="HotelStateID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSavedOrders_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="HotelSavedOrders" Type="Self.HotelSavedOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelSavedOrders">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelTaxGroups_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="0..1" />
+    <End Role="HotelTaxGroups" Type="Self.HotelTaxGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="HotelTaxGroups">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsHotelLogIns_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="PatronsHotelLogIns" Type="Self.PatronsHotelLogIn" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="PatronsHotelLogIns">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsHotelSubscriptions_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="PatronsHotelSubscriptions" Type="Self.PatronsHotelSubscription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="PatronsHotelSubscriptions">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrders_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="PatronsOrders" Type="Self.PatronsOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="PatronsOrders">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersRefunds_Hotels">
+    <End Role="Hotels" Type="Self.Hotel" Multiplicity="1" />
+    <End Role="PatronsOrdersRefunds" Type="Self.PatronsOrdersRefund" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Hotels">
+        <PropertyRef Name="HotelID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersRefunds">
+        <PropertyRef Name="HotelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSavedOrdersDetails_HotelSavedOrders">
+    <End Role="HotelSavedOrders" Type="Self.HotelSavedOrder" Multiplicity="1" />
+    <End Role="HotelSavedOrdersDetails" Type="Self.HotelSavedOrdersDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelSavedOrders">
+        <PropertyRef Name="HotelSavedOrderID" />
+      </Principal>
+      <Dependent Role="HotelSavedOrdersDetails">
+        <PropertyRef Name="HotelSavedOrderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HotelSpecialsMeta_HotelSpecials">
+    <End Role="HotelSpecials" Type="Self.HotelSpecial" Multiplicity="1" />
+    <End Role="HotelSpecialsMeta" Type="Self.HotelSpecialsMeta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelSpecials">
+        <PropertyRef Name="HotelSpecialID" />
+      </Principal>
+      <Dependent Role="HotelSpecialsMeta">
+        <PropertyRef Name="HotelSpecialID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersDetails_HotelSpecials">
+    <End Role="HotelSpecials" Type="Self.HotelSpecial" Multiplicity="0..1" />
+    <End Role="PatronsOrdersDetails" Type="Self.PatronsOrdersDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HotelSpecials">
+        <PropertyRef Name="HotelSpecialID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersDetails">
+        <PropertyRef Name="HotelSpecialID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsHotelLogIns_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsHotelLogIns" Type="Self.PatronsHotelLogIn" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsHotelLogIns">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsHotelSubscriptions_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsHotelSubscriptions" Type="Self.PatronsHotelSubscription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsHotelSubscriptions">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrders_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsOrders" Type="Self.PatronsOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsOrders">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersRefunds_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsOrdersRefunds" Type="Self.PatronsOrdersRefund" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersRefunds">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsPaymentMethods_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsPaymentMethods" Type="Self.PatronsPaymentMethod" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsPaymentMethods">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsPreferences_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsPreferences" Type="Self.PatronsPreference" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsPreferences">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsResetPasswordTokens_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsResetPasswordTokens" Type="Self.PatronsResetPasswordToken" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsResetPasswordTokens">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsSessionTokens_Patrons">
+    <End Role="Patrons" Type="Self.Patron" Multiplicity="1" />
+    <End Role="PatronsSessionTokens" Type="Self.PatronsSessionToken" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patrons">
+        <PropertyRef Name="PatronsID" />
+      </Principal>
+      <Dependent Role="PatronsSessionTokens">
+        <PropertyRef Name="PatronID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersDetails_PatronsOrders">
+    <End Role="PatronsOrders" Type="Self.PatronsOrder" Multiplicity="1" />
+    <End Role="PatronsOrdersDetails" Type="Self.PatronsOrdersDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatronsOrders">
+        <PropertyRef Name="PatronsOrdersID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersDetails">
+        <PropertyRef Name="PatronsOrdersID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds">
+    <End Role="PatronsOrdersRefunds" Type="Self.PatronsOrdersRefund" Multiplicity="1" />
+    <End Role="PatronsOrdersRefundsDetails" Type="Self.PatronsOrdersRefundsDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatronsOrdersRefunds">
+        <PropertyRef Name="PatronsOrdersRefundID" />
+      </Principal>
+      <Dependent Role="PatronsOrdersRefundsDetails">
+        <PropertyRef Name="PatronsOrdersRefundID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AspNetUserRoles">
+    <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
+    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="DrinkingBuddyEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+    <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+    <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
+    <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+    <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+    <EntitySet Name="DrinkStandardImages" EntityType="Self.DrinkStandardImage" />
+    <EntitySet Name="FAKE_MonthlySales" EntityType="Self.FAKE_MonthlySales" />
+    <EntitySet Name="FAKE_MonthlySales2" EntityType="Self.FAKE_MonthlySales2" />
+    <EntitySet Name="HotelBarSales" EntityType="Self.HotelBarSale" />
+    <EntitySet Name="HotelBarSalesDetails" EntityType="Self.HotelBarSalesDetail" />
+    <EntitySet Name="HotelDiscountReasons" EntityType="Self.HotelDiscountReason" />
+    <EntitySet Name="HotelDiscountsGivens" EntityType="Self.HotelDiscountsGiven" />
+    <EntitySet Name="HotelEmployees" EntityType="Self.HotelEmployee" />
+    <EntitySet Name="HotelEmployeesAvailabilityTimes" EntityType="Self.HotelEmployeesAvailabilityTime" />
+    <EntitySet Name="HotelEmployeesRosters" EntityType="Self.HotelEmployeesRoster" />
+    <EntitySet Name="HotelInventories" EntityType="Self.HotelInventory" />
+    <EntitySet Name="HotelMarketingCoupons" EntityType="Self.HotelMarketingCoupon" />
+    <EntitySet Name="HotelMarketingCouponsPatrons" EntityType="Self.HotelMarketingCouponsPatron" />
+    <EntitySet Name="HotelMarketingNewsletters" EntityType="Self.HotelMarketingNewsletter" />
+    <EntitySet Name="HotelMarketingNewslettersPatrons" EntityType="Self.HotelMarketingNewslettersPatron" />
+    <EntitySet Name="HotelMarketingPushNotifications" EntityType="Self.HotelMarketingPushNotification" />
+    <EntitySet Name="HotelMarketingPushNotificationsPatrons" EntityType="Self.HotelMarketingPushNotificationsPatron" />
+    <EntitySet Name="HotelMarketingSms" EntityType="Self.HotelMarketingSm" />
+    <EntitySet Name="HotelMarketingSmsPatrons" EntityType="Self.HotelMarketingSmsPatron" />
+    <EntitySet Name="HotelMenus" EntityType="Self.HotelMenu" />
+    <EntitySet Name="HotelMenusCategories" EntityType="Self.HotelMenusCategory" />
+    <EntitySet Name="HotelMenusExtraDetails" EntityType="Self.HotelMenusExtraDetail" />
+    <EntitySet Name="HotelMenusInventoryUses" EntityType="Self.HotelMenusInventoryUse" />
+    <EntitySet Name="HotelMenusSubCategories" EntityType="Self.HotelMenusSubCategory" />
+    <EntitySet Name="HotelOpenHours" EntityType="Self.HotelOpenHour" />
+    <EntitySet Name="HotelRefundReasons" EntityType="Self.HotelRefundReason" />
+    <EntitySet Name="Hotels" EntityType="Self.Hotel" />
+    <EntitySet Name="HotelSavedOrders" EntityType="Self.HotelSavedOrder" />
+    <EntitySet Name="HotelSavedOrdersDetails" EntityType="Self.HotelSavedOrdersDetail" />
+    <EntitySet Name="HotelSpecials" EntityType="Self.HotelSpecial" />
+    <EntitySet Name="HotelSpecialsMetas" EntityType="Self.HotelSpecialsMeta" />
+    <EntitySet Name="HotelTaxGroups" EntityType="Self.HotelTaxGroup" />
+    <EntitySet Name="Patrons" EntityType="Self.Patron" />
+    <EntitySet Name="PatronsGroups" EntityType="Self.PatronsGroup" />
+    <EntitySet Name="PatronsGroupsMembers" EntityType="Self.PatronsGroupsMember" />
+    <EntitySet Name="PatronsHotelLogIns" EntityType="Self.PatronsHotelLogIn" />
+    <EntitySet Name="PatronsHotelSubscriptions" EntityType="Self.PatronsHotelSubscription" />
+    <EntitySet Name="PatronsOrders" EntityType="Self.PatronsOrder" />
+    <EntitySet Name="PatronsOrdersDetails" EntityType="Self.PatronsOrdersDetail" />
+    <EntitySet Name="PatronsOrdersFastestWays" EntityType="Self.PatronsOrdersFastestWay" />
+    <EntitySet Name="PatronsOrdersRefunds" EntityType="Self.PatronsOrdersRefund" />
+    <EntitySet Name="PatronsOrdersRefundsDetails" EntityType="Self.PatronsOrdersRefundsDetail" />
+    <EntitySet Name="PatronsPaymentMethods" EntityType="Self.PatronsPaymentMethod" />
+    <EntitySet Name="PatronsPreferences" EntityType="Self.PatronsPreference" />
+    <EntitySet Name="PatronsSessionTokens" EntityType="Self.PatronsSessionToken" />
+    <EntitySet Name="StatesGs" EntityType="Self.StatesG" />
+    <EntitySet Name="PatronsResetPasswordTokens" EntityType="Self.PatronsResetPasswordToken" />
+    <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+      <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelBarSales_Hotels" Association="Self.FK_HotelBarSales_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelBarSales" EntitySet="HotelBarSales" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelBarSalesDetails_HotelBarSales" Association="Self.FK_HotelBarSalesDetails_HotelBarSales">
+      <End Role="HotelBarSales" EntitySet="HotelBarSales" />
+      <End Role="HotelBarSalesDetails" EntitySet="HotelBarSalesDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelBarSalesDetails_HotelMenus" Association="Self.FK_HotelBarSalesDetails_HotelMenus">
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+      <End Role="HotelBarSalesDetails" EntitySet="HotelBarSalesDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelDiscountReasons_Hotels" Association="Self.FK_HotelDiscountReasons_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelDiscountReasons" EntitySet="HotelDiscountReasons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelDiscountsGiven_HotelDiscountReasons" Association="Self.FK_HotelDiscountsGiven_HotelDiscountReasons">
+      <End Role="HotelDiscountReasons" EntitySet="HotelDiscountReasons" />
+      <End Role="HotelDiscountsGiven" EntitySet="HotelDiscountsGivens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelDiscountsGiven_HotelEmployees" Association="Self.FK_HotelDiscountsGiven_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelDiscountsGiven" EntitySet="HotelDiscountsGivens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelDiscountsGiven_Hotels" Association="Self.FK_HotelDiscountsGiven_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelDiscountsGiven" EntitySet="HotelDiscountsGivens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelEmployees_Hotels" Association="Self.FK_HotelEmployees_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelEmployees_StatesG" Association="Self.FK_HotelEmployees_StatesG">
+      <End Role="StatesG" EntitySet="StatesGs" />
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelEmployeesAvailabilityTime_HotelEmployees" Association="Self.FK_HotelEmployeesAvailabilityTime_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelEmployeesAvailabilityTime" EntitySet="HotelEmployeesAvailabilityTimes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelEmployeesRoster_HotelEmployees" Association="Self.FK_HotelEmployeesRoster_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelEmployeesRoster" EntitySet="HotelEmployeesRosters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingPushNotifications_HotelEmployees" Association="Self.FK_HotelMarketingPushNotifications_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelMarketingPushNotifications" EntitySet="HotelMarketingPushNotifications" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingPushNotifications_HotelEmployees1" Association="Self.FK_HotelMarketingPushNotifications_HotelEmployees1">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelMarketingPushNotifications" EntitySet="HotelMarketingPushNotifications" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingSms_HotelEmployees" Association="Self.FK_HotelMarketingSms_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelMarketingSms" EntitySet="HotelMarketingSms" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingSms_HotelEmployees1" Association="Self.FK_HotelMarketingSms_HotelEmployees1">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelMarketingSms" EntitySet="HotelMarketingSms" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSavedOrders_HotelEmployees" Association="Self.FK_HotelSavedOrders_HotelEmployees">
+      <End Role="HotelEmployees" EntitySet="HotelEmployees" />
+      <End Role="HotelSavedOrders" EntitySet="HotelSavedOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelEmployeesAvailabilityTime_Hotels" Association="Self.FK_HotelEmployeesAvailabilityTime_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelEmployeesAvailabilityTime" EntitySet="HotelEmployeesAvailabilityTimes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelInventory_Hotels" Association="Self.FK_HotelInventory_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelInventory" EntitySet="HotelInventories" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenusInventoryUse_HotelInventory" Association="Self.FK_HotelMenusInventoryUse_HotelInventory">
+      <End Role="HotelInventory" EntitySet="HotelInventories" />
+      <End Role="HotelMenusInventoryUse" EntitySet="HotelMenusInventoryUses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons" Association="Self.FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons">
+      <End Role="HotelMarketingCoupons" EntitySet="HotelMarketingCoupons" />
+      <End Role="HotelMarketingCouponsPatrons" EntitySet="HotelMarketingCouponsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingCouponsPatrons_Patrons" Association="Self.FK_HotelMarketingCouponsPatrons_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="HotelMarketingCouponsPatrons" EntitySet="HotelMarketingCouponsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingNewsletters_Hotels" Association="Self.FK_HotelMarketingNewsletters_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelMarketingNewsletters" EntitySet="HotelMarketingNewsletters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters" Association="Self.FK_HotelMarketingNewslettersPatrons_HotelMarketingNewsletters">
+      <End Role="HotelMarketingNewsletters" EntitySet="HotelMarketingNewsletters" />
+      <End Role="HotelMarketingNewslettersPatrons" EntitySet="HotelMarketingNewslettersPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingNewslettersPatrons_Patrons" Association="Self.FK_HotelMarketingNewslettersPatrons_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="HotelMarketingNewslettersPatrons" EntitySet="HotelMarketingNewslettersPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingPushNotifications_Hotels" Association="Self.FK_HotelMarketingPushNotifications_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelMarketingPushNotifications" EntitySet="HotelMarketingPushNotifications" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications" Association="Self.FK_HotelMarketingPushNotificationsPatrons_HotelMarketingPushNotifications">
+      <End Role="HotelMarketingPushNotifications" EntitySet="HotelMarketingPushNotifications" />
+      <End Role="HotelMarketingPushNotificationsPatrons" EntitySet="HotelMarketingPushNotificationsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingPushNotificationsPatrons_Patrons" Association="Self.FK_HotelMarketingPushNotificationsPatrons_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="HotelMarketingPushNotificationsPatrons" EntitySet="HotelMarketingPushNotificationsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingSms_Hotels" Association="Self.FK_HotelMarketingSms_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelMarketingSms" EntitySet="HotelMarketingSms" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingSmsPatrons_HotelMarketingSms" Association="Self.FK_HotelMarketingSmsPatrons_HotelMarketingSms">
+      <End Role="HotelMarketingSms" EntitySet="HotelMarketingSms" />
+      <End Role="HotelMarketingSmsPatrons" EntitySet="HotelMarketingSmsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMarketingSmsPatrons_Patrons" Association="Self.FK_HotelMarketingSmsPatrons_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="HotelMarketingSmsPatrons" EntitySet="HotelMarketingSmsPatrons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenus_HotelMenusCategories" Association="Self.FK_HotelMenus_HotelMenusCategories">
+      <End Role="HotelMenusCategories" EntitySet="HotelMenusCategories" />
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenus_HotelMenusSubCategories" Association="Self.FK_HotelMenus_HotelMenusSubCategories">
+      <End Role="HotelMenusSubCategories" EntitySet="HotelMenusSubCategories" />
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenus_Hotels" Association="Self.FK_HotelMenus_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenus_HotelTaxGroups" Association="Self.FK_HotelMenus_HotelTaxGroups">
+      <End Role="HotelTaxGroups" EntitySet="HotelTaxGroups" />
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenusExtraDetails_HotelMenus" Association="Self.FK_HotelMenusExtraDetails_HotelMenus">
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+      <End Role="HotelMenusExtraDetails" EntitySet="HotelMenusExtraDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenusInventoryUse_HotelMenus" Association="Self.FK_HotelMenusInventoryUse_HotelMenus">
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+      <End Role="HotelMenusInventoryUse" EntitySet="HotelMenusInventoryUses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSpecials_HotelMenus" Association="Self.FK_HotelSpecials_HotelMenus">
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+      <End Role="HotelSpecials" EntitySet="HotelSpecials" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersDetails_HotelMenus" Association="Self.FK_PatronsOrdersDetails_HotelMenus">
+      <End Role="HotelMenus" EntitySet="HotelMenus" />
+      <End Role="PatronsOrdersDetails" EntitySet="PatronsOrdersDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelMenusSubCategories_HotelMenusCategories" Association="Self.FK_HotelMenusSubCategories_HotelMenusCategories">
+      <End Role="HotelMenusCategories" EntitySet="HotelMenusCategories" />
+      <End Role="HotelMenusSubCategories" EntitySet="HotelMenusSubCategories" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSpecials_HotelMenusCategories" Association="Self.FK_HotelSpecials_HotelMenusCategories">
+      <End Role="HotelMenusCategories" EntitySet="HotelMenusCategories" />
+      <End Role="HotelSpecials" EntitySet="HotelSpecials" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSpecials_HotelMenusSubCategories" Association="Self.FK_HotelSpecials_HotelMenusSubCategories">
+      <End Role="HotelMenusSubCategories" EntitySet="HotelMenusSubCategories" />
+      <End Role="HotelSpecials" EntitySet="HotelSpecials" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelOpenHours_Hotels" Association="Self.FK_HotelOpenHours_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelOpenHours" EntitySet="HotelOpenHours" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelRefundReasons_Hotels" Association="Self.FK_HotelRefundReasons_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelRefundReasons" EntitySet="HotelRefundReasons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersRefunds_HotelRefundReasons" Association="Self.FK_PatronsOrdersRefunds_HotelRefundReasons">
+      <End Role="HotelRefundReasons" EntitySet="HotelRefundReasons" />
+      <End Role="PatronsOrdersRefunds" EntitySet="PatronsOrdersRefunds" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Hotels_StatesG" Association="Self.FK_Hotels_StatesG">
+      <End Role="StatesG" EntitySet="StatesGs" />
+      <End Role="Hotels" EntitySet="Hotels" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSavedOrders_Hotels" Association="Self.FK_HotelSavedOrders_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelSavedOrders" EntitySet="HotelSavedOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelTaxGroups_Hotels" Association="Self.FK_HotelTaxGroups_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="HotelTaxGroups" EntitySet="HotelTaxGroups" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsHotelLogIns_Hotels" Association="Self.FK_PatronsHotelLogIns_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="PatronsHotelLogIns" EntitySet="PatronsHotelLogIns" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsHotelSubscriptions_Hotels" Association="Self.FK_PatronsHotelSubscriptions_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="PatronsHotelSubscriptions" EntitySet="PatronsHotelSubscriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrders_Hotels" Association="Self.FK_PatronsOrders_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="PatronsOrders" EntitySet="PatronsOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersRefunds_Hotels" Association="Self.FK_PatronsOrdersRefunds_Hotels">
+      <End Role="Hotels" EntitySet="Hotels" />
+      <End Role="PatronsOrdersRefunds" EntitySet="PatronsOrdersRefunds" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSavedOrdersDetails_HotelSavedOrders" Association="Self.FK_HotelSavedOrdersDetails_HotelSavedOrders">
+      <End Role="HotelSavedOrders" EntitySet="HotelSavedOrders" />
+      <End Role="HotelSavedOrdersDetails" EntitySet="HotelSavedOrdersDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HotelSpecialsMeta_HotelSpecials" Association="Self.FK_HotelSpecialsMeta_HotelSpecials">
+      <End Role="HotelSpecials" EntitySet="HotelSpecials" />
+      <End Role="HotelSpecialsMeta" EntitySet="HotelSpecialsMetas" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersDetails_HotelSpecials" Association="Self.FK_PatronsOrdersDetails_HotelSpecials">
+      <End Role="HotelSpecials" EntitySet="HotelSpecials" />
+      <End Role="PatronsOrdersDetails" EntitySet="PatronsOrdersDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsHotelLogIns_Patrons" Association="Self.FK_PatronsHotelLogIns_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsHotelLogIns" EntitySet="PatronsHotelLogIns" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsHotelSubscriptions_Patrons" Association="Self.FK_PatronsHotelSubscriptions_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsHotelSubscriptions" EntitySet="PatronsHotelSubscriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrders_Patrons" Association="Self.FK_PatronsOrders_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsOrders" EntitySet="PatronsOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersRefunds_Patrons" Association="Self.FK_PatronsOrdersRefunds_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsOrdersRefunds" EntitySet="PatronsOrdersRefunds" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsPaymentMethods_Patrons" Association="Self.FK_PatronsPaymentMethods_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsPaymentMethods" EntitySet="PatronsPaymentMethods" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsPreferences_Patrons" Association="Self.FK_PatronsPreferences_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsPreferences" EntitySet="PatronsPreferences" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsResetPasswordTokens_Patrons" Association="Self.FK_PatronsResetPasswordTokens_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsResetPasswordTokens" EntitySet="PatronsResetPasswordTokens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsSessionTokens_Patrons" Association="Self.FK_PatronsSessionTokens_Patrons">
+      <End Role="Patrons" EntitySet="Patrons" />
+      <End Role="PatronsSessionTokens" EntitySet="PatronsSessionTokens" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersDetails_PatronsOrders" Association="Self.FK_PatronsOrdersDetails_PatronsOrders">
+      <End Role="PatronsOrders" EntitySet="PatronsOrders" />
+      <End Role="PatronsOrdersDetails" EntitySet="PatronsOrdersDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds" Association="Self.FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds">
+      <End Role="PatronsOrdersRefunds" EntitySet="PatronsOrdersRefunds" />
+      <End Role="PatronsOrdersRefundsDetails" EntitySet="PatronsOrdersRefundsDetails" />
+    </AssociationSet>
+    <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+      <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
