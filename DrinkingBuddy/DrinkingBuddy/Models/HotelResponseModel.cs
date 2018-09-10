@@ -78,6 +78,18 @@ namespace DrinkingBuddy.Models
 
     }
 
+    public class HotelMenuSubCategoryResponseModel
+    {
+        public int HotelMenusSubCategoryID { get; set; }
+        public int HotelID { get; set; }
+        public int HotelMenuCategoryID { get; set; }
+        public string SubCategoryName { get; set; }
+        public bool IsActive { get; set; }
+        public byte[] SubCategoryImage { get; set; }
+
+
+    }
+
     public class IngredientResponseModel
     {
         public string DrinkIngredient { get; set; }

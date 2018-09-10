@@ -101,6 +101,43 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
+        [Route("MenusSubCategories")]
+        public IHttpActionResult MenusSubCategories(int Id)
+        {
+            try
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var MenuList = _context.HotelMenusSubCategories.Where(m => m.HotelMenuCategoryID == Id).ToList();
+                    if (MenuList.Count != 0)
+                    {
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<HotelMenu, HotelMenuSubCategoryResponseModel>();
+                            cfg.CreateMap<HotelMenuSubCategoryResponseModel, HotelMenu>();
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<List<HotelMenuSubCategoryResponseModel>>(MenuList);
+
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+
+        }
+
+        [HttpPost]
         [Route("Menus")]
         public IHttpActionResult Menus(int id)
         {
@@ -108,7 +145,7 @@ namespace DrinkingBuddy.Controllers
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuList = _context.HotelMenus.Where(m => m.HotelCategoryID == id).ToList();
+                    var MenuList = _context.HotelMenus.Where(m => m.HotelSubCategoryID == id).ToList();
                     if (MenuList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -172,11 +209,150 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-       
-        #endregion
+       #endregion
 
         #region Orders
+        [HttpPost]
+        [Route("Coupons")]
+        public IHttpActionResult Coupons(CouponBindingModel model)
+        {
+            try {
+                if (ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    {
+                        var coupons = _context.HotelMarketingCoupons.Where(m => m.HotelID == model.HotelId).ToList();
+                        if (coupons.Count != 0)
+                        {
+                            var config = new MapperConfiguration(cfg =>
+                            {
+                                cfg.CreateMap<HotelMarketingCoupon, CouponResponseModel>();
+                                cfg.CreateMap<CouponResponseModel, HotelMarketingCoupon>();
+
+                            });
+
+                            IMapper mapper = config.CreateMapper();
+                            var data = mapper.Map<List<CouponResponseModel>>(coupons);
+
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+                        }
+
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch(Exception ex)
+            {
+               return BadRequest(ex.Message);
+
+            }
+
+        }
+
+        [HttpPost]
+        [Route("CouponUsed")]
+        public IHttpActionResult CouponUsed(CouponBindingModel model)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    {
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<HotelMarketingCouponsPatron, CouponBindingModel>();
+                            cfg.CreateMap<CouponBindingModel, HotelMarketingCoupon>();
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<HotelMarketingCouponsPatron>(model);
+
+                        _context.HotelMarketingCouponsPatrons.Add(data);
+                        int _result = _context.SaveChanges();
+                        if (_result == 0)
+                        {
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    return BadRequest("Parameter's Invalid");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpPost]
+        [Route("SpecialOffer")]
+        public IHttpActionResult SpecialOffer(SpecialbindingModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    {
+                        var Offers = _context.HotelSpecials.Where(m=>m.HotelMenuID==model.HotelMenuID).ToList();
+
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<HotelSpecial, SpecialReponseModel>();
+                            cfg.CreateMap<SpecialReponseModel, HotelSpecial>();
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<List<SpecialReponseModel>>(model);
+
+                       
+                        if (data !=null)
+                        {
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+                        }
+
+
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("Parameter's are Invalid");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
 
         #endregion
     }
-}
+}   
