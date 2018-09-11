@@ -86,10 +86,8 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        return Ok(new ResponseModel { Message = "User Does not Exist", Status = "Failded" });
+                        return Ok(new ResponseModel { Message = "User Does not Exist", Status = "Failed" });
                     }
-
-
                 }
                 else
                 {
@@ -430,21 +428,47 @@ namespace DrinkingBuddy.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+
+
+                    var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+
+                    IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+
+                        var userdetail = await UserManager.FindAsync(model.Email, model.Password);
+                        if (userdetail != null)
+                        {
+                            return Ok(new ResponseModel { Message = "User Exist", Status = "Success", Data = userdetail });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "User Does not Exist", Status = "Failed" });
+                        }
+                    }
+                    else
+                    {
+                        return GetErrorResult(result);
+                    }
+
+                   
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
-
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                return GetErrorResult(result);
-            }
+                return BadRequest(ex.Message);
 
-            return Ok();
+            }
         }
 
         // POST api/Account/RegisterExternal

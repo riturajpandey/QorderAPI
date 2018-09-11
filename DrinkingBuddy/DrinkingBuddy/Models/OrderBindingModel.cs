@@ -29,9 +29,7 @@ namespace DrinkingBuddy.Models
 
     public class CouponBindingModel
     {
-        public int HotelMarketingCouponId { get; set; }
-        public int HotelId { get; set; }
-        public int PatronsId { get; set; }
+       public int PatronsId { get; set; }
     }
 
     public class SpecialbindingModel

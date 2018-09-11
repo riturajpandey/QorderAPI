@@ -32,12 +32,39 @@ namespace DrinkingBuddy.Models
     }
 
     public class SpecialReponseModel {
-
+        private DateTime _EndDate;
+        private string _HotelName;
         public int HotelSpecialID { get; set; }
         public int HotelId { get; set; }
         public string DescriptionOfSpecial { get; set; }
-        public DateTime EndDate { get; set; }
-        public string HotelName { get; set; }
+        public DateTime EndDate {
+
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Special = _context.HotelSpecialsMetas.Where(m => m.HotelSpecialID == this.HotelSpecialID).FirstOrDefault();
+                    Special.EndDate = this._EndDate;
+                }
+                return _EndDate;
+
+
+            }
+
+        }
+        public string HotelName {
+          get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Special = _context.Hotels.Where(m => m.HotelID == this.HotelId).FirstOrDefault();
+                    Special.HotelName = this._HotelName;
+                }
+                return _HotelName;
+
+
+            }
+        }
 
 
 

@@ -221,7 +221,17 @@ namespace DrinkingBuddy.Controllers
                 {
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        var coupons = _context.HotelMarketingCoupons.Where(m => m.HotelID == model.HotelId).ToList();
+                        var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == model.PatronsId).ToList();
+
+                        List<HotelMarketingCoupon> coupons = new List<HotelMarketingCoupon>();
+                        
+                        foreach (var item in couponsId)
+                        {
+                            var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
+
+                            coupons.Add(singlecoupon);
+                        }
+                       
                         if (coupons.Count != 0)
                         {
                             var config = new MapperConfiguration(cfg =>
@@ -256,52 +266,52 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        [HttpPost]
-        [Route("CouponUsed")]
-        public IHttpActionResult CouponUsed(CouponBindingModel model)
-        {
-            try
-            {
+        //[HttpPost]
+        //[Route("CouponUsed")]
+        //public IHttpActionResult CouponUsed(CouponBindingModel model)
+        //{
+        //    try
+        //    {
 
-                if (ModelState.IsValid)
-                {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<HotelMarketingCouponsPatron, CouponBindingModel>();
-                            cfg.CreateMap<CouponBindingModel, HotelMarketingCoupon>();
+        //        if (ModelState.IsValid)
+        //        {
+        //            using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+        //            {
+        //                var config = new MapperConfiguration(cfg =>
+        //                {
+        //                    cfg.CreateMap<HotelMarketingCouponsPatron, CouponBindingModel>();
+        //                    cfg.CreateMap<CouponBindingModel, HotelMarketingCoupon>();
 
-                        });
+        //                });
 
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<HotelMarketingCouponsPatron>(model);
+        //                IMapper mapper = config.CreateMapper();
+        //                var data = mapper.Map<HotelMarketingCouponsPatron>(model);
 
-                        _context.HotelMarketingCouponsPatrons.Add(data);
-                        int _result = _context.SaveChanges();
-                        if (_result == 0)
-                        {
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
-                        }
+        //                _context.HotelMarketingCouponsPatrons.Add(data);
+        //                int _result = _context.SaveChanges();
+        //                if (_result == 0)
+        //                {
+        //                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+        //                }
+        //                else
+        //                {
+        //                    return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+        //                }
 
 
-                    }
-                }
-                else
-                {
-                    return BadRequest("Parameter's Invalid");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Parameter's Invalid");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
 
-        }
+        //}
 
         [HttpPost]
         [Route("SpecialOffer")]
@@ -351,7 +361,6 @@ namespace DrinkingBuddy.Controllers
             }
 
         }
-
 
         #endregion
     }
