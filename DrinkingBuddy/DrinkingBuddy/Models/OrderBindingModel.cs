@@ -14,6 +14,8 @@ namespace DrinkingBuddy.Models
         public int HotelId { get; set; }
         public double TotalPrice { get; set; }
         public string PaymentGatwayId { get; set; }
+        public DateTime LoginDateTime { get; set; }
+        public DateTime LogoutDateTime { get; set; }
 
     }
 
@@ -40,5 +42,10 @@ namespace DrinkingBuddy.Models
         public int HotelMenuID { get; set; }
     }
 
+    public class BarConnect
+    {
 
+
+
+    }
 }

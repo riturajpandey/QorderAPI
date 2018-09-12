@@ -19,7 +19,9 @@ using DrinkingBuddy.Entities;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Results;
 using AutoMapper;
-
+using System.IO;
+using System.Net;
+using System.Text;
 
 namespace DrinkingBuddy.Controllers
 {
@@ -75,19 +77,28 @@ namespace DrinkingBuddy.Controllers
         [Route("Login")]
         public async Task<IHttpActionResult> Login(LoginModel model)
         {
-            try {
-
+            try
+            {
                 if (ModelState.IsValid)
                 {
                     var user = await UserManager.FindAsync(model.Email, model.Password);
                     if (user != null)
                     {
-                        return Ok(new ResponseModel { Message = "User Exist", Status = "Success",Data=user });
+                        var token = GetTokenForAPI(model);
+                        UserInformationModel data = new UserInformationModel();
+                        data.Id = user.Id;
+                        data.Email = user.Email;
+                        data.FirstName = user.FirstName;
+                        data.LastName = user.LastName;
+                        data.PhoneNumber = user.PhoneNumber;
+                        data.AccessToken = token;
+                        return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success", Data = data });
                     }
                     else
                     {
                         return Ok(new ResponseModel { Message = "User Does not Exist", Status = "Failed" });
                     }
+
                 }
                 else
                 {
@@ -105,16 +116,16 @@ namespace DrinkingBuddy.Controllers
 
         // POST api/Account/Logout
         [Route("Logout")]
+        [Authorize]
         public IHttpActionResult Logout()
         {
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
             return Ok();
         }
 
-       
-
-        [HttpGet]
-        public IHttpActionResult Update(string id)
+        [HttpPost]
+        [Authorize]
+        public IHttpActionResult UserById(string id)
         {
             if (id != null)
             {
@@ -126,7 +137,7 @@ namespace DrinkingBuddy.Controllers
                 }
                 else
                 {
-                    return Ok(new ResponseModel { Message = "Request Execution Failed", Status = "Failded", Data = result });
+                    return Ok(new ResponseModel { Message = "Request Execution Failed", Status = "Failed", Data = result });
 
                 }
             }
@@ -139,6 +150,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Update")]
         public IHttpActionResult Update(RegisterBindingModel model)
         {
@@ -169,9 +181,9 @@ namespace DrinkingBuddy.Controllers
                 {
                     return BadRequest("The provided Data is not valid");
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -432,36 +444,55 @@ namespace DrinkingBuddy.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
-
-
-                    var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
-
-                    IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
-                    if (result.Succeeded)
+                    var IsExist = await UserManager.FindByEmailAsync(model.Email);
+                    if (IsExist != null)
                     {
 
-                        var userdetail = await UserManager.FindAsync(model.Email, model.Password);
-                        if (userdetail != null)
-                        {
-                            return Ok(new ResponseModel { Message = "User Exist", Status = "Success", Data = userdetail });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "User Does not Exist", Status = "Failed" });
-                        }
+                        return Ok(new ResponseModel { Message = "User Exist", Status = "Success", });
                     }
                     else
                     {
-                        return GetErrorResult(result);
-                    }
+                        var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PhoneNumber = model.PhoneNumber };
 
-                   
+                        IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+
+                        if (result.Succeeded)
+                        {
+
+                            var userdetail = await UserManager.FindAsync(model.Email, model.Password);
+                            if (userdetail != null)
+                            {
+                                return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = userdetail });
+                            }
+                            else
+                            {
+                                return Ok(new ResponseModel { Message = "User Registration Failed", Status = "Failed" });
+                            }
+                        }
+                        else
+                        {
+                            return GetErrorResult(result);
+                        }
+
+                    }
                 }
                 else
                 {
-                    return BadRequest();
+
+                    List<ModelState>  Modelvalues= ModelState.Values.ToList();
+                    List<string> mesages = new List<string>();
+                    foreach(var item in Modelvalues)
+                    {
+                        var error= item.Errors.ToList();
+                        foreach (var itom in error)
+                        {
+                            string message = itom.ErrorMessage;
+                            mesages.Add(message);
+
+                        }
+                    }
+
+                   return Ok(new ResponseModel { Message ="Validation Error", Status = "Failed",Data= mesages });
                 }
             }
             catch (Exception ex)
@@ -620,8 +651,46 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-       
+        public TokenViewModel GetTokenForAPI(LoginModel objAuthModel)
+        {
+            var myrul = HttpContext.Current.Request.Url.AbsoluteUri;
+            string subdomain = System.Configuration.ConfigurationManager.AppSettings["SubDomain"].ToString();
+            var tokenUrl = myrul.Replace(HttpContext.Current.Request.Url.AbsolutePath, subdomain + "/") + "token";
+
+            var request = string.Format("grant_type=password&username={0}&password={1}", HttpUtility.UrlEncode(objAuthModel.Email), HttpUtility.UrlEncode(objAuthModel.Password));
+            TokenViewModel token = null;
+            try
+            {
+                WebRequest webRequest = WebRequest.Create(tokenUrl);
+                webRequest.ContentType = @"application/x-www-form-urlencoded"; ;
+                webRequest.Method = "POST";
+                byte[] bytes = Encoding.ASCII.GetBytes(request);
+                webRequest.ContentLength = bytes.Length;
+                using (Stream outputStream = webRequest.GetRequestStream())
+                {
+                    outputStream.Write(bytes, 0, bytes.Length);
+                }
+                using (WebResponse webResponse = webRequest.GetResponse())
+                {
+                    StreamReader newstreamreader = new StreamReader(webResponse.GetResponseStream());
+                    string newresponsefromserver = newstreamreader.ReadToEnd();
+                    newresponsefromserver = newresponsefromserver.Replace(".expires", "expires").Replace(".issued", "issued");
+                    token = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenViewModel>(newresponsefromserver);
+                }
+            }
+            catch (Exception ex)
+            {
+                token = null;
+            }
+            return token;
+        }
 
         #endregion
+
+
+
+
+
+
     }
 }

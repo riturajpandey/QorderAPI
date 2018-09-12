@@ -58,6 +58,12 @@ namespace DrinkingBuddy.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        //[StringLength(100, ErrorMessage = "The {0} must be at least {10} characters long.", MinimumLength = 10)]
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
     }
 
     public class RegisterExternalBindingModel
@@ -102,8 +108,10 @@ namespace DrinkingBuddy.Models
 
     public class LoginModel
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-
+      public string Email { get; set; }
+      public string Password { get; set; }
     }
+
+   
+  
 }

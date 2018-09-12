@@ -27,7 +27,67 @@ namespace DrinkingBuddy.Controllers
     {
         #region Bar&Menu
 
+        public IHttpActionResult ConnectBar(OrderBindingModel model)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context=new DrinkingBuddyEntities())
+                    {
+                        var patronExistinLogin = _context.PatronsHotelLogIns.Where(m=>m.PatronID==model.PatronId);
+                            
+                        if (patronExistinLogin !=null)
+                        {
+
+                            var config = new MapperConfiguration(cfg =>
+                           {
+                               
+                               cfg.CreateMap<OrderBindingModel, PatronsHotelLogIn>();
+
+                           });
+
+                            IMapper mapper = config.CreateMapper();
+                            var data = mapper.Map<PatronsHotelLogIn>(model);
+
+                            _context.PatronsHotelLogIns.Add(data);
+                            int i= _context.SaveChanges();
+                            if(i!=0)
+                            {
+                                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", });
+
+                            }
+                            else
+                            {
+                                return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+                            }
+
+                            
+                        }
+                        else
+                        {
+                            return BadRequest();
+
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    return BadRequest("Passed Data Invalid");
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+               return BadRequest(ex.Data+ex.Message);
+            }
+      }
+
         [HttpGet]
+        [Authorize]
         [Route("Bars")]
         public IHttpActionResult Bars()
         {
@@ -63,6 +123,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("MenusCatagories")]
         public IHttpActionResult MenusCatagories()
         {
@@ -101,6 +162,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("MenusSubCategories")]
         public IHttpActionResult MenusSubCategories(int Id)
         {
@@ -138,6 +200,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Menus")]
         public IHttpActionResult Menus(int id)
         {
@@ -175,6 +238,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Ingredient")]
         public IHttpActionResult Ingredient(int id)
         {
@@ -213,6 +277,7 @@ namespace DrinkingBuddy.Controllers
 
         #region Orders
         [HttpPost]
+        [Authorize]
         [Route("Coupons")]
         public IHttpActionResult Coupons(CouponBindingModel model)
         {
@@ -314,6 +379,7 @@ namespace DrinkingBuddy.Controllers
         //}
 
         [HttpPost]
+        [Authorize]
         [Route("SpecialOffer")]
         public IHttpActionResult SpecialOffer(SpecialbindingModel model)
         {
