@@ -39,6 +39,7 @@ namespace DrinkingBuddy.Entities
         public Nullable<decimal> NewAmount { get; set; }
         public Nullable<int> FreeItemMenuID { get; set; }
         public Nullable<int> FreeItemQty { get; set; }
+        public Nullable<System.DateTime> CouponStartDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HotelMarketingCouponsPatron> HotelMarketingCouponsPatrons { get; set; }

@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\Intel Two\Documents\Visual Studio 2017\Projects\DrinkingBuddy\DrinkingBuddy\Entities\DrinkingBuddy.edmx'. 
+﻿// T4 code generation is enabled for model 'E:\DrinkingBuddy\QorderAPI\DrinkingBuddy\DrinkingBuddy\Entities\DrinkingBuddy.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

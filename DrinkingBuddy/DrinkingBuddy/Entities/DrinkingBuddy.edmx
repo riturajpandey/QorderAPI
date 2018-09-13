@@ -251,7 +251,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="SentBy" Type="int" />
           <Property Name="SentDate" Type="datetime" />
-          <Property Name="CouponStartate" Type="datetime" />
+          <Property Name="CouponStartDate" Type="datetime" />
           <Property Name="CouponEndDate" Type="datetime" />
           <Property Name="CouponStartTime" Type="datetime" />
           <Property Name="CouponEndTime" Type="datetime" />
@@ -1604,6 +1604,113 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="fnGetBestCurrentPriceForHotelMenuItem" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="hotelMenuItemIDpassed" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="HotelMenuItemID" Type="int" />
+                <Property Name="catID" Type="int" />
+                <Property Name="subCatID" Type="int" />
+                <Property Name="origPrice" Type="decimal" Precision="9" Scale="2" />
+                <Property Name="BestCurrentPrice" Type="decimal" Precision="9" Scale="2" />
+                <Property Name="IsOnSpecial" Type="bit" />
+                <Property Name="SpecialID" Type="int" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fnGetNumberOfOrdersAndTotalAmountByPatron" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PatronID" Type="int" Mode="In" />
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="NumberOfOrders" Type="int" />
+                <Property Name="TotalOfOrders" Type="decimal" Precision="9" Scale="2" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="GetCounts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="EmployeeID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetHotelMenuItemsWithCurrentPrice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="CategoryID" Type="int" Mode="In" />
+          <Parameter Name="SubCategoryID" Type="int" Mode="In" />
+          <Parameter Name="HotelSpecialsMetaID" Type="int" Mode="In" />
+          <Parameter Name="SearchText" Type="varchar" Mode="In" />
+          <Parameter Name="hotelMenuItemID" Type="int" Mode="In" />
+          <Parameter Name="quickListOnly" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="GetPatronsForHotelsWithNumberOfOrdersByDateRange" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="PatronID" Type="int" Mode="In" />
+          <Parameter Name="MinNumberOfOrders" Type="int" Mode="In" />
+          <Parameter Name="MaxNumberOfOrders" Type="int" Mode="In" />
+          <Parameter Name="MinSpend" Type="decimal" Mode="In" />
+          <Parameter Name="MaxSpend" Type="decimal" Mode="In" />
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+          <Parameter Name="HotelSpecialsMetaID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetPendingOrdersFastestWay" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="EmployeeID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetSavedOrders" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="EmployeeID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetSpecials" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="CategoryID" Type="int" Mode="In" />
+          <Parameter Name="SubCategoryID" Type="int" Mode="In" />
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+          <Parameter Name="HotelSpecialsMetaID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="InsertSaleWithExtraDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="EmployeeID" Type="int" Mode="In" />
+          <Parameter Name="HotelMenuItemID" Type="int" Mode="In" />
+          <Parameter Name="SpecialID" Type="int" Mode="In" />
+          <Parameter Name="BarOrQorder" Type="varchar" Mode="In" />
+          <Parameter Name="OrderDetailsID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Mobile_Get_HotelsWithin100ks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SessionToken" Type="varchar" Mode="In" />
+          <Parameter Name="PatronID" Type="int" Mode="In" />
+          <Parameter Name="CurrentLat" Type="decimal" Mode="In" />
+          <Parameter Name="CurrentLong" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="Mobile_Patron_Login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserName" Type="varchar" Mode="In" />
+          <Parameter Name="Password" Type="varchar" Mode="In" />
+          <Parameter Name="fbLogin" Type="bit" Mode="In" />
+          <Parameter Name="fbToken" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ReportGetSalesByDateRange" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="StartDate" Type="datetime" Mode="In" />
+          <Parameter Name="EndDate" Type="datetime" Mode="In" />
+          <Parameter Name="barSales" Type="bit" Mode="In" />
+          <Parameter Name="qSales" Type="bit" Mode="In" />
+          <Parameter Name="CategoryID" Type="int" Mode="In" />
+          <Parameter Name="SubCategoryID" Type="int" Mode="In" />
+          <Parameter Name="BarStaffID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="UpdateOrderToDelivered" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HotelID" Type="int" Mode="In" />
+          <Parameter Name="PatronID" Type="int" Mode="In" />
+          <Parameter Name="PatronsOrdersID" Type="int" Mode="In" />
+          <Parameter Name="PatronsScanDetails" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="DrinkingBuddyEntityStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -2222,6 +2329,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="FreeItemMenuID" Type="Int32" />
           <Property Name="FreeItemQty" Type="Int32" />
           <NavigationProperty Name="HotelMarketingCouponsPatrons" Relationship="Self.FK_HotelMarketingCouponsPatrons_HotelMarketingCoupons" FromRole="HotelMarketingCoupons" ToRole="HotelMarketingCouponsPatrons" />
+          <Property Name="CouponStartDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="HotelMarketingCouponsPatron">
           <Key>
@@ -3962,7 +4070,216 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <FunctionImport Name="fnGetBestCurrentPriceForHotelMenuItem" IsComposable="true" ReturnType="Collection(DrinkingBuddyEntity.fnGetBestCurrentPriceForHotelMenuItem_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="hotelMenuItemIDpassed" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="fnGetNumberOfOrdersAndTotalAmountByPatron" IsComposable="true" ReturnType="Collection(DrinkingBuddyEntity.fnGetNumberOfOrdersAndTotalAmountByPatron_Result)">
+            <Parameter Name="PatronID" Mode="In" Type="Int32" />
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="GetCounts" ReturnType="Collection(DrinkingBuddyEntity.GetCounts_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="EmployeeID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetHotelMenuItemsWithCurrentPrice" ReturnType="Collection(DrinkingBuddyEntity.GetHotelMenuItemsWithCurrentPrice_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="CategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="SubCategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="HotelSpecialsMetaID" Mode="In" Type="Int32" />
+            <Parameter Name="SearchText" Mode="In" Type="String" />
+            <Parameter Name="hotelMenuItemID" Mode="In" Type="Int32" />
+            <Parameter Name="quickListOnly" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="GetPatronsForHotelsWithNumberOfOrdersByDateRange" ReturnType="Collection(DrinkingBuddyEntity.GetPatronsForHotelsWithNumberOfOrdersByDateRange_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="PatronID" Mode="In" Type="Int32" />
+            <Parameter Name="MinNumberOfOrders" Mode="In" Type="Int32" />
+            <Parameter Name="MaxNumberOfOrders" Mode="In" Type="Int32" />
+            <Parameter Name="MinSpend" Mode="In" Type="Decimal" />
+            <Parameter Name="MaxSpend" Mode="In" Type="Decimal" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+            <Parameter Name="HotelSpecialsMetaID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetPendingOrdersFastestWay" ReturnType="Collection(DrinkingBuddyEntity.GetPendingOrdersFastestWay_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="EmployeeID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetSavedOrders" ReturnType="Collection(DrinkingBuddyEntity.GetSavedOrders_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="EmployeeID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetSpecials" ReturnType="Collection(DrinkingBuddyEntity.GetSpecials_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="CategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="SubCategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+            <Parameter Name="HotelSpecialsMetaID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertSaleWithExtraDetails" ReturnType="Collection(String)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="EmployeeID" Mode="In" Type="Int32" />
+            <Parameter Name="HotelMenuItemID" Mode="In" Type="Int32" />
+            <Parameter Name="SpecialID" Mode="In" Type="Int32" />
+            <Parameter Name="BarOrQorder" Mode="In" Type="String" />
+            <Parameter Name="OrderDetailsID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Mobile_Get_HotelsWithin100ks" ReturnType="Collection(DrinkingBuddyEntity.Mobile_Get_HotelsWithin100ks_Result)">
+            <Parameter Name="SessionToken" Mode="In" Type="String" />
+            <Parameter Name="PatronID" Mode="In" Type="Int32" />
+            <Parameter Name="CurrentLat" Mode="In" Type="Decimal" />
+            <Parameter Name="CurrentLong" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="Mobile_Patron_Login" ReturnType="Collection(DrinkingBuddyEntity.Mobile_Patron_Login_Result)">
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="fbLogin" Mode="In" Type="Boolean" />
+            <Parameter Name="fbToken" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ReportGetSalesByDateRange" ReturnType="Collection(DrinkingBuddyEntity.ReportGetSalesByDateRange_Result)">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+            <Parameter Name="barSales" Mode="In" Type="Boolean" />
+            <Parameter Name="qSales" Mode="In" Type="Boolean" />
+            <Parameter Name="CategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="SubCategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="BarStaffID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateOrderToDelivered">
+            <Parameter Name="HotelID" Mode="In" Type="Int32" />
+            <Parameter Name="PatronID" Mode="In" Type="Int32" />
+            <Parameter Name="PatronsOrdersID" Mode="In" Type="Int32" />
+            <Parameter Name="PatronsScanDetails" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
+          <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
+          <Property Type="Int32" Name="catID" Nullable="true" />
+          <Property Type="Int32" Name="subCatID" Nullable="true" />
+          <Property Type="Decimal" Name="origPrice" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Decimal" Name="BestCurrentPrice" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Boolean" Name="IsOnSpecial" Nullable="true" />
+          <Property Type="Int32" Name="SpecialID" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="fnGetNumberOfOrdersAndTotalAmountByPatron_Result">
+          <Property Type="Int32" Name="NumberOfOrders" Nullable="true" />
+          <Property Type="Decimal" Name="TotalOfOrders" Nullable="true" Precision="9" Scale="2" />
+        </ComplexType>
+        <ComplexType Name="GetCounts_Result">
+          <Property Type="Int32" Name="PendingCount" Nullable="true" />
+          <Property Type="Int32" Name="DeliverCount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetHotelMenuItemsWithCurrentPrice_Result">
+          <Property Type="Int32" Name="HotelMenuID" Nullable="false" />
+          <Property Type="String" Name="DrinkName" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="DrinkPrice" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Int32" Name="HotelCategoryID" Nullable="false" />
+          <Property Type="Int32" Name="HotelSubCategoryID" Nullable="true" />
+          <Property Type="String" Name="DrinkAndSize" Nullable="true" MaxLength="653" />
+          <Property Type="Decimal" Name="BestCurrentPrice" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Boolean" Name="isOnSpecial" Nullable="true" />
+          <Property Type="String" Name="DrinkSize" Nullable="true" MaxLength="60" />
+          <Property Type="Boolean" Name="OnBarSalesQuickList" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetPatronsForHotelsWithNumberOfOrdersByDateRange_Result">
+          <Property Type="Int32" Name="PatronsID" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="PhoneMobile" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="Suburb" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="PostCode" Nullable="true" MaxLength="256" />
+          <Property Type="Int32" Name="StateID" Nullable="true" />
+          <Property Type="Boolean" Name="OptInForMarketing" Nullable="false" />
+          <Property Type="DateTime" Name="DateOfBirth" Nullable="true" />
+          <Property Type="String" Name="EmailAddress" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Gassword" Nullable="true" MaxLength="500" />
+          <Property Type="Boolean" Name="IsActive" Nullable="false" />
+          <Property Type="Int32" Name="NumberOfOrders" Nullable="true" />
+          <Property Type="Decimal" Name="TotalOfOrders" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Boolean" Name="SubscribeSMS" Nullable="true" />
+          <Property Type="Boolean" Name="SubsribeEmail" Nullable="true" />
+          <Property Type="Boolean" Name="SubsribePushNotifications" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetPendingOrdersFastestWay_Result">
+          <Property Type="Int32" Name="HotelMenuItemID" Nullable="false" />
+          <Property Type="String" Name="DrinkName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="DrinkSize" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="CategoryName" Nullable="false" MaxLength="500" />
+          <Property Type="String" Name="SubCategoryName" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="totDrinks" Nullable="true" />
+          <Property Type="Int32" Name="timeToDo" Nullable="true" />
+          <Property Type="Boolean" Name="BarStartedFastestWayOrder" Nullable="false" />
+          <Property Type="Boolean" Name="BarCompletedOrder" Nullable="false" />
+          <Property Type="String" Name="allPatronsOrderDetailIDs" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetSavedOrders_Result">
+          <Property Type="Int32" Name="HotelSavedOrderID" Nullable="false" />
+          <Property Type="DateTime" Name="DateOrderSaved" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="NumberOfDrinks" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetSpecials_Result">
+          <Property Type="Int32" Name="HotelSpecialID" Nullable="false" />
+          <Property Type="Int32" Name="HotelSpecialsMetaID" Nullable="true" />
+          <Property Type="Boolean" Name="WillRepeat" Nullable="false" />
+          <Property Type="String" Name="DiscountType" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="DiscountAmountG" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="SubCategoryName" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="SubCategoryID" Nullable="true" />
+          <Property Type="String" Name="DrinkName" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="DrinkSize" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="String" Name="DescriptionOfSpecial" Nullable="true" MaxLength="512" />
+          <Property Type="DateTime" Name="StartDateG" Nullable="true" />
+          <Property Type="DateTime" Name="EndDateG" Nullable="true" />
+          <Property Type="DateTime" Name="StartTimeG" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="EndTimeG" Nullable="true" Precision="23" />
+          <Property Type="String" Name="RepeatInterval" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="Mobile_Get_HotelsWithin100ks_Result">
+          <Property Type="Int32" Name="HotelID" Nullable="false" />
+          <Property Type="String" Name="HotelName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="HotelAddress1" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="HotelAddress2" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="HotelSuburb" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="HotelPostcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StateName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StateNameAbbreviation" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="HotelStateID" Nullable="true" />
+          <Property Type="Decimal" Name="HotelLat" Nullable="true" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="HotelLong" Nullable="true" Precision="9" Scale="6" />
+          <Property Type="String" Name="DistanceAway" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="Mobile_Patron_Login_Result">
+          <Property Type="String" Name="StatusMessage" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="RetValue" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="DateTimeOfExpiry" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="ReportGetSalesByDateRange_Result">
+          <Property Type="String" Name="BarOrQ" Nullable="false" MaxLength="8" />
+          <Property Type="DateTime" Name="DateTimeCollected" Nullable="true" Precision="23" />
+          <Property Type="String" Name="DrinkName" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="DrinkSize" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="String" Name="DrinkNameAndSize" Nullable="true" MaxLength="551" />
+          <Property Type="Int32" Name="QTYOrdered" Nullable="true" />
+          <Property Type="String" Name="CategoryNameOfMenuItemAtTimeOfBuying" Nullable="true" MaxLength="256" />
+          <Property Type="Decimal" Name="PriceAtTimeOfBuying" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Int32" Name="OrderCollected" Nullable="true" />
+          <Property Type="Int32" Name="DeliveredByHotel" Nullable="false" />
+          <Property Type="Decimal" Name="FinalAmountForOrder" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="String" Name="StaffMemberWhoStartedOrderName" Nullable="true" MaxLength="201" />
+          <Property Type="Int32" Name="StaffMemberWhoStartedOrderID" Nullable="true" />
+          <Property Type="String" Name="StaffMemberWhoCompletedOrderName" Nullable="true" MaxLength="201" />
+          <Property Type="Int32" Name="StaffMemberWhoCompletedOrderID" Nullable="true" />
+          <Property Type="String" Name="StaffMemberWhoDeliveredOrderName" Nullable="true" MaxLength="201" />
+          <Property Type="Int32" Name="StaffMemberWhoDeliveredOrderID" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4211,6 +4528,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <EntitySetMapping Name="HotelMarketingCoupons">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.HotelMarketingCoupon">
               <MappingFragment StoreEntitySet="HotelMarketingCoupons">
+                <ScalarProperty Name="CouponStartDate" ColumnName="CouponStartDate" />
                 <ScalarProperty Name="HotelMarketingCouponID" ColumnName="HotelMarketingCouponID" />
                 <ScalarProperty Name="HotelID" ColumnName="HotelID" />
                 <ScalarProperty Name="CouponName" ColumnName="CouponName" />
@@ -4219,7 +4537,6 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="SentBy" ColumnName="SentBy" />
                 <ScalarProperty Name="SentDate" ColumnName="SentDate" />
-                <ScalarProperty Name="CouponStartate" ColumnName="CouponStartate" />
                 <ScalarProperty Name="CouponEndDate" ColumnName="CouponEndDate" />
                 <ScalarProperty Name="CouponStartTime" ColumnName="CouponStartTime" />
                 <ScalarProperty Name="CouponEndTime" ColumnName="CouponEndTime" />
@@ -4788,6 +5105,175 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="fnGetBestCurrentPriceForHotelMenuItem" FunctionName="DrinkingBuddyEntity.Store.fnGetBestCurrentPriceForHotelMenuItem">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.fnGetBestCurrentPriceForHotelMenuItem_Result">
+                <ScalarProperty Name="HotelMenuItemID" ColumnName="HotelMenuItemID" />
+                <ScalarProperty Name="catID" ColumnName="catID" />
+                <ScalarProperty Name="subCatID" ColumnName="subCatID" />
+                <ScalarProperty Name="origPrice" ColumnName="origPrice" />
+                <ScalarProperty Name="BestCurrentPrice" ColumnName="BestCurrentPrice" />
+                <ScalarProperty Name="IsOnSpecial" ColumnName="IsOnSpecial" />
+                <ScalarProperty Name="SpecialID" ColumnName="SpecialID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="fnGetNumberOfOrdersAndTotalAmountByPatron" FunctionName="DrinkingBuddyEntity.Store.fnGetNumberOfOrdersAndTotalAmountByPatron">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.fnGetNumberOfOrdersAndTotalAmountByPatron_Result">
+                <ScalarProperty Name="NumberOfOrders" ColumnName="NumberOfOrders" />
+                <ScalarProperty Name="TotalOfOrders" ColumnName="TotalOfOrders" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetCounts" FunctionName="DrinkingBuddyEntity.Store.GetCounts">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetCounts_Result">
+                <ScalarProperty Name="PendingCount" ColumnName="PendingCount" />
+                <ScalarProperty Name="DeliverCount" ColumnName="DeliverCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetHotelMenuItemsWithCurrentPrice" FunctionName="DrinkingBuddyEntity.Store.GetHotelMenuItemsWithCurrentPrice">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetHotelMenuItemsWithCurrentPrice_Result">
+                <ScalarProperty Name="HotelMenuID" ColumnName="HotelMenuID" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DrinkPrice" ColumnName="DrinkPrice" />
+                <ScalarProperty Name="HotelCategoryID" ColumnName="HotelCategoryID" />
+                <ScalarProperty Name="HotelSubCategoryID" ColumnName="HotelSubCategoryID" />
+                <ScalarProperty Name="DrinkAndSize" ColumnName="DrinkAndSize" />
+                <ScalarProperty Name="BestCurrentPrice" ColumnName="BestCurrentPrice" />
+                <ScalarProperty Name="isOnSpecial" ColumnName="isOnSpecial" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="OnBarSalesQuickList" ColumnName="OnBarSalesQuickList" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetPatronsForHotelsWithNumberOfOrdersByDateRange" FunctionName="DrinkingBuddyEntity.Store.GetPatronsForHotelsWithNumberOfOrdersByDateRange">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetPatronsForHotelsWithNumberOfOrdersByDateRange_Result">
+                <ScalarProperty Name="PatronsID" ColumnName="PatronsID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="PhoneMobile" ColumnName="PhoneMobile" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Suburb" ColumnName="Suburb" />
+                <ScalarProperty Name="PostCode" ColumnName="PostCode" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+                <ScalarProperty Name="OptInForMarketing" ColumnName="OptInForMarketing" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="Gassword" ColumnName="Gassword" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="NumberOfOrders" ColumnName="NumberOfOrders" />
+                <ScalarProperty Name="TotalOfOrders" ColumnName="TotalOfOrders" />
+                <ScalarProperty Name="SubscribeSMS" ColumnName="SubscribeSMS" />
+                <ScalarProperty Name="SubsribeEmail" ColumnName="SubsribeEmail" />
+                <ScalarProperty Name="SubsribePushNotifications" ColumnName="SubsribePushNotifications" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetPendingOrdersFastestWay" FunctionName="DrinkingBuddyEntity.Store.GetPendingOrdersFastestWay">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetPendingOrdersFastestWay_Result">
+                <ScalarProperty Name="HotelMenuItemID" ColumnName="HotelMenuItemID" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="SubCategoryName" ColumnName="SubCategoryName" />
+                <ScalarProperty Name="totDrinks" ColumnName="totDrinks" />
+                <ScalarProperty Name="timeToDo" ColumnName="timeToDo" />
+                <ScalarProperty Name="BarStartedFastestWayOrder" ColumnName="BarStartedFastestWayOrder" />
+                <ScalarProperty Name="BarCompletedOrder" ColumnName="BarCompletedOrder" />
+                <ScalarProperty Name="allPatronsOrderDetailIDs" ColumnName="allPatronsOrderDetailIDs" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetSavedOrders" FunctionName="DrinkingBuddyEntity.Store.GetSavedOrders">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetSavedOrders_Result">
+                <ScalarProperty Name="HotelSavedOrderID" ColumnName="HotelSavedOrderID" />
+                <ScalarProperty Name="DateOrderSaved" ColumnName="DateOrderSaved" />
+                <ScalarProperty Name="NumberOfDrinks" ColumnName="NumberOfDrinks" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetSpecials" FunctionName="DrinkingBuddyEntity.Store.GetSpecials">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.GetSpecials_Result">
+                <ScalarProperty Name="HotelSpecialID" ColumnName="HotelSpecialID" />
+                <ScalarProperty Name="HotelSpecialsMetaID" ColumnName="HotelSpecialsMetaID" />
+                <ScalarProperty Name="WillRepeat" ColumnName="WillRepeat" />
+                <ScalarProperty Name="DiscountType" ColumnName="DiscountType" />
+                <ScalarProperty Name="DiscountAmountG" ColumnName="DiscountAmountG" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="SubCategoryName" ColumnName="SubCategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="SubCategoryID" ColumnName="SubCategoryID" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="DescriptionOfSpecial" ColumnName="DescriptionOfSpecial" />
+                <ScalarProperty Name="StartDateG" ColumnName="StartDateG" />
+                <ScalarProperty Name="EndDateG" ColumnName="EndDateG" />
+                <ScalarProperty Name="StartTimeG" ColumnName="StartTimeG" />
+                <ScalarProperty Name="EndTimeG" ColumnName="EndTimeG" />
+                <ScalarProperty Name="RepeatInterval" ColumnName="RepeatInterval" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="InsertSaleWithExtraDetails" FunctionName="DrinkingBuddyEntity.Store.InsertSaleWithExtraDetails" />
+          <FunctionImportMapping FunctionImportName="Mobile_Get_HotelsWithin100ks" FunctionName="DrinkingBuddyEntity.Store.Mobile_Get_HotelsWithin100ks">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.Mobile_Get_HotelsWithin100ks_Result">
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="HotelName" ColumnName="HotelName" />
+                <ScalarProperty Name="HotelAddress1" ColumnName="HotelAddress1" />
+                <ScalarProperty Name="HotelAddress2" ColumnName="HotelAddress2" />
+                <ScalarProperty Name="HotelSuburb" ColumnName="HotelSuburb" />
+                <ScalarProperty Name="HotelPostcode" ColumnName="HotelPostcode" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="StateNameAbbreviation" ColumnName="StateNameAbbreviation" />
+                <ScalarProperty Name="HotelStateID" ColumnName="HotelStateID" />
+                <ScalarProperty Name="HotelLat" ColumnName="HotelLat" />
+                <ScalarProperty Name="HotelLong" ColumnName="HotelLong" />
+                <ScalarProperty Name="DistanceAway" ColumnName="DistanceAway" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Mobile_Patron_Login" FunctionName="DrinkingBuddyEntity.Store.Mobile_Patron_Login">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.Mobile_Patron_Login_Result">
+                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="RetValue" ColumnName="RetValue" />
+                <ScalarProperty Name="DateTimeOfExpiry" ColumnName="DateTimeOfExpiry" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportGetSalesByDateRange" FunctionName="DrinkingBuddyEntity.Store.ReportGetSalesByDateRange">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DrinkingBuddyEntity.ReportGetSalesByDateRange_Result">
+                <ScalarProperty Name="BarOrQ" ColumnName="BarOrQ" />
+                <ScalarProperty Name="DateTimeCollected" ColumnName="DateTimeCollected" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="DrinkNameAndSize" ColumnName="DrinkNameAndSize" />
+                <ScalarProperty Name="QTYOrdered" ColumnName="QTYOrdered" />
+                <ScalarProperty Name="CategoryNameOfMenuItemAtTimeOfBuying" ColumnName="CategoryNameOfMenuItemAtTimeOfBuying" />
+                <ScalarProperty Name="PriceAtTimeOfBuying" ColumnName="PriceAtTimeOfBuying" />
+                <ScalarProperty Name="OrderCollected" ColumnName="OrderCollected" />
+                <ScalarProperty Name="DeliveredByHotel" ColumnName="DeliveredByHotel" />
+                <ScalarProperty Name="FinalAmountForOrder" ColumnName="FinalAmountForOrder" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderName" ColumnName="StaffMemberWhoStartedOrderName" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderID" ColumnName="StaffMemberWhoStartedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderName" ColumnName="StaffMemberWhoCompletedOrderName" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderID" ColumnName="StaffMemberWhoCompletedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderName" ColumnName="StaffMemberWhoDeliveredOrderName" />
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderID" ColumnName="StaffMemberWhoDeliveredOrderID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UpdateOrderToDelivered" FunctionName="DrinkingBuddyEntity.Store.UpdateOrderToDelivered" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

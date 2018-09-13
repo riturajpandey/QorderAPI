@@ -277,6 +277,30 @@
     <Compile Include="Entities\FAKE_MonthlySales2.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\fnGetBestCurrentPriceForHotelMenuItem_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\fnGetNumberOfOrdersAndTotalAmountByPatron_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetCounts_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetHotelMenuItemsWithCurrentPrice_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetPatronsForHotelsWithNumberOfOrdersByDateRange_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetPendingOrdersFastestWay_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetSavedOrders_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\GetSpecials_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Hotel.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -364,6 +388,12 @@
     <Compile Include="Entities\HotelTaxGroup.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Mobile_Get_HotelsWithin100ks_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Mobile_Patron_Login_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Patron.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -406,6 +436,9 @@
     <Compile Include="Entities\PatronsSessionToken.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\ReportGetSalesByDateRange_Result.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\StatesG.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -414,6 +447,7 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BarBindingModel.cs" />
     <Compile Include="Models\HotelResponseModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\OrderBindingModel.cs" />

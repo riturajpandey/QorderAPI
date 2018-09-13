@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -31,7 +32,7 @@ namespace DrinkingBuddy.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
-
+        DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
 
         public AccountController()
         {
@@ -75,24 +76,29 @@ namespace DrinkingBuddy.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IHttpActionResult> Login(LoginModel model)
+        public IHttpActionResult Login(LoginModel model)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (model.Password != null && model.Email!=null)
                 {
-                    var user = await UserManager.FindAsync(model.Email, model.Password);
+                    var user = _context.Patrons.Where(m=>m.FirstName==model.Email &&m.Gassword==model.Password).FirstOrDefault();
                     if (user != null)
                     {
                         var token = GetTokenForAPI(model);
-                        UserInformationModel data = new UserInformationModel();
-                        data.Id = user.Id;
-                        data.Email = user.Email;
-                        data.FirstName = user.FirstName;
-                        data.LastName = user.LastName;
-                        data.PhoneNumber = user.PhoneNumber;
-                        data.AccessToken = token;
-                        return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success", Data = data });
+                        UserInformationModel UserModel = new UserInformationModel();
+                        UserModel.PatronsID = user.PatronsID;
+                        UserModel.EmailAddress = user.EmailAddress;
+                        UserModel.FirstName = user.FirstName;
+                        UserModel.Address = user.Address;
+                        UserModel.Suburb = user.Suburb;
+                        UserModel.PostCode = user.PostCode;
+                        UserModel.StateId = user.StateID;
+                        UserModel.LastName = user.LastName;
+                        UserModel.PhoneNumber = user.PhoneMobile;
+                        UserModel.AccessToken = token;
+
+                        return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success",Data=UserModel });
                     }
                     else
                     {
@@ -124,12 +130,13 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public IHttpActionResult UserById(string id)
+        // [Authorize]
+        [Route("UserById/{id:int}")]
+        public IHttpActionResult UserById(int id)
         {
-            if (id != null)
+            if (id != 0)
             {
-                var result = UserManager.FindById(id);
+                var result = _context.Patrons.Where(m => m.PatronsID==id).FirstOrDefault();
                 if (result != null)
                 {
 
@@ -149,37 +156,72 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+
         [HttpPost]
-        [Authorize]
         [Route("Update")]
-        public IHttpActionResult Update(RegisterBindingModel model)
+        public IHttpActionResult Update(UserUpdateModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    ApplicationUser applicationuser = new ApplicationUser();
-                    applicationuser.FirstName = model.FirstName;
-                    applicationuser.LastName = model.LastName;
-                    applicationuser.Email = model.Email;
-                    applicationuser.PasswordHash = model.Password;
-
-
-                    var result = UserManager.Update(applicationuser);
-                    if (result.Succeeded)
+                    var Isexist = _context.Patrons.Find(model.PatronsID);
+                    
+                    if (Isexist != null)
                     {
-                        return Ok(new ResponseModel { Message = "The User Updated Successfully", Status = "200" });
+                        Isexist.EmailAddress = model.EmailAddress;
+                        Isexist.FirstName = model.FirstName;
+                        Isexist.LastName = model.LastName;
+                        Isexist.PhoneMobile = model.PhoneMobile;
+                        Isexist.Address = model.Address;
+                        Isexist.Suburb = model.Suburb;
+                        Isexist.PostCode = model.PostCode;
+                        Isexist.DateOfBirth = model.DateOfBirth;
+
+                       _context.Entry(Isexist).State = EntityState.Modified;
+                        int result = _context.SaveChanges();
+                        if (result !=0)
+                        {
+                            var Updated = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
+
+                            UserInformationModel UserModel = new UserInformationModel();
+                            UserModel.PatronsID = Updated.PatronsID;
+                            UserModel.EmailAddress = Updated.EmailAddress;
+                            UserModel.FirstName = Updated.FirstName;
+                            UserModel.Address = Updated.Address;
+                            UserModel.Suburb = Updated.Suburb;
+                            UserModel.PostCode = Updated.PostCode;
+                            UserModel.StateId = Updated.StateID;
+                            UserModel.LastName = Updated.LastName;
+                            UserModel.PhoneNumber = Updated.PhoneMobile;
+                            return Ok(new ResponseModel { Message = "The User Updated Successfully", Status = "Success",Data= UserModel });
+                        }
+                        else
+                        {
+                            return BadRequest("The User Updation Failled.");
+                        }
                     }
                     else
                     {
-                        return BadRequest("The User Updation Failled.");
-
+                        return BadRequest("User Does not Exist");
                     }
-
-                }
+                 }
                 else
                 {
-                    return BadRequest("The provided Data is not valid");
+                    List<ModelState> Modelvalues = ModelState.Values.ToList();
+                    List<string> mesages = new List<string>();
+                    foreach (var item in Modelvalues)
+                    {
+                        var error = item.Errors.ToList();
+                        foreach (var itom in error)
+                        {
+                            string message = itom.ErrorMessage;
+                            mesages.Add(message);
+
+                        }
+                    }
+
+                    return Ok(new ResponseModel { Message = "Validation Error", Status = "Failed", Data = mesages });
                 }
 
             }
@@ -438,31 +480,53 @@ namespace DrinkingBuddy.Controllers
         [AllowAnonymous]
         [Route("Register")]
         [HttpPost]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        public IHttpActionResult Register(RegisterBindingModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var IsExist = await UserManager.FindByEmailAsync(model.Email);
+                    var IsExist = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
                     if (IsExist != null)
                     {
 
-                        return Ok(new ResponseModel { Message = "User Exist", Status = "Success", });
+                        return Ok(new ResponseModel { Message = "User Exist", Status = "Failed", });
                     }
                     else
                     {
-                        var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PhoneNumber = model.PhoneNumber };
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<RegisterBindingModel, Patron>()
+                            .ForMember(m => m.Gassword, option => option.Ignore());
+                          
 
-                        IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+                        });
 
-                        if (result.Succeeded)
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<Patron>(model);
+                        data.Gassword = model.Password;
+                        data.PhoneMobile = model.PhoneNumber;
+                         _context.Patrons.Add(data);
+                        int result = _context.SaveChanges();
+
+                        if (result !=0)
                         {
 
-                            var userdetail = await UserManager.FindAsync(model.Email, model.Password);
-                            if (userdetail != null)
+                            var user = _context.Patrons.Where(m=>m.EmailAddress==model.EmailAddress).FirstOrDefault();
+                            if (user != null)
                             {
-                                return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = userdetail });
+                                UserInformationModel UserModel = new UserInformationModel();
+                                UserModel.PatronsID = user.PatronsID;
+                                UserModel.EmailAddress = user.EmailAddress;
+                                UserModel.FirstName = user.FirstName;
+                                UserModel.Address = user.Address;
+                                UserModel.Suburb = user.Suburb;
+                                UserModel.PostCode = user.PostCode;
+                                UserModel.StateId = user.StateID;
+                                UserModel.LastName = user.LastName;
+                                UserModel.PhoneNumber = user.PhoneMobile;
+                               
+                                return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = UserModel });
                             }
                             else
                             {
@@ -471,7 +535,7 @@ namespace DrinkingBuddy.Controllers
                         }
                         else
                         {
-                            return GetErrorResult(result);
+                            return BadRequest("SomeThing Went Wrong");
                         }
 
                     }
@@ -662,7 +726,7 @@ namespace DrinkingBuddy.Controllers
             try
             {
                 WebRequest webRequest = WebRequest.Create(tokenUrl);
-                webRequest.ContentType = @"application/x-www-form-urlencoded"; ;
+                webRequest.ContentType = @"application/json"; ;
                 webRequest.Method = "POST";
                 byte[] bytes = Encoding.ASCII.GetBytes(request);
                 webRequest.ContentLength = bytes.Length;
@@ -684,7 +748,6 @@ namespace DrinkingBuddy.Controllers
             }
             return token;
         }
-
         #endregion
 
 

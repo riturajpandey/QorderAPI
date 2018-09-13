@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using DrinkingBuddy.Entities;
 
 namespace DrinkingBuddy.Models
 {
@@ -44,12 +47,40 @@ namespace DrinkingBuddy.Models
 
     public class UserInformationModel
     {
-        public string Id { get; set; }
-        public string Email { get; set; }
+        private string _state;
+        public int PatronsID { get; set; }
+        public string EmailAddress { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Address { get; set; }
+        public string Suburb { get; set; }
+        public string PostCode { get; set; }
+        public int? StateId { get; set; }
+        public string State
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var state = _context.StatesGs.Where(m => m.StateID == this.StateId).FirstOrDefault();
+                    if (state == null)
+                    {
+                        _state = "";
+                    }
+                    else
+                    {
+                        _state = state.StateName;
+                    }
+                }
+                return _state;
+
+            }
+
+
+        }
+        public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
-        public  TokenViewModel AccessToken { get; set; }
+        public TokenViewModel AccessToken { get; set; }
 
     }
 

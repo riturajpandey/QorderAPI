@@ -32,11 +32,48 @@ namespace DrinkingBuddy.Models
         public string ConfirmPassword { get; set; }
     }
 
+
+    public class UserUpdateModel
+    {
+        
+        public int PatronsID { get; set; }
+        [Required]
+        [Display(Name = "Email")]
+        public string EmailAddress { get; set; }
+        [Required]
+        [StringLength(100)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+        [Required]
+        [StringLength(100)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+        [Required]
+        [Display(Name = "Address")]
+        public string Address { get; set; }
+        [Required]
+        [Display(Name = "Suburd")]
+        public string Suburb { get; set; }
+        [Required]
+        [Display(Name = "PostCode")]
+        public string PostCode { get; set; }
+       
+        [Required]
+        [Display(Name = "Date of Time")]
+        public DateTime DateOfBirth { get; set; }
+        [Required]
+        [Display(Name = "PostCode")]
+        public string PhoneMobile { get; set; }
+       
+
+    }
+
+
     public class RegisterBindingModel
     {
         [Required]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string EmailAddress { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -60,7 +97,7 @@ namespace DrinkingBuddy.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
-        //[StringLength(100, ErrorMessage = "The {0} must be at least {10} characters long.", MinimumLength = 10)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {10} characters long.", MinimumLength = 10)]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }

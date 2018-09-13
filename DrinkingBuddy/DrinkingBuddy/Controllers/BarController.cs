@@ -25,8 +25,40 @@ namespace DrinkingBuddy.Controllers
     [RoutePrefix("api/Bar")]
     public class BarController : ApiController
     {
-        #region Bar&Menu
+        DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
 
+
+        #region Bar&Menu
+        [HttpPost]
+        [Route("ShowNearByBars")]
+        public IHttpActionResult ShowNearByBars(BarMapModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.SessionToken, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
+                if (Hotels != null)
+                {
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Hotels });
+                }
+                else
+                {
+                    return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed",});
+
+                }
+                
+
+            }
+            else
+            {
+                return BadRequest("Provided Data is invalid");
+
+            }
+            
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("ConnectBar")]
         public IHttpActionResult ConnectBar(OrderBindingModel model)
         {
             try
