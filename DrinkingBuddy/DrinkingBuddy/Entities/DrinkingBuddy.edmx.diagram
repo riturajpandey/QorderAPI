@@ -21,7 +21,7 @@
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelEmployeesAvailabilityTime" Width="1.5" PointX="15.5" PointY="54" IsExpanded="true" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelEmployeesRoster" Width="1.5" PointX="10.5" PointY="67.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelInventory" Width="1.5" PointX="5.25" PointY="50.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingCoupon" Width="1.5" PointX="19.5" PointY="34.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingCoupon" Width="3" PointX="19.5" PointY="34.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingCouponsPatron" Width="1.5" PointX="21.75" PointY="44.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingNewsletter" Width="1.5" PointX="5.25" PointY="54.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.HotelMarketingNewslettersPatron" Width="1.5" PointX="7.5" PointY="57.125" IsExpanded="true" />

@@ -82,23 +82,23 @@ namespace DrinkingBuddy.Controllers
             {
                 if (model.Password != null && model.Email!=null)
                 {
-                    var user = _context.Patrons.Where(m=>m.FirstName==model.Email &&m.Gassword==model.Password).FirstOrDefault();
+                    var user = _context.Patrons.Where(m=>m.EmailAddress==model.Email &&m.Gassword==model.Password).FirstOrDefault();
                     if (user != null)
                     {
-                        var token = GetTokenForAPI(model);
-                        UserInformationModel UserModel = new UserInformationModel();
-                        UserModel.PatronsID = user.PatronsID;
-                        UserModel.EmailAddress = user.EmailAddress;
-                        UserModel.FirstName = user.FirstName;
-                        UserModel.Address = user.Address;
-                        UserModel.Suburb = user.Suburb;
-                        UserModel.PostCode = user.PostCode;
-                        UserModel.StateId = user.StateID;
-                        UserModel.LastName = user.LastName;
-                        UserModel.PhoneNumber = user.PhoneMobile;
-                        UserModel.AccessToken = token;
+                        var token = GetTokenForAPI(user);
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                          
+                            cfg.CreateMap<Patron, UserInformationModel > ()
+                            .ForMember(m => m.Token, option => option.Ignore());
 
-                        return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success",Data=UserModel });
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<UserInformationModel>(user);
+                        data.Token =token;
+
+                        return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success",Data= data });
                     }
                     else
                     {
@@ -122,7 +122,6 @@ namespace DrinkingBuddy.Controllers
 
         // POST api/Account/Logout
         [Route("Logout")]
-        [Authorize]
         public IHttpActionResult Logout()
         {
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
@@ -130,7 +129,7 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
-        // [Authorize]
+       
         [Route("UserById/{id:int}")]
         public IHttpActionResult UserById(int id)
         {
@@ -480,70 +479,78 @@ namespace DrinkingBuddy.Controllers
         [AllowAnonymous]
         [Route("Register")]
         [HttpPost]
-        public IHttpActionResult Register(RegisterBindingModel model)
-        {
+        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+            {
             try
             {
                 if (ModelState.IsValid)
                 {
                     var IsExist = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
-                    if (IsExist != null)
+                    var IsExistinUser = UserManager.Find(model.PhoneNumber,model.Password);
+                    if (IsExist != null& IsExistinUser!=null)
                     {
 
                         return Ok(new ResponseModel { Message = "User Exist", Status = "Failed", });
                     }
                     else
                     {
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<RegisterBindingModel, Patron>()
-                            .ForMember(m => m.Gassword, option => option.Ignore());
-                          
+                        var applicationuser = new ApplicationUser { Email = model.EmailAddress, FirstName = model.FirstName, LastName = model.LastName, UserName = model.EmailAddress, PhoneNumber = model.PhoneNumber };
+                        var resultuser = await UserManager.CreateAsync(applicationuser, model.Password);
 
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<Patron>(model);
-                        data.Gassword = model.Password;
-                        data.PhoneMobile = model.PhoneNumber;
-                         _context.Patrons.Add(data);
-                        int result = _context.SaveChanges();
-
-                        if (result !=0)
+                        if (resultuser.Succeeded)
                         {
 
-                            var user = _context.Patrons.Where(m=>m.EmailAddress==model.EmailAddress).FirstOrDefault();
-                            if (user != null)
+                            var config = new MapperConfiguration(cfg =>
                             {
-                                UserInformationModel UserModel = new UserInformationModel();
-                                UserModel.PatronsID = user.PatronsID;
-                                UserModel.EmailAddress = user.EmailAddress;
-                                UserModel.FirstName = user.FirstName;
-                                UserModel.Address = user.Address;
-                                UserModel.Suburb = user.Suburb;
-                                UserModel.PostCode = user.PostCode;
-                                UserModel.StateId = user.StateID;
-                                UserModel.LastName = user.LastName;
-                                UserModel.PhoneNumber = user.PhoneMobile;
-                               
-                                return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = UserModel });
+                                cfg.CreateMap<RegisterBindingModel, Patron>()
+                                .ForMember(m => m.Gassword, option => option.Ignore());
+                                cfg.CreateMap<Patron, UserInformationModel>()
+                                .ForMember(m=>m.Token,option=>option.Ignore());
+
+                            });
+
+                            IMapper mapper = config.CreateMapper();
+                            var data = mapper.Map<Patron>(model);
+                           
+                            data.Gassword = model.Password;
+                            data.PhoneMobile = model.PhoneNumber;
+                            _context.Patrons.Add(data);
+                            int result = _context.SaveChanges();
+
+                            if (result > 0)
+                            {
+
+                                var user = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
+                                if (user != null)
+                                {
+                                    var Usermodel = mapper.Map<UserInformationModel>(user);
+                                   return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
+                                }
+                                else
+                                {
+                                    return Ok(new ResponseModel { Message = "User Registration Failed", Status = "Failed" });
+                                }
                             }
                             else
                             {
-                                return Ok(new ResponseModel { Message = "User Registration Failed", Status = "Failed" });
+                                return BadRequest("SomeThing Went Wrong");
                             }
+
                         }
                         else
                         {
-                            return BadRequest("SomeThing Went Wrong");
+                            List<string> mesages = new List<string>();
+                            foreach (string error in resultuser.Errors)
+                            {
+                                mesages.Add(error);
+                            }
+                               return Ok(new ResponseModel { Message = "Validation Error", Status = "Failed", Data = mesages });
                         }
-
                     }
                 }
                 else
                 {
-
-                    List<ModelState>  Modelvalues= ModelState.Values.ToList();
+                   List<ModelState>  Modelvalues= ModelState.Values.ToList();
                     List<string> mesages = new List<string>();
                     foreach(var item in Modelvalues)
                     {
@@ -715,45 +722,28 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-        public TokenViewModel GetTokenForAPI(LoginModel objAuthModel)
+        public string GetTokenForAPI(Patron objAuthModel)
         {
-            var myrul = HttpContext.Current.Request.Url.AbsoluteUri;
-            string subdomain = System.Configuration.ConfigurationManager.AppSettings["SubDomain"].ToString();
-            var tokenUrl = myrul.Replace(HttpContext.Current.Request.Url.AbsolutePath, subdomain + "/") + "token";
-
-            var request = string.Format("grant_type=password&username={0}&password={1}", HttpUtility.UrlEncode(objAuthModel.Email), HttpUtility.UrlEncode(objAuthModel.Password));
-            TokenViewModel token = null;
             try
             {
-                WebRequest webRequest = WebRequest.Create(tokenUrl);
-                webRequest.ContentType = @"application/json"; ;
-                webRequest.Method = "POST";
-                byte[] bytes = Encoding.ASCII.GetBytes(request);
-                webRequest.ContentLength = bytes.Length;
-                using (Stream outputStream = webRequest.GetRequestStream())
-                {
-                    outputStream.Write(bytes, 0, bytes.Length);
-                }
-                using (WebResponse webResponse = webRequest.GetResponse())
-                {
-                    StreamReader newstreamreader = new StreamReader(webResponse.GetResponseStream());
-                    string newresponsefromserver = newstreamreader.ReadToEnd();
-                    newresponsefromserver = newresponsefromserver.Replace(".expires", "expires").Replace(".issued", "issued");
-                    token = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenViewModel>(newresponsefromserver);
-                }
+                PatronsSessionToken Token = new PatronsSessionToken();
+                Token.SessionToken = Guid.NewGuid();
+                Token.PatronID = objAuthModel.PatronsID;
+                Token.DateTimeGiven = DateTime.Now;
+                Token.DateTimeExpiry = Token.DateTimeGiven.AddDays(1);
+
+                _context.PatronsSessionTokens.Add(Token);
+                _context.SaveChanges();
+
+                return Token.SessionToken.ToString();
             }
             catch (Exception ex)
             {
-                token = null;
+                return ex.Message;
             }
-            return token;
+           
         }
+
         #endregion
-
-
-
-
-
-
     }
 }

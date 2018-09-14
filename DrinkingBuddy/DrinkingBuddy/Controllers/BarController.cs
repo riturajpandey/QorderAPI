@@ -16,12 +16,14 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using DrinkingBuddy.Models;
 using DrinkingBuddy.Entities;
+using DrinkingBuddy.Filter;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Results;
 using AutoMapper;
 
 namespace DrinkingBuddy.Controllers
 {
+    [APIAuthorizeAttribute]
     [RoutePrefix("api/Bar")]
     public class BarController : ApiController
     {
@@ -35,7 +37,7 @@ namespace DrinkingBuddy.Controllers
         {
             if (ModelState.IsValid)
             {
-                var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.SessionToken, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
+                var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.Token, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
                 if (Hotels != null)
                 {
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Hotels });

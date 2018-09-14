@@ -80,7 +80,8 @@ namespace DrinkingBuddy.Models
         }
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
-        public TokenViewModel AccessToken { get; set; }
+        public string Token { get; set; }
+
 
     }
 

@@ -28,7 +28,6 @@ namespace DrinkingBuddy.Entities
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> SentBy { get; set; }
         public Nullable<System.DateTime> SentDate { get; set; }
-        public Nullable<System.DateTime> CouponStartate { get; set; }
         public Nullable<System.DateTime> CouponEndDate { get; set; }
         public Nullable<System.DateTime> CouponStartTime { get; set; }
         public Nullable<System.DateTime> CouponEndTime { get; set; }

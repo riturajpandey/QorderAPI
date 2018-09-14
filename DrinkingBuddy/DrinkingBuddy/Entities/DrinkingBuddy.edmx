@@ -2317,7 +2317,6 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="SentBy" Type="Int32" />
           <Property Name="SentDate" Type="DateTime" Precision="3" />
-          <Property Name="CouponStartate" Type="DateTime" Precision="3" />
           <Property Name="CouponEndDate" Type="DateTime" Precision="3" />
           <Property Name="CouponStartTime" Type="DateTime" Precision="3" />
           <Property Name="CouponEndTime" Type="DateTime" Precision="3" />
