@@ -59,7 +59,6 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("ConnectBar")]
         public IHttpActionResult ConnectBar(OrderBindingModel model)
         {
@@ -121,7 +120,6 @@ namespace DrinkingBuddy.Controllers
       }
 
         [HttpGet]
-        [Authorize]
         [Route("Bars")]
         public IHttpActionResult Bars()
         {
@@ -157,15 +155,14 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [Route("MenusCatagories")]
-        public IHttpActionResult MenusCatagories()
+        public IHttpActionResult MenusCatagories(int Id)
         {
             try
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuCatagoryList = _context.HotelMenusCategories.ToList();
+                    var MenuCatagoryList = _context.HotelMenusCategories.Where(m=>m.HotelID==Id).ToList();
                     if (MenuCatagoryList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -196,7 +193,6 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("MenusSubCategories")]
         public IHttpActionResult MenusSubCategories(int Id)
         {
@@ -233,8 +229,7 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpGet]
         [Route("Menus")]
         public IHttpActionResult Menus(int id)
         {
@@ -242,7 +237,7 @@ namespace DrinkingBuddy.Controllers
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuList = _context.HotelMenus.Where(m => m.HotelSubCategoryID == id).ToList();
+                    var MenuList = _context.HotelMenus.Where(m => m.HotelCategoryID == id).ToList();
                     if (MenuList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -272,7 +267,6 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("Ingredient")]
         public IHttpActionResult Ingredient(int id)
         {
@@ -311,7 +305,6 @@ namespace DrinkingBuddy.Controllers
 
         #region Orders
         [HttpPost]
-        [Authorize]
         [Route("Coupons")]
         public IHttpActionResult Coupons(CouponBindingModel model)
         {
@@ -413,9 +406,8 @@ namespace DrinkingBuddy.Controllers
         //}
 
         [HttpPost]
-        [Authorize]
         [Route("SpecialOffer")]
-        public IHttpActionResult SpecialOffer(SpecialbindingModel model)
+        public IHttpActionResult SpecialOffer(int HotelID)
         {
             try
             {
@@ -423,7 +415,12 @@ namespace DrinkingBuddy.Controllers
                 {
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        var Offers = _context.HotelSpecials.Where(m=>m.HotelMenuID==model.HotelMenuID).ToList();
+                        var Offers = _context.HotelSpecials.Where(m=>m.HotelID== HotelID).ToList();
+
+                        foreach (var item in Offers)
+                        {
+
+                        }
 
                         var config = new MapperConfiguration(cfg =>
                         {
@@ -433,7 +430,7 @@ namespace DrinkingBuddy.Controllers
                         });
 
                         IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<List<SpecialReponseModel>>(model);
+                        var data = mapper.Map<List<SpecialReponseModel>>(Offers);
 
                        
                         if (data !=null)
@@ -464,4 +461,4 @@ namespace DrinkingBuddy.Controllers
 
         #endregion
     }
-}   
+}       

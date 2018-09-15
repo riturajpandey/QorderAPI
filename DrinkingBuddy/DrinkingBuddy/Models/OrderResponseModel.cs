@@ -29,7 +29,7 @@ namespace DrinkingBuddy.Models
             }
         }
         public int FreeItemQty { get; set; }
-    }
+    }   
 
     public class SpecialReponseModel {
         private DateTime _EndDate;

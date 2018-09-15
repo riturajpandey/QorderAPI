@@ -34,13 +34,7 @@ namespace DrinkingBuddy.Models
        public int PatronsId { get; set; }
     }
 
-    public class SpecialbindingModel
-    {
-        public int HotelId { get; set; }
-        public int CategoryID { get; set; }
-        public int SubCategoryID { get; set; }
-        public int HotelMenuID { get; set; }
-    }
+   
 
     public class BarConnect
     {

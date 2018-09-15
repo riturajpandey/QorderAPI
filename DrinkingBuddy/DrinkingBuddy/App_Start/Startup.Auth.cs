@@ -10,6 +10,8 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Models;
+using DrinkingBuddy.Facebook;
+using Microsoft.Owin.Security.Facebook;
 
 namespace DrinkingBuddy
 {
@@ -58,6 +60,17 @@ namespace DrinkingBuddy
             //app.UseFacebookAuthentication(
             //    appId: "",
             //    appSecret: "");
+
+            var FacebookOptions = new FacebookAuthenticationOptions()
+            {
+                AppId= "339659900105973",
+                AppSecret= "b657d703e65c8038942982b0b97647ae",
+                BackchannelHttpHandler=new FacebookBackChannelHandler(),
+                UserInformationEndpoint="http://graph.facebook.com/v2.4/me?feilds=id,email"
+            };
+            FacebookOptions.Scope.Add("email");
+            app.UseFacebookAuthentication(FacebookOptions);
+
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
