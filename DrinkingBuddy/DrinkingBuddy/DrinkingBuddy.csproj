@@ -237,6 +237,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MemberGroupController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Encryption\EncryptionLibrary.cs" />
     <Compile Include="Entities\AspNetRole.cs">
@@ -453,6 +455,7 @@
     <Compile Include="Models\BarBindingModel.cs" />
     <Compile Include="Models\HotelResponseModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\MemberGroupModel.cs" />
     <Compile Include="Models\OrderBindingModel.cs" />
     <Compile Include="Models\OrderResponseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -539,6 +542,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Bar\" />
+    <Folder Include="Views\MemberGroup\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

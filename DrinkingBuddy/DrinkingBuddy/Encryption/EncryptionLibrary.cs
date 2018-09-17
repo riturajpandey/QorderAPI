@@ -108,15 +108,15 @@ namespace DrinkingBuddy.Encryption
             return plainText;
         }
 
-        string message = "My secret message 1234";
-        string password = "3sc3RLrpd17";
+        //string message = "My secret message 1234";
+       // string password = "3sc3RLrpd17";
 
         // Create sha256 hash
-        SHA256 mySHA256 = SHA256Managed.Create();
+     //   SHA256 mySHA256 = SHA256Managed.Create();
       //  byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(password));
 
         // Create secret IV
-        byte[] iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+      //  byte[] iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
 
       //  string encrypted = this.EncryptString(message, key, iv);
       //  string decrypted = this.DecryptString(encrypted, key, iv);

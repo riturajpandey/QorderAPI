@@ -31,6 +31,7 @@ namespace DrinkingBuddy.Controllers
 
 
         #region Bar&Menu
+
         [HttpPost]
         [Route("ShowNearByBars")]
         public IHttpActionResult ShowNearByBars(BarMapModel model)
@@ -301,19 +302,17 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-       #endregion
-
-        #region Orders
-        [HttpPost]
+      
+        [HttpGet]
         [Route("Coupons")]
-        public IHttpActionResult Coupons(CouponBindingModel model)
+        public IHttpActionResult Coupons(int PatronsId)
         {
             try {
                 if (ModelState.IsValid)
                 {
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == model.PatronsId).ToList();
+                        var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == PatronsId).ToList();
 
                         List<HotelMarketingCoupon> coupons = new List<HotelMarketingCoupon>();
                         
@@ -405,43 +404,22 @@ namespace DrinkingBuddy.Controllers
 
         //}
 
-        [HttpPost]
+        [HttpGet]
         [Route("SpecialOffer")]
-        public IHttpActionResult SpecialOffer(int HotelID)
+        public IHttpActionResult SpecialOffer(int id)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (id!=0)
                 {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    var Specials = _context.GetSpecials(id,null,null,null,null,null).ToList();
+                    if (Specials != null)
                     {
-                        var Offers = _context.HotelSpecials.Where(m=>m.HotelID== HotelID).ToList();
-
-                        foreach (var item in Offers)
-                        {
-
-                        }
-
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<HotelSpecial, SpecialReponseModel>();
-                            cfg.CreateMap<SpecialReponseModel, HotelSpecial>();
-
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<List<SpecialReponseModel>>(Offers);
-
-                       
-                        if (data !=null)
-                        {
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
-                        }
-
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed", });
 
                     }
 
@@ -459,6 +437,7 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        
         #endregion
     }
 }       
