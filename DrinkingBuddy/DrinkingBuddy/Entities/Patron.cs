@@ -44,6 +44,10 @@ namespace DrinkingBuddy.Entities
         public string EmailAddress { get; set; }
         public string Gassword { get; set; }
         public bool IsActive { get; set; }
+        public string DeviceToken { get; set; }
+        public string DeviceType { get; set; }
+        public Nullable<System.DateTime> RegisterOn { get; set; }
+        public Nullable<System.DateTime> LastLogOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HotelMarketingCouponsPatron> HotelMarketingCouponsPatrons { get; set; }

@@ -87,6 +87,7 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+        //TODO:-To Insert the Card Details for the Patron's The Encryption use Patron's Login Password to Encrypt.
         [HttpPost]
         [Route("PatronsCardDetails")]
         public IHttpActionResult PatronsCardDetails(CardModel model)
@@ -95,15 +96,17 @@ namespace DrinkingBuddy.Controllers
             {
 
                 SHA256 mySHA256 = SHA256Managed.Create();
-                string password = "3sc3RLrpd17";
-                byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(password));
+                var patronsDetails = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
+                string PatronsPassword = patronsDetails.Gassword;
+                //string PatronsPassword = "3sc3RLrpd17";
+                byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(PatronsPassword));
               
 
 
                 byte[] iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
 
                 PatronsPaymentMethod data = new PatronsPaymentMethod();
-                data.PatronID = model.PatronID;
+                data.PatronID = model.PatronsID;
                 data.PaymentType = model.PaymentType;
                 data.PaymentCardholderName = model.PaymentCardholderName;
                 data.PaymentCardType = model.PaymentCardType;
@@ -116,11 +119,11 @@ namespace DrinkingBuddy.Controllers
                 int Rows = _context.SaveChanges();
                 if(Rows>0)
                 {
-                    return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
+                    return Ok(new ResponseModel { Message = "Request Execution successfully.", Status = "Success" });
                 }
                 else
                 {
-                    return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
+                    return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
                 }
             }
             catch (Exception ex)
@@ -132,35 +135,48 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        //For Testing Purpose Only
+
         [HttpGet]
-        [Route("RetrivePayment")]
-        public IHttpActionResult RetrivePayment()
+        [Route("OrderHistory")]
+        public IHttpActionResult OrderHistory(int PatonID)
         {
-            var result = _context.PatronsPaymentMethods.Where(m=>m.PatronID==1).FirstOrDefault();
+            try
+            {
+                if (ModelState.IsValid)
+                {
 
+                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID).ToList();
+                    List<OrderHistoryRespones> _ListOrderHistory = new List<OrderHistoryRespones>();
+                    foreach (var item in Patrnsorder)
+                    {
+                        OrderHistoryRespones data = new OrderHistoryRespones();
+                        data.DateTimeOfOrder = item.DateTimeOfOrder;
+                        var result = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
+                        data.HotelName = result.HotelName;
+                        data.PatronsOrdersID = item.PatronsOrdersID;
+                        _ListOrderHistory.Add(data);
+                    }
+                    for(int i=0;i>=_ListOrderHistory.Count();i++)
+                    {
+                        var PatronsDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == _ListOrderHistory[i].PatronsOrdersID).FirstOrDefault();
+                        _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying;
+                        _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered;
+                        _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying;
 
+                    }
 
-            SHA256 mySHA256 = SHA256Managed.Create();
-            string password = "3sc3RLrpd17";
-            byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(password));
-           
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success",Data= _ListOrderHistory });
+                }
+                else
+                {
+                   return  BadRequest("Provided Data is Invalid.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-
-            byte[] iv = new byte[16] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
-
-
-            PatronsPaymentMethod data = new PatronsPaymentMethod();
-
-            data.PatronID = result.PatronID;
-            data.PaymentCardNumberEncrypted = Encryption.DecryptString(result.PaymentCardNumberEncrypted, key, iv);
-            data.PaymentCardCvvCodeEncrypted = Encryption.DecryptString(result.PaymentCardCvvCodeEncrypted, key, iv);
-            data.PaymentCardExpiryEncrypted = Encryption.DecryptString(result.PaymentCardExpiryEncrypted, key, iv);
-            data.PaymentCardholderName = result.PaymentCardholderName;
-            data.PaymentCardType = result.PaymentCardType;
-            data.PaymentType = result.PaymentType;
-
-            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success",Data=data });
 
         }
     }

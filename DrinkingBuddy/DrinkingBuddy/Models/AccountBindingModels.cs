@@ -30,6 +30,8 @@ namespace DrinkingBuddy.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public int PatronsID { get; set; }
     }
 
 
@@ -101,6 +103,11 @@ namespace DrinkingBuddy.Models
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+
+        public string DeviceToken { get; set; }
+        public string DeviceType { get; set; }
+       
+
     }
 
     public class RegisterExternalBindingModel
@@ -147,6 +154,9 @@ namespace DrinkingBuddy.Models
     {
       public string Email { get; set; }
       public string Password { get; set; }
+      public string DeviceToken { get; set; }
+      public string DeviceType { get; set; }
+      public DateTime LastLogOn { get; set; }
     }
 
    

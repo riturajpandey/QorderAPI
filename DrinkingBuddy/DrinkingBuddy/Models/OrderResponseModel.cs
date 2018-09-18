@@ -30,7 +30,7 @@ namespace DrinkingBuddy.Models
         }
         public int FreeItemQty { get; set; }
     }   
-
+        
     public class SpecialReponseModel {
         private DateTime _EndDate;
         private string _HotelName;
@@ -67,6 +67,17 @@ namespace DrinkingBuddy.Models
         }
 
 
+
+    }
+
+    public class OrderHistoryRespones
+    {
+        public string HotelName { get; set; }
+        public DateTime? DateTimeOfOrder { get; set; }
+        public string DrinkName { get; set; }
+        public int PatronsOrdersID { get; set; }
+        public int? QTYOrdered { get; set; }
+        public string Size { get; set; }
 
     }
 }

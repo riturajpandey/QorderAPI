@@ -539,6 +539,10 @@
           <Property Name="EmailAddress" Type="varchar" MaxLength="500" />
           <Property Name="Gassword" Type="varchar" MaxLength="500" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="DeviceToken" Type="varchar" MaxLength="50" />
+          <Property Name="DeviceType" Type="varchar" MaxLength="50" />
+          <Property Name="RegisterOn" Type="datetime" />
+          <Property Name="LastLogOn" Type="datetime" />
         </EntityType>
         <EntityType Name="PatronsGroups">
           <Key>
@@ -2688,6 +2692,10 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <NavigationProperty Name="PatronsPreferences" Relationship="Self.FK_PatronsPreferences_Patrons" FromRole="Patrons" ToRole="PatronsPreferences" />
           <NavigationProperty Name="PatronsResetPasswordTokens" Relationship="Self.FK_PatronsResetPasswordTokens_Patrons" FromRole="Patrons" ToRole="PatronsResetPasswordTokens" />
           <NavigationProperty Name="PatronsSessionTokens" Relationship="Self.FK_PatronsSessionTokens_Patrons" FromRole="Patrons" ToRole="PatronsSessionTokens" />
+          <Property Name="DeviceToken" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RegisterOn" Type="DateTime" Precision="3" />
+          <Property Name="LastLogOn" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="PatronsGroup">
           <Key>
@@ -4831,6 +4839,10 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <EntitySetMapping Name="Patrons">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.Patron">
               <MappingFragment StoreEntitySet="Patrons">
+                <ScalarProperty Name="LastLogOn" ColumnName="LastLogOn" />
+                <ScalarProperty Name="RegisterOn" ColumnName="RegisterOn" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="DeviceToken" ColumnName="DeviceToken" />
                 <ScalarProperty Name="PatronsID" ColumnName="PatronsID" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />

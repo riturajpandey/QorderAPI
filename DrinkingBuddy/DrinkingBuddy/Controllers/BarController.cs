@@ -48,7 +48,6 @@ namespace DrinkingBuddy.Controllers
                     return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed",});
 
                 }
-                
 
             }
             else

@@ -51,7 +51,7 @@ namespace DrinkingBuddy.Models
 
     public class CardModel
     {
-        public int PatronID { get; set; }
+        public int PatronsID { get; set; }
         public string PaymentType { get; set; }
         public string PaymentCardholderName { get; set; }
         public string PaymentCardType { get; set; }
@@ -61,5 +61,7 @@ namespace DrinkingBuddy.Models
 
 
     }
+
+    
 
 }
