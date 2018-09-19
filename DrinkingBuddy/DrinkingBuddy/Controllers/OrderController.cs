@@ -66,12 +66,12 @@ namespace DrinkingBuddy.Controllers
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
                         { return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" }); }
-                        else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" }); }
+                        else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
 
                     }
                     else
                     {
-                        return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
+                        return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
                     }
 
                 }
@@ -179,5 +179,6 @@ namespace DrinkingBuddy.Controllers
 
 
         }
+
     }
 }

@@ -552,6 +552,8 @@
           <Property Name="HotelID" Type="int" />
           <Property Name="MasterPatronID" Type="int" />
           <Property Name="GroupStartedDateTime" Type="datetime" />
+          <Property Name="GroupStopDateTime" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="PatronsGroupsMembers">
           <Key>
@@ -2705,6 +2707,8 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="HotelID" Type="Int32" />
           <Property Name="MasterPatronID" Type="Int32" />
           <Property Name="GroupStartedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="GroupStopDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="PatronsGroupsMember">
           <Key>
@@ -4862,6 +4866,8 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <EntitySetMapping Name="PatronsGroups">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsGroup">
               <MappingFragment StoreEntitySet="PatronsGroups">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="GroupStopDateTime" ColumnName="GroupStopDateTime" />
                 <ScalarProperty Name="PatronsGroupID" ColumnName="PatronsGroupID" />
                 <ScalarProperty Name="HotelID" ColumnName="HotelID" />
                 <ScalarProperty Name="MasterPatronID" ColumnName="MasterPatronID" />

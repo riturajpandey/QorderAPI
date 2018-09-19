@@ -96,7 +96,26 @@ namespace DrinkingBuddy.Controllers
 
                         IMapper mapper = config.CreateMapper();
                         var data = mapper.Map<UserInformationModel>(user);
+
+                        if (data.Address == null)
+                        { data.Address = ""; }
+                        else { data.Address = data.Address;}
+                        if (data.Suburb == null)
+                        { data.Suburb = ""; }
+                        else { data.Suburb = data.Suburb; }
+                        if (data.PostCode == null)
+                        { data.PostCode = ""; }
+                        else { data.PostCode = data.PostCode; }
+                        data.PhoneNumber = user.PhoneMobile;
                         data.Token = token;
+                        if (data.StateId == null)
+                        {
+                            data.StateId = 0;
+                        }
+                        else
+                        {
+                            data.StateId = data.StateId;
+                        }
 
                         Patron _Patron = new Patron();
                         _Patron = user;
@@ -139,11 +158,11 @@ namespace DrinkingBuddy.Controllers
 
         [HttpPost]
         [Route("UserById/{id:int}")]
-        public IHttpActionResult UserById(int id)
+        public IHttpActionResult UserById(int PatronsId)
         {
-            if (id != 0)
+            if (PatronsId != 0)
             {
-                var result = _context.Patrons.Where(m => m.PatronsID == id).FirstOrDefault();
+                var result = _context.Patrons.Where(m => m.PatronsID == PatronsId).FirstOrDefault();
                 if (result != null)
                 {
 
@@ -543,6 +562,14 @@ namespace DrinkingBuddy.Controllers
                             if (user != null)
                             {
                                 var Usermodel = mapper.Map<UserInformationModel>(user);
+                                Usermodel.Address = "";
+                                Usermodel.Suburb = "";
+                                Usermodel.PostCode = "";
+                                if (user.PhoneMobile == null)
+                                { Usermodel.PhoneNumber = ""; }
+                                else { Usermodel.PhoneNumber = user.PhoneMobile; }
+                                Usermodel.Token = "";
+                                Usermodel.StateId = 0;                              
                                 return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
                             }
                             else

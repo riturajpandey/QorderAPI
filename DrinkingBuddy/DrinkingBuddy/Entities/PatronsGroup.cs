@@ -18,5 +18,7 @@ namespace DrinkingBuddy.Entities
         public Nullable<int> HotelID { get; set; }
         public Nullable<int> MasterPatronID { get; set; }
         public Nullable<System.DateTime> GroupStartedDateTime { get; set; }
+        public Nullable<System.DateTime> GroupStopDateTime { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

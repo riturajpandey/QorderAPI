@@ -36,31 +36,70 @@ namespace DrinkingBuddy.Controllers
         [Route("ShowNearByBars")]
         public IHttpActionResult ShowNearByBars(BarMapModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.Token, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
-                if (Hotels != null)
+                if (ModelState.IsValid)
                 {
-                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Hotels });
+
+                    var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.Token, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
+                    if (Hotels != null)
+                    {
+                        List<Mobile_Get_HotelsWithin100ks_Result> ShowHotels = new List<Mobile_Get_HotelsWithin100ks_Result>();
+                        foreach (var item in Hotels)
+                        {
+                            Mobile_Get_HotelsWithin100ks_Result data = new Mobile_Get_HotelsWithin100ks_Result();
+                            data.HotelID = item.HotelID;
+                            if (item.HotelName == null) { data.HotelName = ""; }
+                            else { data.HotelName = item.HotelName; }
+                            if (item.HotelAddress1 == null) { data.HotelAddress1 = ""; }
+                            else { data.HotelAddress1 = item.HotelAddress1; }
+                            if (item.HotelAddress2 == null) { data.HotelAddress2 = ""; }
+                            else { data.HotelAddress2 = item.HotelAddress2; }
+                            if (item.HotelSuburb == null) { data.HotelSuburb = ""; }
+                            else { data.HotelSuburb = item.HotelSuburb; }
+                            if (item.HotelPostcode == null) { data.HotelPostcode = ""; }
+                            else { data.HotelPostcode = item.HotelPostcode; }
+                            if (item.StateName == null) { data.StateName = ""; }
+                            else { data.StateName = item.StateName; }
+                            if (item.StateNameAbbreviation == null) { data.StateNameAbbreviation = ""; }
+                            else { data.StateNameAbbreviation = item.StateNameAbbreviation; }
+                            if (item.HotelStateID == null) { data.HotelStateID = item.HotelStateID; }
+                            else { data.HotelStateID = item.HotelStateID; }
+                            if (item.HotelLat == null) { data.HotelLat = 0; }
+                            else { data.HotelLat = item.HotelLat; }
+                            if (item.HotelLong == null) { data.HotelLong = 0; }
+                            else { data.HotelLong = item.HotelLong; }
+                            if (item.DistanceAway == null) { data.DistanceAway = ""; }
+                            else { data.DistanceAway = item.DistanceAway; }
+
+                            ShowHotels.Add(data);
+
+                        }
+                       
+                       return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = ShowHotels });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed" });
+
+                    }
+
                 }
                 else
                 {
-                    return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed",});
+                    return BadRequest("Provided Data is invalid");
 
                 }
-
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest("Provided Data is invalid");
-
+               return BadRequest(ex.Message);
             }
-            
         }
 
         [HttpPost]
         [Route("ConnectBar")]
-        public IHttpActionResult ConnectBar(OrderBindingModel model)
+        public IHttpActionResult ConnectBar(ConnnectBarModel model)
         {
             try
             {
@@ -76,13 +115,13 @@ namespace DrinkingBuddy.Controllers
                             var config = new MapperConfiguration(cfg =>
                            {
                                
-                               cfg.CreateMap<OrderBindingModel, PatronsHotelLogIn>();
+                               cfg.CreateMap<ConnnectBarModel, PatronsHotelLogIn>();
 
                            });
 
                             IMapper mapper = config.CreateMapper();
                             var data = mapper.Map<PatronsHotelLogIn>(model);
-
+                            data.LoginDateTime = DateTime.Now;
                             _context.PatronsHotelLogIns.Add(data);
                             int i= _context.SaveChanges();
                             if(i!=0)
@@ -156,13 +195,13 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("MenusCatagories")]
-        public IHttpActionResult MenusCatagories(int Id)
+        public IHttpActionResult MenusCatagories(int HotelId)
         {
             try
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuCatagoryList = _context.HotelMenusCategories.Where(m=>m.HotelID==Id).ToList();
+                    var MenuCatagoryList = _context.HotelMenusCategories.Where(m=>m.HotelID==HotelId).ToList();
                     if (MenuCatagoryList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -194,13 +233,13 @@ namespace DrinkingBuddy.Controllers
 
         [HttpPost]
         [Route("MenusSubCategories")]
-        public IHttpActionResult MenusSubCategories(int Id)
+        public IHttpActionResult MenusSubCategories(int HotelMenuCategoryId)
         {
             try
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuList = _context.HotelMenusSubCategories.Where(m => m.HotelMenuCategoryID == Id).ToList();
+                    var MenuList = _context.HotelMenusSubCategories.Where(m => m.HotelMenuCategoryID == HotelMenuCategoryId).ToList();
                     if (MenuList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -231,13 +270,13 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("Menus")]
-        public IHttpActionResult Menus(int id)
+        public IHttpActionResult Menus(int HotelCategoryId)
         {
             try
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var MenuList = _context.HotelMenus.Where(m => m.HotelCategoryID == id).ToList();
+                    var MenuList = _context.HotelMenus.Where(m => m.HotelCategoryID == HotelCategoryId).ToList();
                     if (MenuList.Count != 0)
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -268,14 +307,14 @@ namespace DrinkingBuddy.Controllers
 
         [HttpPost]
         [Route("Ingredient")]
-        public IHttpActionResult Ingredient(int id)
+        public IHttpActionResult Ingredient(int HotelMenuId)
         {
 
             try
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == id).FirstOrDefault();
+                    var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == HotelMenuId).FirstOrDefault();
                     if (Menu != null)
                     {
                         IngredientResponseModel data = new IngredientResponseModel();
@@ -436,6 +475,12 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        //[HttpPost]
+        //[Route("LeaveBar")]
+        //public IHttpActionResult LeaveBar()
+        //{
+
+        //}
         
         #endregion
     }
