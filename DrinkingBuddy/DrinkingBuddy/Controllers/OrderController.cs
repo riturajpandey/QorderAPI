@@ -156,13 +156,23 @@ namespace DrinkingBuddy.Controllers
                         data.PatronsOrdersID = item.PatronsOrdersID;
                         _ListOrderHistory.Add(data);
                     }
-                    for(int i=0;i>=_ListOrderHistory.Count();i++)
+                    for (int i = 0; i<_ListOrderHistory.Count(); i++)
                     {
-                        var PatronsDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == _ListOrderHistory[i].PatronsOrdersID).FirstOrDefault();
-                        _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying;
-                        _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered;
-                        _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying;
-
+                        int PatronsOrderId = _ListOrderHistory[i].PatronsOrdersID;
+                        var PatronsDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == PatronsOrderId).FirstOrDefault();
+                        if(PatronsDetails.ItemNameAtTimeOfBuying == null)
+                        { _ListOrderHistory[i].DrinkName = ""; }
+                        else { _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying; }
+                        if(PatronsDetails.QTYOrdered == null)
+                        { _ListOrderHistory[i].QTYOrdered = 0; }
+                        else{ _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered; }
+                        if (PatronsDetails.SizeAtTimeOfBuying == null)
+                        { _ListOrderHistory[i].Size = ""; }
+                        else { _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying; }
+                        if(PatronsDetails.PriceAtTimeOfBuying == null)
+                        { _ListOrderHistory[i].Price =0;  }
+                        else { _ListOrderHistory[i].Price = PatronsDetails.PriceAtTimeOfBuying; }
+                       
                     }
 
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success",Data= _ListOrderHistory });

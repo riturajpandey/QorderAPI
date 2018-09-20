@@ -78,6 +78,6 @@ namespace DrinkingBuddy.Models
         public int PatronsOrdersID { get; set; }
         public int? QTYOrdered { get; set; }
         public string Size { get; set; }
-
+        public Nullable<decimal> Price {get;set;}
     }
 }

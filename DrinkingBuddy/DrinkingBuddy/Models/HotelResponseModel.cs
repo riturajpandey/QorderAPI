@@ -26,11 +26,11 @@ namespace DrinkingBuddy.Models
         public bool UseLocationsForOrders { get; set; }
     }
 
-
     public class HotelMenuCatagoriesResponseModel
     {
         private int _Drinkcount;
 
+        private string _CatagoryImage;
         public int HotelMenuCategoryID { get; set; }
         public int HotelID { get; set; }
         public string CategoryName { get; set; }
@@ -49,45 +49,57 @@ namespace DrinkingBuddy.Models
 
 
         }
-        public bool IsActive { get; set; }
-        public byte[] CategoryImage { get; set; }
-        public Nullable<int> ViewOrder { get; set; }
-        public Nullable<int> ReportOrder { get; set; }
+       // public byte[] CategoryImage { get; set; }
+        public string CatagoryImage {
+            get
+            {
 
-    }
+               return  _CatagoryImage = "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
 
-    public class HotelsMenuResponseModel
-    {
-        public int HotelMenuID { get; set; }
-        public int HotelID { get; set; }
-        public int HotelCategoryID { get; set; }
-        public Nullable<int> HotelSubCategoryID { get; set; }
-        public string DrinkName { get; set; }
-        public Nullable<decimal> DrinkSize { get; set; }
-        public string DrinkUnitMlLitreUnit { get; set; }
-        public Nullable<decimal> DrinkPrice { get; set; }
-        public byte[] DrinkImage { get; set; }
-        public Nullable<int> MinutesToServeItem { get; set; }
-        public bool IsActive { get; set; }
-        public Nullable<decimal> CostOfItem { get; set; }
-        public bool OnBarSalesQuickList { get; set; }
-        public Nullable<int> HotelTaxGroupID { get; set; }
-        public string IngredientsForPatronsApp { get; set; }
-        public string WhereFromForPatronsApp { get; set; }
-        public string PercentAlcoholForPatronsApp { get; set; }
+            }
+        }
 
     }
 
     public class HotelMenuSubCategoryResponseModel
     {
+        private string _SubCategoryImage;
         public int HotelMenusSubCategoryID { get; set; }
-        public int HotelID { get; set; }
-        public int HotelMenuCategoryID { get; set; }
         public string SubCategoryName { get; set; }
-        public bool IsActive { get; set; }
-        public byte[] SubCategoryImage { get; set; }
+        // public byte[] SubCategoryImage { get; set; }
+        public string SubCategoryImage
+        {
+            get
+            {
+                return _SubCategoryImage = "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
 
 
+            }
+
+        }
+
+    }
+
+    public class HotelsMenuResponseModel
+    {
+        private string _DrinkImage;
+        public int HotelMenuID { get; set; }
+        public string DrinkName { get; set; }
+        public Nullable<decimal> DrinkSize { get; set; }
+        public string DrinkUnitMlLitreUnit { get; set; }
+        public Nullable<decimal> DrinkPrice { get; set; }
+       //  public byte[] DrinkImage { get; set; }
+        public string IngredientsForPatronsApp { get; set; }
+        public string PercentAlcoholForPatronsApp { get; set; }
+        public string DrinkImage
+        {
+            get {
+
+                return _DrinkImage= "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
+            }
+
+
+        }
     }
 
     public class IngredientResponseModel

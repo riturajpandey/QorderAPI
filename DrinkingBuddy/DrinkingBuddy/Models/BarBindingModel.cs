@@ -21,6 +21,13 @@ namespace DrinkingBuddy.Models
         public int HotelId { get; set; }
     }
 
+    public class LeaveBarModel
+    {
+        public int HotelID { get; set; }
+        public int PatronID { get; set; }
+        public DateTime LogoutDateTime { get; set; }
+    }
+
 }
 
 
