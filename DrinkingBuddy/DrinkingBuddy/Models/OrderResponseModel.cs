@@ -9,13 +9,40 @@ namespace DrinkingBuddy.Models
 
     public class CouponResponseModel
     {
+        private string _BarName;
         private string _FreeItemMenu;
         public int HotelMarketingCouponId { get; set; }
+        public int HotelID { get; set; }
         public string CouponName { get; set; }
         public string CouponCode { get; set; }
-        public DateTime CouponEndTime { get; set; }
-        public int DiscountPercent { get; set; }
-        public int FreeItemMenuId { get; set; }
+        public string BarName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Hotel = _context.Hotels.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
+                    if (Hotel != null)
+                    {
+                        if (Hotel.HotelName != null)
+                        { _BarName = Hotel.HotelName; }
+                        else { _BarName = ""; }
+                    }
+                    else
+                    {
+                        _BarName = "";
+                    }
+                }
+                return _BarName;
+            }
+
+
+
+        }
+        public Nullable<System.DateTime> CouponEndTime { get; set; }
+        public Nullable<System.DateTime> CouponEndDate { get; set; }
+        public Nullable<int> DiscountPercent { get; set; }
+        public Nullable<int> FreeItemMenuId { get; set; }
         public string FreeItemMenu
         {
             get
@@ -23,7 +50,15 @@ namespace DrinkingBuddy.Models
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
                     var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == this.FreeItemMenuId).FirstOrDefault();
-                    Menu.DrinkName = this._FreeItemMenu;
+                    if (Menu != null) { 
+                    if (Menu.DrinkName != null)
+                    { _FreeItemMenu=Menu.DrinkName; }
+                    else { _FreeItemMenu = ""; }
+                    }
+                    else
+                    {
+                        _FreeItemMenu = "";
+                    }
                 }
                 return _FreeItemMenu;
             }
@@ -31,7 +66,8 @@ namespace DrinkingBuddy.Models
         public int FreeItemQty { get; set; }
     }   
         
-    public class SpecialReponseModel {
+    public class SpecialReponseModel
+    {
         private DateTime _EndDate;
         private string _HotelName;
         public int HotelSpecialID { get; set; }

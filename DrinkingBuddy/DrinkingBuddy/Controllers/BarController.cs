@@ -381,7 +381,23 @@ namespace DrinkingBuddy.Controllers
 
                         foreach (var item in couponsId)
                         {
+                           // DateTime CurrentDate = Convert.ToDateTime(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+                          //  DateTime CurrentTime= Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
+
                             var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
+                            if (singlecoupon.CouponName == null)
+                            { singlecoupon.CouponName = ""; }
+                            else
+                            { singlecoupon.CouponName = singlecoupon.CouponName; }
+                            if (singlecoupon.CouponCode == null)
+                            { singlecoupon.CouponCode = ""; }
+                            else{ singlecoupon.CouponCode = singlecoupon.CouponCode;}
+                            if (singlecoupon.DiscountPercent == null)
+                            { singlecoupon.DiscountPercent = 0; }
+                            else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
+                            if (singlecoupon.FreeItemMenuID == null)
+                            { singlecoupon.FreeItemMenuID = 0; }
+                            else { singlecoupon.FreeItemMenuID = singlecoupon.FreeItemMenuID; }
 
                             coupons.Add(singlecoupon);
                         }
@@ -402,7 +418,7 @@ namespace DrinkingBuddy.Controllers
                         }
                         else
                         {
-                            return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+                            return Ok(new ResponseModel { Message = "No Coupons found for this Patron.", Status = "Failed" });
                         }
 
                     }
@@ -475,10 +491,43 @@ namespace DrinkingBuddy.Controllers
             {
                 if (id != 0)
                 {
-                    var Specials = _context.GetSpecials(id, null, null, null, null, null).ToList();
-                    if (Specials != null)
+                    var Data = _context.GetSpecials(id, null, null, null, null, null).ToList();
+                    if (Data != null)
                     {
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
+                        List<GetSpecials_Result> Specials = new List<GetSpecials_Result>();
+                        foreach (var item in Data)
+                        {
+                            if (item.HotelSpecialsMetaID == null)
+                            { item.HotelSpecialsMetaID = 0; }
+                            else { item.HotelSpecialsMetaID = item.HotelSpecialsMetaID; }
+                            if (item.DiscountAmountG == null)
+                            { item.DiscountAmountG = 0; }
+                            else { item.DiscountAmountG = item.DiscountAmountG; }
+                            if (item.CategoryID == null)
+                            { item.CategoryID = 0; }
+                            else { item.CategoryID = item.CategoryID; }
+                            if (item.SubCategoryID == null)
+                            { item.SubCategoryID = 0; }
+                            else { item.SubCategoryID = item.SubCategoryID; }
+                            if (item.DrinkSize == null)
+                            { item.DrinkSize = 0; }
+                            else { item.DrinkSize = item.DrinkSize; }
+                            if (item.StartDateG == null)
+                            { item.StartDateG = DateTime.MinValue; }
+                            else { item.StartDateG = item.StartDateG;}
+                            if (item.EndDateG == null)
+                            { item.EndDateG = DateTime.MinValue; }
+                            else { item.EndDateG = item.EndDateG; }
+                            if (item.StartTimeG == null)
+                            { item.StartTimeG = DateTime.MinValue; }
+                            else { item.StartTimeG = item.StartTimeG; }
+                            if (item.EndTimeG == null)
+                            { item.EndDateG = DateTime.MinValue; }
+                            else { item.EndTimeG = item.EndTimeG; }
+
+                           Specials.Add(item);
+                        }
+                      return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
                     }
                     else
                     {
@@ -495,6 +544,7 @@ namespace DrinkingBuddy.Controllers
             }
             catch (Exception ex)
             {
+                
                 return BadRequest(ex.Message);
             }
 
