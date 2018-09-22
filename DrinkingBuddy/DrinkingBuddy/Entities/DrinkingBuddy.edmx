@@ -544,6 +544,17 @@
           <Property Name="RegisterOn" Type="datetime" />
           <Property Name="LastLogOn" Type="datetime" />
         </EntityType>
+        <EntityType Name="PatronsFavourites">
+          <Key>
+            <PropertyRef Name="PatronsFavouriteID" />
+          </Key>
+          <Property Name="PatronsFavouriteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HotelID" Type="int" Nullable="false" />
+          <Property Name="PatronID" Type="int" Nullable="false" />
+          <Property Name="HotelCatagoryID" Type="int" Nullable="false" />
+          <Property Name="HotelSubCatagoryID" Type="int" Nullable="false" />
+          <Property Name="HotelMenuID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="PatronsGroups">
           <Key>
             <PropertyRef Name="PatronsGroupID" />
@@ -785,6 +796,14 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="StateCentreLong" Type="decimal" Precision="10" Scale="7" />
           <Property Name="StateCityLat" Type="decimal" Precision="10" Scale="7" />
           <Property Name="StateCityLong" Type="decimal" Precision="10" Scale="7" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TempVersion">
+          <Key>
+            <PropertyRef Name="LatestVersion" />
+          </Key>
+          <Property Name="LatestVersion" Type="varchar(max)" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -1757,6 +1776,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <EntitySet Name="HotelSpecialsMeta" EntityType="Self.HotelSpecialsMeta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HotelTaxGroups" EntityType="Self.HotelTaxGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patrons" EntityType="Self.Patrons" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronsFavourites" EntityType="Self.PatronsFavourites" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsGroups" EntityType="Self.PatronsGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsGroupsMembers" EntityType="Self.PatronsGroupsMembers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsHotelLogIns" EntityType="Self.PatronsHotelLogIns" Schema="dbo" store:Type="Tables" />
@@ -1777,6 +1797,11 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
     [PatronsResetPasswordTokens].[DateTimeExpiry] AS [DateTimeExpiry], 
     [PatronsResetPasswordTokens].[ResetToken] AS [ResetToken]
     FROM [dbo].[PatronsResetPasswordTokens] AS [PatronsResetPasswordTokens]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TempVersion" EntityType="Self.TempVersion" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TempVersion].[LatestVersion] AS [LatestVersion]
+    FROM [dbo].[TempVersion] AS [TempVersion]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -4167,6 +4192,8 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
             <Parameter Name="PatronsOrdersID" Mode="In" Type="Int32" />
             <Parameter Name="PatronsScanDetails" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="PatronsFavourites" EntityType="DrinkingBuddyEntity.PatronsFavourite" />
+          <EntitySet Name="TempVersions" EntityType="DrinkingBuddyEntity.TempVersion" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4291,6 +4318,23 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Type="String" Name="StaffMemberWhoDeliveredOrderName" Nullable="true" MaxLength="201" />
           <Property Type="Int32" Name="StaffMemberWhoDeliveredOrderID" Nullable="true" />
         </ComplexType>
+        <EntityType Name="PatronsFavourite">
+          <Key>
+            <PropertyRef Name="PatronsFavouriteID" />
+          </Key>
+          <Property Name="PatronsFavouriteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HotelID" Type="Int32" Nullable="false" />
+          <Property Name="PatronID" Type="Int32" Nullable="false" />
+          <Property Name="HotelCatagoryID" Type="Int32" Nullable="false" />
+          <Property Name="HotelSubCatagoryID" Type="Int32" Nullable="false" />
+          <Property Name="HotelMenuID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TempVersion">
+          <Key>
+            <PropertyRef Name="LatestVersion" />
+          </Key>
+          <Property Name="LatestVersion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5291,6 +5335,25 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="UpdateOrderToDelivered" FunctionName="DrinkingBuddyEntity.Store.UpdateOrderToDelivered" />
+          <EntitySetMapping Name="PatronsFavourites">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsFavourite">
+              <MappingFragment StoreEntitySet="PatronsFavourites">
+                <ScalarProperty Name="HotelMenuID" ColumnName="HotelMenuID" />
+                <ScalarProperty Name="HotelSubCatagoryID" ColumnName="HotelSubCatagoryID" />
+                <ScalarProperty Name="HotelCatagoryID" ColumnName="HotelCatagoryID" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="PatronsFavouriteID" ColumnName="PatronsFavouriteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TempVersions">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.TempVersion">
+              <MappingFragment StoreEntitySet="TempVersion">
+                <ScalarProperty Name="LatestVersion" ColumnName="LatestVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

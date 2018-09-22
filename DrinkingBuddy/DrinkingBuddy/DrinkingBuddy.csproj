@@ -400,6 +400,9 @@
     <Compile Include="Entities\Patron.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\PatronsFavourite.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\PatronsGroup.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -443,6 +446,9 @@
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\StatesG.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TempVersion.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
     <Compile Include="Facebook\FacebookBackChannelHandler.cs" />

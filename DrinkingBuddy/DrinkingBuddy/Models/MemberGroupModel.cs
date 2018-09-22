@@ -10,14 +10,15 @@ namespace DrinkingBuddy.Models
     {
         public int HotelID { set; get; }
         public int MasterPatronID { get; set; }
-        public DateTime GroupStartedDateTime { get; set; }
+        public Nullable<System.DateTime> GroupStartedDateTime { get; set; }
+
     }
 
     public class StartGroupResponse
     {
        public int PatronsGroupID { get; set; }
        public string HotelName { get; set; }
-       public DateTime GroupStartDateTime { get; set; }
+       public DateTime? GroupStartDateTime { get; set; }
        public string GroupMasterPatron { get; set; }
 
     }
@@ -25,7 +26,7 @@ namespace DrinkingBuddy.Models
     public class StopGroup
     {
         public int PatronID { get; set; }
-        public DateTime GroupStartedOn { get; set; }
-        public DateTime GroupStopDateTime { get; set; }
+        public int HotelID { get; set; }
+       public DateTime GroupStopDateTime { get; set; }
     }
 }

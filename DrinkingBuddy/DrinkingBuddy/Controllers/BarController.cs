@@ -381,8 +381,8 @@ namespace DrinkingBuddy.Controllers
 
                         foreach (var item in couponsId)
                         {
-                           // DateTime CurrentDate = Convert.ToDateTime(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
-                          //  DateTime CurrentTime= Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
+                            // DateTime CurrentDate = Convert.ToDateTime(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+                            //  DateTime CurrentTime= Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
 
                             var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
                             if (singlecoupon.CouponName == null)
@@ -391,7 +391,7 @@ namespace DrinkingBuddy.Controllers
                             { singlecoupon.CouponName = singlecoupon.CouponName; }
                             if (singlecoupon.CouponCode == null)
                             { singlecoupon.CouponCode = ""; }
-                            else{ singlecoupon.CouponCode = singlecoupon.CouponCode;}
+                            else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
                             if (singlecoupon.DiscountPercent == null)
                             { singlecoupon.DiscountPercent = 0; }
                             else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
@@ -514,7 +514,7 @@ namespace DrinkingBuddy.Controllers
                             else { item.DrinkSize = item.DrinkSize; }
                             if (item.StartDateG == null)
                             { item.StartDateG = DateTime.MinValue; }
-                            else { item.StartDateG = item.StartDateG;}
+                            else { item.StartDateG = item.StartDateG; }
                             if (item.EndDateG == null)
                             { item.EndDateG = DateTime.MinValue; }
                             else { item.EndDateG = item.EndDateG; }
@@ -525,9 +525,9 @@ namespace DrinkingBuddy.Controllers
                             { item.EndDateG = DateTime.MinValue; }
                             else { item.EndTimeG = item.EndTimeG; }
 
-                           Specials.Add(item);
+                            Specials.Add(item);
                         }
-                      return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
                     }
                     else
                     {
@@ -544,7 +544,7 @@ namespace DrinkingBuddy.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 return BadRequest(ex.Message);
             }
 
@@ -560,7 +560,8 @@ namespace DrinkingBuddy.Controllers
                 {
                     var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID).FirstOrDefault();
                     var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).ToList();
-                    if (PatronMemberGroup != null) {
+                    if (PatronMemberGroup != null)
+                    {
 
                         foreach (var item in PatronMemberGroup)
                         {
@@ -596,6 +597,9 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-        #endregion
+       
+
+            #endregion
     }
 }
+

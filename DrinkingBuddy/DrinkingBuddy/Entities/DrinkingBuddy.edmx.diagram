@@ -124,6 +124,8 @@
         <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersDetails_PatronsOrders" ManuallyRouted="false" />
         <AssociationConnector Association="DrinkingBuddyEntity.FK_PatronsOrdersRefundsDetails_PatronsOrdersRefunds" ManuallyRouted="false" />
         <AssociationConnector Association="DrinkingBuddyEntity.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsFavourite" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.TempVersion" Width="1.5" PointX="3.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

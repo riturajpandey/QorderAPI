@@ -522,6 +522,22 @@ namespace DrinkingBuddy.Controllers
             return logins;
         }
 
+        [HttpGet]
+        [Route("GetVersion")]
+        public IHttpActionResult GetVersion()
+        {
+            var version = _context.TempVersions.FirstOrDefault();
+            if (version != null)
+            {
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = version });
+            }
+            else
+            {
+                return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
+            }
+        }
+
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
