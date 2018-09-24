@@ -216,8 +216,7 @@ namespace DrinkingBuddy.Controllers
 
                             IMapper mapper = config.CreateMapper();
                             var data = mapper.Map<List<HotelMenuCatagoriesResponseModel>>(MenuCatagoryList);
-
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                         return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
                         }
                         else
                         {
@@ -596,10 +595,8 @@ namespace DrinkingBuddy.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-       
-
-            #endregion
+        
+        #endregion
     }
 }
 

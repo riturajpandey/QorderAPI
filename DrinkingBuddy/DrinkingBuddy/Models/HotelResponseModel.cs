@@ -88,7 +88,8 @@ namespace DrinkingBuddy.Models
         public Nullable<decimal> DrinkSize { get; set; }
         public string DrinkUnitMlLitreUnit { get; set; }
         public Nullable<decimal> DrinkPrice { get; set; }
-       //  public byte[] DrinkImage { get; set; }
+        //  public byte[] DrinkImage { get; set; }
+        public string WhereFromForPatronsApp { get; set; }
         public string IngredientsForPatronsApp { get; set; }
         public string PercentAlcoholForPatronsApp { get; set; }
         public string DrinkImage

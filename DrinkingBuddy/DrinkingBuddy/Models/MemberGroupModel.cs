@@ -27,6 +27,14 @@ namespace DrinkingBuddy.Models
     {
         public int PatronID { get; set; }
         public int HotelID { get; set; }
-       public DateTime GroupStopDateTime { get; set; }
+        public DateTime GroupStopDateTime { get; set; }
     }
+
+    public class AcceptInviteModel
+    {
+        public int PatronsGroupID { get; set; }
+        public int MemberPatronID { get; set; }
+        public Nullable<System.DateTime> DateTimeJoinedGroup { get; set; }
+    }
+
 }

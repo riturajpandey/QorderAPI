@@ -792,7 +792,7 @@ namespace DrinkingBuddy.Controllers
                 Token.SessionToken = Guid.NewGuid();
                 Token.PatronID = objAuthModel.PatronsID;
                 Token.DateTimeGiven = DateTime.Now;
-                Token.DateTimeExpiry = Token.DateTimeGiven.AddDays(1);
+                Token.DateTimeExpiry = Token.DateTimeGiven.AddDays(100);
 
                 _context.PatronsSessionTokens.Add(Token);
                 _context.SaveChanges();

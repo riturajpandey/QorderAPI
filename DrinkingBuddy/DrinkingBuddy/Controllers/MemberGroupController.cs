@@ -30,7 +30,7 @@ namespace DrinkingBuddy.Controllers
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
 
-       #region MemberGroup
+        #region MemberGroup
 
         [HttpPost]
         [Route("StartGroup")]
@@ -41,7 +41,6 @@ namespace DrinkingBuddy.Controllers
 
                 if (ModelState.IsValid)
                 {
-
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
                         var config = new MapperConfiguration(cfg =>
@@ -114,7 +113,7 @@ namespace DrinkingBuddy.Controllers
                     int result = _context.SaveChanges();
                     if (result > 0)
                     {
-                        return Ok(new ResponseModel { Message = "The Group hsa been Stoped Successfully", Status = "Success" });
+                        return Ok(new ResponseModel { Message = "The Group has been Stoped Successfully", Status = "Success" });
 
                     }
                     else
@@ -133,6 +132,52 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AcceptInvite")]
+        public IHttpActionResult AcceptInvite(AcceptInviteModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    {
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<AcceptInviteModel, PatronsGroupsMember>();
+                            cfg.CreateMap<PatronsGroupsMember, AcceptInviteModel>();
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<PatronsGroupsMember>(model);
+
+                        _context.PatronsGroupsMembers.Add(data);
+                        int Rows = _context.SaveChanges();
+
+                        if (Rows > 0)
+                        {
+                            return Ok(new ResponseModel { Message = "The Member has been Succesfully", Status = "Success" });
+
+                        }
+                        else
+                        {
+                            return BadRequest("Request Execution Failed");
+                        }
+                    }
+                }
+                else
+                {
+                    return BadRequest("The passed model is not valid.");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+        }
 
         #endregion
 
