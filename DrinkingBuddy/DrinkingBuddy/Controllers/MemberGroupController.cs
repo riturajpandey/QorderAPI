@@ -157,7 +157,7 @@ namespace DrinkingBuddy.Controllers
 
                         if (Rows > 0)
                         {
-                            return Ok(new ResponseModel { Message = "The Member has been Succesfully", Status = "Success" });
+                            return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success" });
 
                         }
                         else
@@ -168,12 +168,63 @@ namespace DrinkingBuddy.Controllers
                 }
                 else
                 {
-                    return BadRequest("The passed model is not valid.");
+                    return BadRequest("Parameter's Invalid");
                 }
             }
             catch (Exception ex)
             {
 
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpPost]
+        [Route("LeaveGroup")]
+        public IHttpActionResult LeaveGroup(LeaveGroupModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                    {
+                        var PatronGroupMember = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.MemberPatronID &m.PatronsGroupID==model.PatronsGroupID).FirstOrDefault();
+
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<LeaveGroupModel, PatronsGroupsMember>();
+                            cfg.CreateMap<PatronsGroupsMember, LeaveGroupModel>();
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<PatronsGroupsMember>(PatronGroupMember);
+                        data.DateTimeLeftGroup = model.DateTimeLeftGroup;
+
+                        _context.Entry(data).State = EntityState.Modified;
+                        int Rows = _context.SaveChanges();
+
+                        if (Rows > 0)
+                        {
+                            return Ok(new ResponseModel { Message ="Request executed Successfully", Status = "Success" });
+
+                        }
+                        else
+                        {
+                            return BadRequest("Request Execution Failed");
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    return BadRequest("Parameters Invalid");
+                }
+
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
 

@@ -65,7 +65,19 @@ namespace DrinkingBuddy.Controllers
                         _context.PatronsOrdersDetails.AddRange(dataOrderDetail);
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
-                        { return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" }); }
+                        {
+                            List<int> OrderIds = new List<int>();
+
+                            foreach (var item in orders)
+                            {
+                                int orderid;
+
+                                orderid = item.PatronsOrdersID;
+                                OrderIds.Add(orderid);
+                            }
+
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = OrderIds });
+                        }
                         else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
 
                     }

@@ -37,4 +37,11 @@ namespace DrinkingBuddy.Models
         public Nullable<System.DateTime> DateTimeJoinedGroup { get; set; }
     }
 
+    public class LeaveGroupModel
+    {
+        public int PatronsGroupID { get; set; }
+        public int MemberPatronID { get; set; }
+        public Nullable<System.DateTime> DateTimeLeftGroup { get; set; }
+
+    }
 }
