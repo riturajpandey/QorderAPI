@@ -34,7 +34,7 @@ namespace DrinkingBuddy.Controllers
 
         [HttpPost]
         [Route("PlaceOrder")]
-        public IHttpActionResult PlaceOrder(List<OrderModel> model, int PatronID)
+        public IHttpActionResult PlaceOrder(List<OrderModel> model)
         {
             try
             {

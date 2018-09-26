@@ -85,7 +85,7 @@ namespace DrinkingBuddy.Controllers
                     var user = _context.Patrons.Where(m => m.EmailAddress == model.Email && m.Gassword == model.Password).FirstOrDefault();
                     if (user != null)
                     {
-                        var token = GetTokenForAPI(user);
+                        var token = GetTokenForAPI(user, false);
                         var config = new MapperConfiguration(cfg =>
                         {
 
@@ -99,7 +99,7 @@ namespace DrinkingBuddy.Controllers
 
                         if (data.Address == null)
                         { data.Address = ""; }
-                        else { data.Address = data.Address;}
+                        else { data.Address = data.Address; }
                         if (data.Suburb == null)
                         { data.Suburb = ""; }
                         else { data.Suburb = data.Suburb; }
@@ -143,7 +143,7 @@ namespace DrinkingBuddy.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-               
+
 
             }
         }
@@ -309,8 +309,8 @@ namespace DrinkingBuddy.Controllers
             }
 
             var patron = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
-            var user = UserManager.Find(patron.EmailAddress,patron.Gassword);
-            IdentityResult result = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword,model.NewPassword);
+            var user = UserManager.Find(patron.EmailAddress, patron.Gassword);
+            IdentityResult result = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {
@@ -318,24 +318,24 @@ namespace DrinkingBuddy.Controllers
             }
             else
             {
-                Patron _patron = _context.Patrons.Where(m=>m.PatronsID==model.PatronsID).FirstOrDefault();
+                Patron _patron = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
                 patron.Gassword = model.NewPassword;
 
                 _context.Entry(_patron).State = EntityState.Modified;
                 int _result = _context.SaveChanges();
-                if (_result>0)
+                if (_result > 0)
                 {
-                    return Ok(new ResponseModel { Message = "Password Changed Successfully.", Status = "Success"});
+                    return Ok(new ResponseModel { Message = "Password Changed Successfully.", Status = "Success" });
                 }
                 else
                 {
                     return BadRequest("The Password could not be updated.");
                 }
 
-                
+
             }
 
-           
+
         }
 
         // POST api/Account/SetPassword
@@ -585,7 +585,7 @@ namespace DrinkingBuddy.Controllers
                                 { Usermodel.PhoneNumber = ""; }
                                 else { Usermodel.PhoneNumber = user.PhoneMobile; }
                                 Usermodel.Token = "";
-                                Usermodel.StateId = 0;                              
+                                Usermodel.StateId = 0;
                                 return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
                             }
                             else
@@ -784,7 +784,7 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-        public string GetTokenForAPI(Patron objAuthModel)
+        public string GetTokenForAPI(Patron objAuthModel, bool FBLogin)
         {
             try
             {
@@ -793,6 +793,7 @@ namespace DrinkingBuddy.Controllers
                 Token.PatronID = objAuthModel.PatronsID;
                 Token.DateTimeGiven = DateTime.Now;
                 Token.DateTimeExpiry = Token.DateTimeGiven.AddDays(100);
+                Token.fbLogin = FBLogin;
 
                 _context.PatronsSessionTokens.Add(Token);
                 _context.SaveChanges();

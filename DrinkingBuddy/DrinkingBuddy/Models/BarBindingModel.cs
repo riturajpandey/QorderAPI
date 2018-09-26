@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DrinkingBuddy.Entities;
 
 namespace DrinkingBuddy.Models
 {
@@ -51,7 +52,93 @@ namespace DrinkingBuddy.Models
 
     }
 
-    
+    public class PatronsFavouritesResponseModel
+    {
+        private string _HotelCatagoryName;
+        private string _HotelSubCatagoryName;
+        private string _HotelName;
+        public int PatronsFavouriteID { get; set; }
+        public int HotelCatagoryID { get; set; }
+        public int HotelSubCatagoryID { get; set; }
+        public int HotelMenuID { get; set; }
+        public string HotelCatagoryName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenusCategories.Where(m => m.HotelMenuCategoryID == this.HotelCatagoryID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _HotelCatagoryName = "";
+                    }
+                    else
+                    {
+                        _HotelCatagoryName = Catagory.CategoryName;
+                    }
+                }
+
+                return _HotelCatagoryName;
+            }
+
+        }
+        public string HotelSubCatagoryName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenusSubCategories.Where(m => m.HotelMenusSubCategoryID == this.HotelSubCatagoryID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _HotelSubCatagoryName = "";
+                    }
+                    else
+                    {
+                        _HotelSubCatagoryName = Catagory.SubCategoryName;
+                    }
+                }
+
+                return _HotelSubCatagoryName;
+
+            }
+
+        }
+        public string HotelMenuName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == HotelMenuID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _HotelName = "";
+                    }
+                    else
+                    {
+                        _HotelName = Catagory.DrinkName;
+                    }
+                }
+
+                return _HotelName;
+
+            }
+                
+                
+       }
+
+
+    }
+
+    public class FavoriteModel
+    {
+        public int PatronID { get; set; }
+        public int HotelID { get; set; }
+        public int HotelCatagoryID { get; set; }
+        public int HotelSubCatagoryID { get; set; }
+        public int HotelMenuID { get; set; }
+    }
 
 }
 

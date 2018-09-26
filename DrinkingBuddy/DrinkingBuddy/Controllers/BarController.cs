@@ -216,7 +216,7 @@ namespace DrinkingBuddy.Controllers
 
                             IMapper mapper = config.CreateMapper();
                             var data = mapper.Map<List<HotelMenuCatagoriesResponseModel>>(MenuCatagoryList);
-                         return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
                         }
                         else
                         {
@@ -549,6 +549,89 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+
+        #region Favorites
+
+        [HttpGet]
+        [Route("PatronsFavourites")]
+        public IHttpActionResult PatronsFavourites(int PatronID, int HotelID)
+        {
+            try
+            {
+                if(PatronID!=0&HotelID!=0)
+                {
+                    var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<PatronsFavourite, PatronsFavouritesResponseModel>();
+                        
+                        
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var data = mapper.Map<List<PatronsFavouritesResponseModel>>(Favourite);
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                }
+                else
+                {
+                    return BadRequest("Parameters Invalid");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("AddFavourites")]
+        public IHttpActionResult AddFavourites(FavoriteModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<FavoriteModel, PatronsFavourite>();
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var data = mapper.Map<PatronsFavourite>(model);
+                    _context.PatronsFavourites.Add(data);
+                    int Rows = _context.SaveChanges();
+                    if (Rows > 0)
+                    {
+                        var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == model.HotelID & m.PatronID == model.PatronID).FirstOrDefault();
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Favourite });
+                    }
+                    else
+                    {
+                        return BadRequest("Parameters Invalid");
+                    }
+
+                    
+                }
+                else
+                {
+                    return BadRequest("Parameters Invalid");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        #endregion 
+
         [HttpPost]
         [Route("LeaveBar")]
         public IHttpActionResult LeaveBar(LeaveBarModel model)
@@ -595,7 +678,7 @@ namespace DrinkingBuddy.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         #endregion
     }
 }
