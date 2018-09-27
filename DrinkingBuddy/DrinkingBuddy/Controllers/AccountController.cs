@@ -191,22 +191,37 @@ namespace DrinkingBuddy.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var Isexist = _context.Patrons.Find(model.PatronsID);
+
+                    var Isexist = _context.Patrons.Where(m=>m.PatronsID==model.PatronsID&m.Gassword==model.OldPassword).FirstOrDefault();
 
                     if (Isexist != null)
                     {
-                        Isexist.EmailAddress = model.EmailAddress;
+                        Isexist.EmailAddress = model.Email;
                         Isexist.FirstName = model.FirstName;
                         Isexist.LastName = model.LastName;
-                        Isexist.PhoneMobile = model.PhoneMobile;
+                        Isexist.PhoneMobile = model.PhoneNumber;
                         Isexist.Address = model.Address;
                         Isexist.Suburb = model.Suburb;
                         Isexist.PostCode = model.PostCode;
                         Isexist.DateOfBirth = model.DateOfBirth;
+                        Isexist.Gassword = model.NewPassword;
 
                         _context.Entry(Isexist).State = EntityState.Modified;
                         int result = _context.SaveChanges();
-                        if (result != 0)
+
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<UserUpdateModel, ChangePasswordBindingModel>();
+                          
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<ChangePasswordBindingModel>(model);
+
+                        var status = this.ChangePassword(data);
+
+                        if (result != 0 & status!=false)
                         {
                             var Updated = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
 
@@ -220,11 +235,12 @@ namespace DrinkingBuddy.Controllers
                             UserModel.StateId = Updated.StateID;
                             UserModel.LastName = Updated.LastName;
                             UserModel.PhoneNumber = Updated.PhoneMobile;
+
                             return Ok(new ResponseModel { Message = "The User Updated Successfully", Status = "Success", Data = UserModel });
                         }
                         else
                         {
-                            return Ok(new ResponseModel { Message = "The User Updated Successfully", Status = "Failed" });
+                            return Ok(new ResponseModel { Message = "The User Updation Failed", Status = "Failed" });
                         }
                     }
                     else
@@ -299,43 +315,31 @@ namespace DrinkingBuddy.Controllers
         }
 
         // POST api/Account/ChangePassword
-        [HttpPost]
-        [Route("ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        //  [HttpPost]
+        //  [Route("ChangePassword")]
+        private bool ChangePassword(ChangePasswordBindingModel model)
         {
-            if (!ModelState.IsValid)
+            if (model==null)
             {
-                return BadRequest(ModelState);
+                return false;
             }
 
-            var patron = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
-            var user = UserManager.Find(patron.EmailAddress, patron.Gassword);
-            IdentityResult result = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword, model.NewPassword);
-
+            var user = UserManager.Find(model.Email,model.OldPassword);
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PasswordHash = model.NewPassword;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            IdentityResult result =  UserManager.Update(user);
+          
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                return false;
             }
             else
             {
-                Patron _patron = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
-                patron.Gassword = model.NewPassword;
-
-                _context.Entry(_patron).State = EntityState.Modified;
-                int _result = _context.SaveChanges();
-                if (_result > 0)
-                {
-                    return Ok(new ResponseModel { Message = "Password Changed Successfully.", Status = "Success" });
-                }
-                else
-                {
-                    return BadRequest("The Password could not be updated.");
-                }
-
-
-            }
-
-
+                return true;
+           }
         }
 
         // POST api/Account/SetPassword

@@ -526,7 +526,19 @@ namespace DrinkingBuddy.Controllers
 
                             Specials.Add(item);
                         }
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Specials });
+
+                        var config = new MapperConfiguration(cfg =>
+                        {
+                            cfg.CreateMap<GetSpecials_Result, SpecialResponsemodel>();
+                           
+
+                        });
+
+                        IMapper mapper = config.CreateMapper();
+                        var data = mapper.Map<List<SpecialResponsemodel>>(Specials);
+
+
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
                     }
                     else
                     {
