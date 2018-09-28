@@ -192,10 +192,32 @@ namespace DrinkingBuddy.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var Isexist = _context.Patrons.Where(m=>m.PatronsID==model.PatronsID&m.Gassword==model.OldPassword).FirstOrDefault();
+                    var Isexist = _context.Patrons.Where(m=>m.PatronsID==model.PatronsID).FirstOrDefault();
 
                     if (Isexist != null)
                     {
+                        bool status = true;
+                        if (model.OldPassword != null & model.NewPassword != null)
+                        {
+                            if (Isexist.Gassword != model.OldPassword)
+                            {
+                                return Ok(new ResponseModel { Message = "Invalid Old Password", Status = "Success" });
+                            }
+
+                            var config = new MapperConfiguration(cfg =>
+                            {
+                                cfg.CreateMap<UserUpdateModel, ChangePasswordBindingModel>();
+
+
+                            });
+
+                            IMapper mapper = config.CreateMapper();
+                            var data = mapper.Map<ChangePasswordBindingModel>(model);
+
+                            status = ChangePassword(data);
+                            Isexist.Gassword = model.NewPassword;
+                        }
+
                         Isexist.EmailAddress = model.Email;
                         Isexist.FirstName = model.FirstName;
                         Isexist.LastName = model.LastName;
@@ -204,24 +226,14 @@ namespace DrinkingBuddy.Controllers
                         Isexist.Suburb = model.Suburb;
                         Isexist.PostCode = model.PostCode;
                         Isexist.DateOfBirth = model.DateOfBirth;
-                        Isexist.Gassword = model.NewPassword;
+                        
+                       
 
                         _context.Entry(Isexist).State = EntityState.Modified;
                         int result = _context.SaveChanges();
 
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<UserUpdateModel, ChangePasswordBindingModel>();
-                          
 
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<ChangePasswordBindingModel>(model);
-
-                        var status = this.ChangePassword(data);
-
-                        if (result != 0 & status!=false)
+                        if (result != 0 & status==true)
                         {
                             var Updated = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
 
@@ -232,8 +244,18 @@ namespace DrinkingBuddy.Controllers
                             UserModel.Address = Updated.Address;
                             UserModel.Suburb = Updated.Suburb;
                             UserModel.PostCode = Updated.PostCode;
-                            UserModel.StateId = Updated.StateID;
+                            if (Updated.StateID == null)
+                            {
+                                UserModel.StateId = 0;
+                            }
+                            else
+                            {
+                                UserModel.StateId = Updated.StateID;
+
+                            }
+                           
                             UserModel.LastName = Updated.LastName;
+                            UserModel.DateOfBirth = Updated.DateOfBirth;
                             UserModel.PhoneNumber = Updated.PhoneMobile;
 
                             return Ok(new ResponseModel { Message = "The User Updated Successfully", Status = "Success", Data = UserModel });
@@ -317,7 +339,7 @@ namespace DrinkingBuddy.Controllers
         // POST api/Account/ChangePassword
         //  [HttpPost]
         //  [Route("ChangePassword")]
-        private bool ChangePassword(ChangePasswordBindingModel model)
+        public bool ChangePassword(ChangePasswordBindingModel model)
         {
             if (model==null)
             {
@@ -326,13 +348,14 @@ namespace DrinkingBuddy.Controllers
 
             var user = UserManager.Find(model.Email,model.OldPassword);
             user.FirstName = model.FirstName;
+            user.Email = model.Email;
             user.LastName = model.LastName;
-            user.PasswordHash = model.NewPassword;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
             IdentityResult result =  UserManager.Update(user);
+            IdentityResult result2 = UserManager.ChangePassword(user.Id,user.PasswordHash,model.NewPassword);
           
-            if (!result.Succeeded)
+            if (!result.Succeeded&!result2.Succeeded)
             {
                 return false;
             }

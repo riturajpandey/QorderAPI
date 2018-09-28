@@ -47,6 +47,7 @@ namespace DrinkingBuddy.Models
 
     public class UserInformationModel
     {
+        private bool _IsCardAvailable;
         private string _state;
         public int PatronsID { get; set; }
         public string EmailAddress { get; set; }
@@ -78,9 +79,30 @@ namespace DrinkingBuddy.Models
 
 
         }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
         public string Token { get; set; }
+        public bool IsCardAvailable {
+
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.PatronsPaymentMethods.Where(m => m.PatronID == this.PatronsID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _IsCardAvailable = false;
+                    }
+                    else
+                    {
+                        _IsCardAvailable = true;
+                    }
+                }
+                return _IsCardAvailable;
+
+            }
+
+        }
 
 
     }

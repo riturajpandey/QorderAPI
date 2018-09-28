@@ -142,6 +142,7 @@ namespace DrinkingBuddy.Models
 
     public class SpecialResponsemodel
     {
+        private decimal? _DrinkPrice { get; set; }
         public int HotelSpecialID { get; set; }
         public Nullable<int> HotelSpecialsMetaID { get; set; }
         public bool WillRepeat { get; set; }
@@ -159,7 +160,27 @@ namespace DrinkingBuddy.Models
         public Nullable<System.DateTime> StartTimeG { get; set; }
         public Nullable<System.DateTime> EndTimeG { get; set; }
         public string RepeatInterval { get; set; }
-        
+        public decimal? DrinkPrice
+        {
+
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenus.Where(m => m.DrinkName == this.DrinkName).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _DrinkPrice = 0;
+                    }
+                    else
+                    {
+                        _DrinkPrice = Catagory.DrinkPrice;
+                    }
+                }
+
+                return _DrinkPrice;
+            }
+        }
 
     }
 }
