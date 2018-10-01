@@ -8,8 +8,8 @@ namespace DrinkingBuddy.Models
 {
     public class OrderBindingModel
     {
-        public int PatronId { get; set; }
-        public int HotelId { get; set; }
+        public int PatronID { get; set; }
+        public int HotelID { get; set; }
         public List<OrderMenu> OrderMenus { get; set; }
         public double FinalAmountForOrder { get; set; }
         public string PaymentGatewayReturnID { get; set; }
@@ -19,10 +19,10 @@ namespace DrinkingBuddy.Models
 
     public class OrderMenu
     {
-        public int PatronsOrdersID { get; set; }
+       
         public int HotelMenuItemId { get; set; }
         public int QTYOrdered { get; set; }
-        public int HotelSpecialID { get; set; }
+        public int? HotelSpecialID { get; set; }
         public double AcceptedPricePerItem { get; set; }
         public string PatronsOrderDetailsNotes { get; set; }
        

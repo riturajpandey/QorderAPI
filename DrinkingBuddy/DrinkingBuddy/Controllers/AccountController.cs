@@ -619,6 +619,7 @@ namespace DrinkingBuddy.Controllers
                             {
                                 return Ok(new ResponseModel { Message = "User Registration Failed", Status = "Failed" });
                             }
+                           
                         }
                         else
                         {
@@ -628,12 +629,13 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        List<string> mesages = new List<string>();
-                        foreach (string error in resultuser.Errors)
-                        {
-                            mesages.Add(error);
-                        }
-                        return Ok(new ResponseModel { Message = "Validation Error", Status = "Failed", Data = mesages });
+                        //List<string> mesages = new List<string>();
+                        //foreach (string error in resultuser.Errors)
+                        //{
+                        //    mesages.Add(error);
+                        //}
+                        //return Ok(new RegisterResponseModel { Message = mesages, Status = "Success",});
+                        return Ok(new ResponseModel { Message = "User already exist", Status = "Failed" });
                     }
 
                 }
@@ -652,7 +654,7 @@ namespace DrinkingBuddy.Controllers
                         }
                     }
 
-                    return Ok(new ResponseModel { Message = "Validation Error", Status = "Failed", Data = mesages });
+                    return Ok(new RegisterResponseModel { Message = mesages, Status = "Success"});
                 }
             }
             catch (Exception ex)

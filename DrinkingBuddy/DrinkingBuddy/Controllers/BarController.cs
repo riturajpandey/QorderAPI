@@ -652,23 +652,43 @@ namespace DrinkingBuddy.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID).FirstOrDefault();
-                    var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).ToList();
-                    if (PatronMemberGroup != null)
-                    {
 
-                        foreach (var item in PatronMemberGroup)
-                        {
-                            item.DateTimeJoinedGroup = model.LogoutDateTime;
-                            PatronMemberGroup.Add(item);
-                        }
-                        PatronHotelLogins.LogoutDateTime = model.LogoutDateTime;
-                        _context.Entry(PatronMemberGroup).State = EntityState.Modified;
+                    var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID).FirstOrDefault();
+                    if (PatronHotelLogins != null)
+                    {
+                        PatronHotelLogins.LogoutDateTime = DateTime.Now;
                         _context.Entry(PatronHotelLogins).State = EntityState.Modified;
                         int result = _context.SaveChanges();
                         if (result > 0)
                         {
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                            var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).FirstOrDefault();
+                            if (PatronMemberGroup != null)
+                            {
+
+                                //foreach (var item in PatronMemberGroup)
+                                //{
+                                //    item.DateTimeLeftGroup = DateTime.Now;
+                                //    PatronMemberGroup.Add(item);
+                                //}
+
+                                PatronMemberGroup.DateTimeLeftGroup = DateTime.Now;
+
+                                _context.Entry(PatronMemberGroup).State = EntityState.Modified;
+
+                                int result2 = _context.SaveChanges();
+                                if (result2 > 0)
+                                {
+                                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                                }
+                                else
+                                {
+                                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                                }
+                            }
+                            else
+                            {
+                                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                            }
                         }
                         else
                         {
@@ -677,7 +697,7 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        return BadRequest();
+                        return BadRequest("Something went wrong");
                     }
                 }
                 else

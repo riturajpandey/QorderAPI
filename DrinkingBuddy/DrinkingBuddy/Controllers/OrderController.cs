@@ -35,74 +35,76 @@ namespace DrinkingBuddy.Controllers
 
         #region Order
 
-        //[HttpPost]
-        //[Route("PlaceOrder")]
-        //public IHttpActionResult PlaceOrder(OrderBindingModel model)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
+        [HttpPost]
+        [Route("PlaceOrder")]
+        public IHttpActionResult PlaceOrder(OrderBindingModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
 
-        //            var config = new MapperConfiguration(cfg =>
-        //            {
-        //                cfg.CreateMap<OrderBindingModel, PatronsOrder>();
-                        
-        //                cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<OrderBindingModel, PatronsOrder>();
+
+                      //  cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
+                        cfg.CreateMap<OrderMenu, PatronsOrdersDetail>();
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var dataOrder = mapper.Map<PatronsOrder>(model);
+                    var dataOrderDetail = mapper.Map<List<PatronsOrdersDetail>>(model.OrderMenus);
+
+                    _context.PatronsOrders.Add(dataOrder);
+                    int Rows = _context.SaveChanges();
+                    if (Rows > 0)
+                    {
                        
-        //            });
+                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID&m.HotelID==model.HotelID).FirstOrDefault();
 
-        //            IMapper mapper = config.CreateMapper();
-        //            var dataOrder = mapper.Map<List<PatronsOrder>>(model);
-        //            var dataOrderDetail = mapper.Map<List<PatronsOrdersDetail>>(model);
+                        for (int i = 0; i < dataOrderDetail.Count(); i++)
+                        {
+                            dataOrderDetail[i].PatronsOrdersID = orders.PatronsOrdersID;
 
-        //            _context.PatronsOrders.AddRange(dataOrder);
-        //            int Rows = _context.SaveChanges();
-        //            if (Rows > 0)
-        //            {
-        //                var jugad = model.OrderMenus.FirstOrDefault();
-        //                var orders = _context.PatronsOrders.Where(m => m.PatronID == jugad.PatronID & m.DateTimeOfOrder == jugad.DateTimeOfOrder).ToList();
-        //                for (int i = 0; i >= orders.Count(); i++)
-        //                {
-        //                    dataOrderDetail[i].PatronsOrdersID = orders[i].PatronsOrdersID;
+                        }
+                        _context.PatronsOrdersDetails.AddRange(dataOrderDetail);
+                        int DetailOrder = _context.SaveChanges();
+                        if (DetailOrder > 0)
+                        {
 
-        //                }
-        //                _context.PatronsOrdersDetails.AddRange(dataOrderDetail);
-        //                int DetailOrder = _context.SaveChanges();
-        //                if (DetailOrder > 0)
-        //                {
-        //                    List<int> OrderIds = new List<int>();
+                            var PatronsOrderDetailsID = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == orders.PatronsOrdersID).ToList();
+                            List<object>  InsertResult = new List<object>();
+                            for(int i=0;i<model.OrderMenus.Count();i++)
+                            { 
+                                
+                              object result=_context.InsertSaleWithExtraDetails(model.HotelID,null,model.OrderMenus[i].HotelMenuItemId,model.OrderMenus[i].HotelSpecialID,"qOrder",PatronsOrderDetailsID[i].PatronsOrdersDetailsID);
+                                InsertResult.Add(result);
 
-        //                    foreach (var item in orders)
-        //                    {
-        //                        int orderid;
+                            }
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = InsertResult });
+                        }
+                        else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
 
-        //                        orderid = item.PatronsOrdersID;
-        //                        OrderIds.Add(orderid);
-        //                    }
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
+                    }
 
-        //                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = OrderIds });
-        //                }
-        //                else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
+                }
+                else
+                {
+                    return BadRequest("Parameter's are Invalid");
 
-        //            }
-        //            else
-        //            {
-        //                return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
-        //            }
-
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Parameter's are Invalid");
-
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Route("OrderHistory")]

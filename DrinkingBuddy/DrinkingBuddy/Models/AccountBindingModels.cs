@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
@@ -155,6 +156,15 @@ namespace DrinkingBuddy.Models
         public object Data { get; set; }
 
     }
+
+    public class RegisterResponseModel
+    {
+        public List<string> Message { get; set; }
+        public string Status { get; set; }
+        public object Data { get; set; }
+
+    }
+
 
     public class LoginModel
     {

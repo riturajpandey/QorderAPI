@@ -47,6 +47,8 @@ namespace DrinkingBuddy.Models
 
     public class UserInformationModel
     {
+        private int _HotelID;
+        private string _HotelName;
         private bool _IsCardAvailable;
         private string _state;
         public int PatronsID { get; set; }
@@ -103,7 +105,52 @@ namespace DrinkingBuddy.Models
             }
 
         }
+        public int HotelID
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.PatronsHotelLogIns.Where(m => m.PatronID == this.PatronsID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _HotelID = 0;
+                    }
+                    else
+                    {
+                        _HotelID = Catagory.HotelID;
+                       
+                    }
+                }
+                return _HotelID;
 
+            }
+
+
+        }
+        public string HotelName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.Hotels.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _HotelName = "";
+                    }
+                    else
+                    {
+                        _HotelName = Catagory.HotelName;
+
+                    }
+                }
+                return _HotelName;
+
+            }
+
+
+        }
 
     }
 
