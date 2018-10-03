@@ -61,6 +61,12 @@ namespace DrinkingBuddy.Models
 
     }
 
+    public class PlaceOrderResponse
+    {
+        public int OrderId { get; set; }
+
+    }
+
     
 
 }

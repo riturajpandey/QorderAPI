@@ -116,4 +116,15 @@ namespace DrinkingBuddy.Models
         public string Size { get; set; }
         public Nullable<decimal> Price {get;set;}
     }
+
+    public class TrackingResponse
+    {
+       public string Status { get; set; }
+        public int? EstMinutes { get; set; }
+
+   }
 }
+
+
+
+

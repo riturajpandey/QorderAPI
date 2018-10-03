@@ -192,7 +192,7 @@ namespace DrinkingBuddy.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var Isexist = _context.Patrons.Where(m=>m.PatronsID==model.PatronsID).FirstOrDefault();
+                    var Isexist = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
 
                     if (Isexist != null)
                     {
@@ -226,14 +226,14 @@ namespace DrinkingBuddy.Controllers
                         Isexist.Suburb = model.Suburb;
                         Isexist.PostCode = model.PostCode;
                         Isexist.DateOfBirth = model.DateOfBirth;
-                        
-                       
+
+
 
                         _context.Entry(Isexist).State = EntityState.Modified;
                         int result = _context.SaveChanges();
 
 
-                        if (result != 0 & status==true)
+                        if (result != 0 & status == true)
                         {
                             var Updated = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
 
@@ -253,7 +253,7 @@ namespace DrinkingBuddy.Controllers
                                 UserModel.StateId = Updated.StateID;
 
                             }
-                           
+
                             UserModel.LastName = Updated.LastName;
                             UserModel.DateOfBirth = Updated.DateOfBirth;
                             UserModel.PhoneNumber = Updated.PhoneMobile;
@@ -341,28 +341,28 @@ namespace DrinkingBuddy.Controllers
         //  [Route("ChangePassword")]
         public bool ChangePassword(ChangePasswordBindingModel model)
         {
-            if (model==null)
+            if (model == null)
             {
                 return false;
             }
 
-            var user = UserManager.Find(model.Email,model.OldPassword);
+            var user = UserManager.Find(model.Email, model.OldPassword);
             user.FirstName = model.FirstName;
             user.Email = model.Email;
             user.LastName = model.LastName;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
-            IdentityResult result =  UserManager.Update(user);
-            IdentityResult result2 = UserManager.ChangePassword(user.Id,user.PasswordHash,model.NewPassword);
-          
-            if (!result.Succeeded&!result2.Succeeded)
+            IdentityResult result = UserManager.Update(user);
+            IdentityResult result2 = UserManager.ChangePassword(user.Id, user.PasswordHash, model.NewPassword);
+
+            if (!result.Succeeded & !result2.Succeeded)
             {
                 return false;
             }
             else
             {
                 return true;
-           }
+            }
         }
 
         // POST api/Account/SetPassword
@@ -619,7 +619,7 @@ namespace DrinkingBuddy.Controllers
                             {
                                 return Ok(new ResponseModel { Message = "User Registration Failed", Status = "Failed" });
                             }
-                           
+
                         }
                         else
                         {
@@ -654,7 +654,7 @@ namespace DrinkingBuddy.Controllers
                         }
                     }
 
-                    return Ok(new RegisterResponseModel { Message = mesages, Status = "Success"});
+                    return Ok(new RegisterResponseModel { Message = mesages, Status = "Success" });
                 }
             }
             catch (Exception ex)
@@ -832,6 +832,44 @@ namespace DrinkingBuddy.Controllers
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+
+        }
+
+        [HttpPost]
+        [Route("UpdateDeviceInfo")]
+        public IHttpActionResult UpdateDeviceInfo(UpdateLoginDevice model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var PatronsData = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
+                    PatronsData.DeviceToken = model.DeviceToken;
+                    PatronsData.DeviceType = model.DeviceType;
+
+                    _context.Entry(PatronsData).State = EntityState.Modified;
+                    int row = _context.SaveChanges();
+                    if (row > 0)
+                    {
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "The Device Info Updation failed.", Status = "Failed" });
+                    }
+
+                }
+                else
+                {
+                    return BadRequest();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
         }

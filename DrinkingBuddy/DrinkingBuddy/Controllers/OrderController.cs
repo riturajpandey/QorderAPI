@@ -48,7 +48,7 @@ namespace DrinkingBuddy.Controllers
                     {
                         cfg.CreateMap<OrderBindingModel, PatronsOrder>();
 
-                      //  cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
+                        //  cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
                         cfg.CreateMap<OrderMenu, PatronsOrdersDetail>();
 
                     });
@@ -61,8 +61,8 @@ namespace DrinkingBuddy.Controllers
                     int Rows = _context.SaveChanges();
                     if (Rows > 0)
                     {
-                       
-                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID&m.HotelID==model.HotelID).FirstOrDefault();
+
+                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID & m.HotelID == model.HotelID).FirstOrDefault();
 
                         for (int i = 0; i < dataOrderDetail.Count(); i++)
                         {
@@ -73,17 +73,9 @@ namespace DrinkingBuddy.Controllers
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
                         {
-
-                            var PatronsOrderDetailsID = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == orders.PatronsOrdersID).ToList();
-                            List<object>  InsertResult = new List<object>();
-                            for(int i=0;i<model.OrderMenus.Count();i++)
-                            { 
-                                
-                              object result=_context.InsertSaleWithExtraDetails(model.HotelID,null,model.OrderMenus[i].HotelMenuItemId,model.OrderMenus[i].HotelSpecialID,"qOrder",PatronsOrderDetailsID[i].PatronsOrdersDetailsID);
-                                InsertResult.Add(result);
-
-                            }
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = InsertResult });
+                            PlaceOrderResponse response = new PlaceOrderResponse();
+                            response.OrderId = orders.PatronsOrdersID;
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
                         }
                         else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
 
@@ -160,6 +152,61 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpGet]
+        [Route("TrackOrders")]
+        public IHttpActionResult TrackOrders(int OrderId)
+        {
+            try
+            {
+                if (OrderId != 0)
+                {
+                    TrackingResponse response = new TrackingResponse();
+                    var patronsdetails = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderId).FirstOrDefault();
+                    if (patronsdetails.BarAcceptedOrder == true)
+                    { response.Status = "Accepted"; }
+                    else { response.Status = "Pending"; }
+                    if (patronsdetails.BarStartedOrder == true)
+                    { response.Status = "Bar started Order"; }
+                    if (patronsdetails.BarCompletedOrder == true)
+                    { response.Status = "Bar Completed Order"; }
+                    if (patronsdetails.OrderCollected == true)
+                    { response.Status = "Order collected"; }
+
+                    if (patronsdetails.BarCompletedOrder == true || patronsdetails.OrderCollected == true)
+                    {
+                      return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response.Status });
+                    }
+                    else
+                    {
+                        var patronsorderdetail = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == OrderId).ToList();
+                        int? serveminuts = 0;
+                        response.EstMinutes = 0;
+                        foreach (var item in patronsorderdetail)
+                        {
+                            var menus = _context.HotelMenus.Where(m => m.HotelMenuID == item.HotelMenuItemID).FirstOrDefault();
+
+                            serveminuts = menus.MinutesToServeItem;
+                            response.EstMinutes = response.EstMinutes + serveminuts;
+
+                        }
+
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
+                    }
+                }
+                else
+                {
+                    return Ok(new ResponseModel { Message = "Something went wrong.", Status = "Success" });
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         #endregion
 
         #region Card Details
@@ -178,7 +225,7 @@ namespace DrinkingBuddy.Controllers
                     string PatronsPassword = patronsDetails.Gassword;
                     if (patronsDetails.Gassword != null)
                     {
-                       
+
                         //string PatronsPassword = "3sc3RLrpd17";
                         byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(PatronsPassword));
 
@@ -243,7 +290,7 @@ namespace DrinkingBuddy.Controllers
                         string PatronsPassword = patronsDetails.Gassword;
                         if (patronsDetails.Gassword != null)
                         {
-                            
+
                             //string PatronsPassword = "3sc3RLrpd17";
                             byte[] key = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(PatronsPassword));
 

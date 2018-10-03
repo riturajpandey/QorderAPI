@@ -189,7 +189,7 @@ namespace DrinkingBuddy.Controllers
                 {
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        var PatronGroupMember = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.MemberPatronID &m.PatronsGroupID==model.PatronsGroupID).FirstOrDefault();
+                        var PatronGroupMember = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.MemberPatronID & m.PatronsGroupID == model.PatronsGroupID).FirstOrDefault();
 
                         var config = new MapperConfiguration(cfg =>
                         {
@@ -207,13 +207,13 @@ namespace DrinkingBuddy.Controllers
 
                         if (Rows > 0)
                         {
-                            return Ok(new ResponseModel { Message ="Request executed Successfully", Status = "Success" });
+                            return Ok(new ResponseModel { Message = "Request executed Successfully", Status = "Success" });
 
                         }
                         else
                         {
                             return BadRequest("Request Execution Failed");
-                            
+
                         }
                     }
                 }
@@ -229,6 +229,42 @@ namespace DrinkingBuddy.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("GetDeviceWithToken")]
+        public IHttpActionResult GetDeviceWithToken(int HotelID)
+        {
+            try
+            {
+                if (HotelID!=0)
+                {
+                    var Patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.LogoutDateTime == null).ToList();
+
+                    List<DeviceTokenResponse> _DeviceTokenResponse = new List<DeviceTokenResponse>();
+                    foreach (var item in Patrons)
+                    {
+                        DeviceTokenResponse DeviceTokenResponse = new DeviceTokenResponse();
+                        var singlepatron = _context.Patrons.Where(m => m.PatronsID == item.PatronID).FirstOrDefault();
+                        DeviceTokenResponse.FirstName = singlepatron.FirstName;
+                        DeviceTokenResponse.LastName = singlepatron.LastName;
+                        DeviceTokenResponse.DeviceToken = singlepatron.DeviceToken;
+                        DeviceTokenResponse.DeviceType = singlepatron.DeviceType;
+
+                        _DeviceTokenResponse.Add(DeviceTokenResponse);
+
+                    }
+                    return Ok(new ResponseModel { Message = "Request completed Successfully.", Status = "Success",Data= _DeviceTokenResponse });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception e)
+            {return BadRequest(e.Message);}
+
+        }
+
 
         #endregion
 

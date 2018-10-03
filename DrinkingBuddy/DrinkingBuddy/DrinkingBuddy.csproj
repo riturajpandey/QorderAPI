@@ -548,6 +548,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="PushNotification\" />
     <Folder Include="Views\Bar\" />
     <Folder Include="Views\MemberGroup\" />
   </ItemGroup>

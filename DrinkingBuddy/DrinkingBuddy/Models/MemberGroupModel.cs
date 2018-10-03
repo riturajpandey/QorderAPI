@@ -44,4 +44,14 @@ namespace DrinkingBuddy.Models
         public Nullable<System.DateTime> DateTimeLeftGroup { get; set; }
 
     }
+
+    public class DeviceTokenResponse
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string DeviceToken { get; set; }
+        public string DeviceType { get; set; }
+    }
+
+
 }

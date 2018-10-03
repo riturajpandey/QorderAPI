@@ -118,8 +118,15 @@ namespace DrinkingBuddy.Models
                     }
                     else
                     {
-                        _HotelID = Catagory.HotelID;
-                       
+                        if (Catagory.LogoutDateTime < DateTime.Now)
+                        {
+                            _HotelID = Catagory.HotelID;
+                        }
+                        else
+                        {
+                            _HotelID = 0;
+                        }
+
                     }
                 }
                 return _HotelID;
@@ -132,21 +139,29 @@ namespace DrinkingBuddy.Models
         {
             get
             {
-                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                if (this.HotelID!=0)
                 {
-                    var Catagory = _context.Hotels.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
-                    if (Catagory == null)
+                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        _HotelName = "";
-                    }
-                    else
-                    {
-                        _HotelName = Catagory.HotelName;
+                        var Catagory = _context.Hotels.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
+                        if (Catagory == null)
+                        {
+                            _HotelName = "";
+                        }
+                        else
+                        {
 
+                            _HotelName = Catagory.HotelName;
+
+                        }
                     }
+                    return _HotelName;
                 }
-                return _HotelName;
+                else
+                {
+                   return  _HotelName = "";
 
+                }
             }
 
 

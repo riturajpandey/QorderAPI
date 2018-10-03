@@ -175,5 +175,12 @@ namespace DrinkingBuddy.Models
       public DateTime LastLogOn { get; set; }
     }
 
+    public class UpdateLoginDevice
+    {
+        public int PatronsID { get; set; }
+        public string DeviceToken { get; set; }
+        public string DeviceType { get; set; }
+
+    }
    
 }
