@@ -54,6 +54,11 @@ namespace DrinkingBuddy.Controllers
                         var data = mapper.Map<PatronsGroup>(model);
                         data.IsActive = true;
                         // data.GroupStartedDateTime = DateTime.Now;
+                        //setting the Stop Time right after 5 hours.
+
+                        DateTime stoptime = (DateTime)data.GroupStartedDateTime;
+                        data.GroupStopDateTime = stoptime.AddHours(5);
+
                         _context.PatronsGroups.Add(data);
                         int Rows = _context.SaveChanges();
                         if (Rows > 0)
@@ -265,7 +270,37 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpGet]
+        [Route("IsGroupActive")]
+        public IHttpActionResult IsGroupActive(int PatronsGroupID)
+        {
+            try
+            {
+                if (PatronsGroupID != 0)
+                {
+                    var Isgroupalive = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
+                    if(Isgroupalive.GroupStopDateTime>DateTime.Now)
+                    {
+                        return Ok(new ResponseModel { Message = "The Group is Active.", Status = "Success"});
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "The Group has been Expired.", Status = "Failed"});
+                    }
+                }
+                else
+                {
+                    return BadRequest();
 
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
+        
         #endregion
 
     }

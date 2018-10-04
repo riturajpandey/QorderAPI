@@ -26,29 +26,6 @@ namespace DrinkingBuddy.Models
     {
         public int HotelID { get; set; }
         public int PatronID { get; set; }
-       
-    }
-
-
-    public class HotelSpecial
-    {
-        public int HotelSpecialID { get; set; }
-        public Nullable<int> HotelSpecialsMetaID { get; set; }
-        public string DiscountType { get; set; }
-        public Nullable<decimal> DiscountAmountG { get; set; }
-        public string CategoryName { get; set; }
-        public string SubCategoryName { get; set; }
-        public Nullable<int> CategoryID { get; set; }
-        public Nullable<int> SubCategoryID { get; set; }
-        public string DrinkName { get; set; }
-        public Nullable<decimal> DrinkSize { get; set; }
-        public string DescriptionOfSpecial { get; set; }
-        public Nullable<System.DateTime> StartDateG { get; set; }
-        public Nullable<System.DateTime> EndDateG { get; set; }
-        public Nullable<System.DateTime> StartTimeG { get; set; }
-        public Nullable<System.DateTime> EndTimeG { get; set; }
-        public string RepeatInterval { get; set; }
-
 
     }
 
@@ -142,24 +119,60 @@ namespace DrinkingBuddy.Models
 
     public class SpecialResponsemodel
     {
-        private decimal? _DrinkPrice { get; set; }
+        private decimal? _DrinkPrice;
+      
+        private string _Ingredient;
+        private string _AlcoholPercent;
+        private decimal? _DrinkSize;
+        private string _DrinkName;
+
         public int HotelSpecialID { get; set; }
-        public Nullable<int> HotelSpecialsMetaID { get; set; }
-        public bool WillRepeat { get; set; }
-        public string DiscountType { get; set; }
-        public Nullable<decimal> DiscountAmountG { get; set; }
-        public string CategoryName { get; set; }
-        public string SubCategoryName { get; set; }
-        public Nullable<int> CategoryID { get; set; }
-        public Nullable<int> SubCategoryID { get; set; }
-        public string DrinkName { get; set; }
-        public Nullable<decimal> DrinkSize { get; set; }
+     // public string CategoryName { get; set; }
+     // public string SubCategoryName { get; set; }
+    //  public Nullable<int> CategoryID { get; set; }
+    //  public Nullable<int> SubCategoryID { get; set; }
+        public string DrinkName {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _DrinkName = "";
+                    }
+                    else
+                    {
+                        _DrinkName = Catagory.DrinkName;
+                    }
+                }
+                return _DrinkName;
+            }
+                
+                
+                }
+        public Nullable<decimal> DrinkSize
+        {
+            get { 
+             using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _DrinkSize = 0;
+                    }
+                    else
+                    {
+                        _DrinkSize = Catagory.DrinkSize;
+                    }
+                }
+
+                return _DrinkSize;
+            }
+        }
+        public int HotelMenuID { get; set; }
         public string DescriptionOfSpecial { get; set; }
-        public Nullable<System.DateTime> StartDateG { get; set; }
-        public Nullable<System.DateTime> EndDateG { get; set; }
-        public Nullable<System.DateTime> StartTimeG { get; set; }
-        public Nullable<System.DateTime> EndTimeG { get; set; }
-        public string RepeatInterval { get; set; }
+        public Nullable<decimal> NewAmount { get; set; }
         public decimal? DrinkPrice
         {
 
@@ -167,7 +180,7 @@ namespace DrinkingBuddy.Models
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var Catagory = _context.HotelMenus.Where(m => m.DrinkName == this.DrinkName).FirstOrDefault();
+                    var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
                     if (Catagory == null)
                     {
                         _DrinkPrice = 0;
@@ -180,6 +193,47 @@ namespace DrinkingBuddy.Models
 
                 return _DrinkPrice;
             }
+        }
+        public string Ingredient
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Data = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    if (Data == null)
+                    {
+                        _Ingredient = "";
+                    }
+                    else
+                    {
+                        _Ingredient = Data.IngredientsForPatronsApp;
+                    }
+                }
+                return _Ingredient;
+            }
+
+        }
+        public string AlcoholPercent
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Data = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    if (Data == null)
+                    {
+                        _AlcoholPercent = "";
+                    }
+                    else
+                    {
+                        _AlcoholPercent = Data.PercentAlcoholForPatronsApp;
+                    }
+                }
+                return _AlcoholPercent;
+
+            }
+
         }
 
     }

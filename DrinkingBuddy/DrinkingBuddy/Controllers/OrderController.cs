@@ -207,6 +207,8 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+
+
         #endregion
 
         #region Card Details

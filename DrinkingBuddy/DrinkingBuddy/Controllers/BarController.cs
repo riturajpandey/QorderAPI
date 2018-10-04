@@ -484,52 +484,36 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("SpecialOffer")]
-        public IHttpActionResult SpecialOffer(int id)
+        public IHttpActionResult SpecialOffer(int HotelID)
         {
             try
             {
-                if (id != 0)
+                if (HotelID != 0)
                 {
-                    var Data = _context.GetSpecials(id, null, null, null, null, null).ToList();
-                    if (Data != null)
+                    // var Data = _context.GetSpecials(HotelID, null, null, null, null, null).ToList();
+                    var Data = _context.HotelSpecials.Where(m=>m.HotelID==HotelID).ToList();
+                        if (Data.Count() != 0)
                     {
-                        List<GetSpecials_Result> Specials = new List<GetSpecials_Result>();
+                        List<HotelSpecial> Specials = new List<HotelSpecial>();
+
                         foreach (var item in Data)
                         {
-                            if (item.HotelSpecialsMetaID == null)
-                            { item.HotelSpecialsMetaID = 0; }
-                            else { item.HotelSpecialsMetaID = item.HotelSpecialsMetaID; }
-                            if (item.DiscountAmountG == null)
-                            { item.DiscountAmountG = 0; }
-                            else { item.DiscountAmountG = item.DiscountAmountG; }
                             if (item.CategoryID == null)
                             { item.CategoryID = 0; }
                             else { item.CategoryID = item.CategoryID; }
                             if (item.SubCategoryID == null)
                             { item.SubCategoryID = 0; }
                             else { item.SubCategoryID = item.SubCategoryID; }
-                            if (item.DrinkSize == null)
-                            { item.DrinkSize = 0; }
-                            else { item.DrinkSize = item.DrinkSize; }
-                            if (item.StartDateG == null)
-                            { item.StartDateG = DateTime.MinValue; }
-                            else { item.StartDateG = item.StartDateG; }
-                            if (item.EndDateG == null)
-                            { item.EndDateG = DateTime.MinValue; }
-                            else { item.EndDateG = item.EndDateG; }
-                            if (item.StartTimeG == null)
-                            { item.StartTimeG = DateTime.MinValue; }
-                            else { item.StartTimeG = item.StartTimeG; }
-                            if (item.EndTimeG == null)
-                            { item.EndDateG = DateTime.MinValue; }
-                            else { item.EndTimeG = item.EndTimeG; }
-
+                            if (item.NewAmount == null)
+                            { item.NewAmount = 0; }
+                            else { item.NewAmount = item.NewAmount; }
+                           
                             Specials.Add(item);
                         }
 
                         var config = new MapperConfiguration(cfg =>
                         {
-                            cfg.CreateMap<GetSpecials_Result, SpecialResponsemodel>();
+                            cfg.CreateMap<HotelSpecial, SpecialResponsemodel>();
                            
 
                         });

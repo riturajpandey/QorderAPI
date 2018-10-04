@@ -19,13 +19,11 @@ namespace DrinkingBuddy.Models
 
     public class OrderMenu
     {
-       
         public int HotelMenuItemId { get; set; }
         public int QTYOrdered { get; set; }
         public int? HotelSpecialID { get; set; }
         public double AcceptedPricePerItem { get; set; }
         public string PatronsOrderDetailsNotes { get; set; }
-       
     }
 
 
