@@ -62,7 +62,7 @@ namespace DrinkingBuddy.Controllers
                     if (Rows > 0)
                     {
 
-                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID & m.HotelID == model.HotelID).FirstOrDefault();
+                        var orders = _context.PatronsOrders.Where(m => m.DateTimeOfOrder == model.DateTimeOfOrder).FirstOrDefault();
 
                         for (int i = 0; i < dataOrderDetail.Count(); i++)
                         {
@@ -97,6 +97,8 @@ namespace DrinkingBuddy.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
 
         [HttpGet]
         [Route("OrderHistory")]
@@ -207,7 +209,169 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+       #endregion
 
+        #region GroupOrders
+
+        [HttpPost] 
+        [Route("GroupOrder")]
+        public IHttpActionResult GroupOrder(GroupOrderBindingModel model)
+        {
+            try
+            {
+                if(ModelState.IsValid)
+                {
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<GroupOrderBindingModel, TrackGroupOrder>();
+
+
+                        cfg.CreateMap<OrderMenu, TrackGroupOrderDetail>();
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var dataOrder = mapper.Map<TrackGroupOrder>(model);
+                    var dataOrderDetail = mapper.Map<List<TrackGroupOrderDetail>>(model.OrderMenus);
+
+                    _context.TrackGroupOrders.Add(dataOrder);
+                    int i=_context.SaveChanges();
+                    if(i>0)
+                    {
+                        _context.TrackGroupOrderDetails.AddRange(dataOrderDetail);
+                        int DetailOrder = _context.SaveChanges();
+                        if (DetailOrder>0)
+                        {
+                            return Ok(new ResponseModel { Message = "Order Added Successfully.", Status = "Success" });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Order's Details Addition Failed.", Status = "Success" });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Order Addition Failed.", Status = "Success" });
+                    }
+                }
+                else
+                {
+                    return BadRequest("Models Data Invalid.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        //[HttpGet]
+        //[Route("FinalOrderOfGroup")]
+        //public IHttpActionResult FinalOrderOfGroup(int PatronID, int PatronsGroupID, int OpenMinutes)
+        //{
+        //    try
+        //    {
+        //        if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
+        //        {
+        //            var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
+        //            var PatronsOrderDetais=_context.TrackGroupOrderDetails.Where(m=>m.TrackGroupOrderID==patrons)
+
+        //            var config = new MapperConfiguration(cfg =>
+        //            {
+        //                cfg.CreateMap<TrackGroupOrder, OrderBindingModel>();
+        //                cfg.CreateMap<TrackGroupOrderDetail, GroupOrderMenu>();
+
+        //            });
+
+        //            IMapper mapper = config.CreateMapper();
+        //            var dataOrder = mapper.Map<PatronsOrder>(PatronsOrders);
+        //            var dataOrderDetail = mapper.Map<List<GroupOrderMenu>>();
+
+
+        //            //code to wait for the time set by patron.
+        //            var timer = new System.Threading.Timer(
+        //                    e => InsertInOrders(model),
+        //              null,
+        //             TimeSpan.Zero,
+        //             TimeSpan.FromMinutes(OpenMinutes));
+
+
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("The Passed parameter's are not valid.");
+        //        }
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+
+        public object InsertInOrders(OrderBindingModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<OrderBindingModel, PatronsOrder>();
+
+                        //  cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
+                        cfg.CreateMap<OrderMenu, PatronsOrdersDetail>();
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var dataOrder = mapper.Map<PatronsOrder>(model);
+                    var dataOrderDetail = mapper.Map<List<PatronsOrdersDetail>>(model.OrderMenus);
+
+                    _context.PatronsOrders.Add(dataOrder);
+                    int Rows = _context.SaveChanges();
+                    if (Rows > 0)
+                    {
+
+                        var orders = _context.PatronsOrders.Where(m => m.DateTimeOfOrder == model.DateTimeOfOrder).FirstOrDefault();
+
+                        for (int i = 0; i < dataOrderDetail.Count(); i++)
+                        {
+                            dataOrderDetail[i].PatronsOrdersID = orders.PatronsOrdersID;
+
+                        }
+                        _context.PatronsOrdersDetails.AddRange(dataOrderDetail);
+                        int DetailOrder = _context.SaveChanges();
+                        if (DetailOrder > 0)
+                        {
+                            PlaceOrderResponse response = new PlaceOrderResponse();
+                            response.OrderId = orders.PatronsOrdersID;
+                            return response;
+                        }
+                        else { return false; }
+
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    return false;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #endregion
 

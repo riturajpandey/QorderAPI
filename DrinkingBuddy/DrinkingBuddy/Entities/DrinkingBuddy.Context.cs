@@ -81,6 +81,8 @@ namespace DrinkingBuddy.Entities
         public virtual DbSet<PatronsResetPasswordToken> PatronsResetPasswordTokens { get; set; }
         public virtual DbSet<PatronsFavourite> PatronsFavourites { get; set; }
         public virtual DbSet<TempVersion> TempVersions { get; set; }
+        public virtual DbSet<TrackGroupOrder> TrackGroupOrders { get; set; }
+        public virtual DbSet<TrackGroupOrderDetail> TrackGroupOrderDetails { get; set; }
     
         [DbFunction("DrinkingBuddyEntities", "fnGetBestCurrentPriceForHotelMenuItem")]
         public virtual IQueryable<fnGetBestCurrentPriceForHotelMenuItem_Result> fnGetBestCurrentPriceForHotelMenuItem(Nullable<int> hotelID, Nullable<int> hotelMenuItemIDpassed)

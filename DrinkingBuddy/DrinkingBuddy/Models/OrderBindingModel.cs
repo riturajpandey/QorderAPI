@@ -13,8 +13,8 @@ namespace DrinkingBuddy.Models
         public List<OrderMenu> OrderMenus { get; set; }
         public double FinalAmountForOrder { get; set; }
         public string PaymentGatewayReturnID { get; set; }
-        public DateTime? DateTimeOfOrder { get; set; }
-        public string PatronsOrderNotes { get; set; }
+        public Nullable<System.DateTime> DateTimeOfOrder { get; set; }
+
     }
 
     public class OrderMenu
@@ -22,7 +22,7 @@ namespace DrinkingBuddy.Models
         public int HotelMenuItemId { get; set; }
         public int QTYOrdered { get; set; }
         public int? HotelSpecialID { get; set; }
-        public double AcceptedPricePerItem { get; set; }
+        public decimal? AcceptedPricePerItem { get; set; }
         public string PatronsOrderDetailsNotes { get; set; }
     }
 
@@ -55,16 +55,32 @@ namespace DrinkingBuddy.Models
         public string PaymentCardNumberEncrypted { get; set; }
         public string PaymentCardCvvCodeEncrypted { get; set; }
         public string PaymentCardExpiryEncrypted { get; set; }
-
-
     }
 
     public class PlaceOrderResponse
     {
         public int OrderId { get; set; }
-
     }
 
-    
+    public class GroupOrderMenu
+    {
+        public int HotelMenuItemId { get; set; }
+        public int QTYOrdered { get; set; }
+        public int? HotelSpecialID { get; set; }
+        public decimal? AcceptedPricePerItem { get; set; }
+        public string PatronsOrderDetailsNotes { get; set; }
+    }
+
+    public class GroupOrderBindingModel
+    {
+        public int PatronID { get; set; }
+        public int HotelID { get; set; }
+        public int PatronsGroupID { get; set; }
+        public List<GroupOrderMenu> OrderMenus { get; set; }
+        public decimal? FinalAmountForOrder { get; set; }
+        public string PaymentGatewayReturnID { get; set; }
+        public DateTime? DateTimeOfOrder { get; set; }
+       
+    }
 
 }

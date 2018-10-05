@@ -805,6 +805,31 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           </Key>
           <Property Name="LatestVersion" Type="varchar(max)" Nullable="false" />
         </EntityType>
+        <EntityType Name="TrackGroupOrderDetails">
+          <Key>
+            <PropertyRef Name="TrackGroupOrderDetailID" />
+          </Key>
+          <Property Name="TrackGroupOrderDetailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HotelMenuItemID" Type="int" Nullable="false" />
+          <Property Name="QTYOrdered" Type="int" />
+          <Property Name="HotelSpecialID" Type="int" />
+          <Property Name="AcceptedPricePerItem" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="PatronsOrderDetailsNotes" Type="varchar" MaxLength="1000" />
+          <Property Name="TrackGroupOrderID" Type="int" />
+        </EntityType>
+        <EntityType Name="TrackGroupOrders">
+          <Key>
+            <PropertyRef Name="TrackGroupOrderID" />
+          </Key>
+          <Property Name="TrackGroupOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HotelID" Type="int" Nullable="false" />
+          <Property Name="PatronID" Type="int" />
+          <Property Name="PatronsGroupID" Type="int" />
+          <Property Name="FinalAmountForOrder" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="PaymentGatewayReturnID" Type="varchar" MaxLength="256" />
+          <Property Name="DateTimeOfOrder" Type="datetime" />
+          <Property Name="PatronsOrderNotes" Type="varchar" MaxLength="1000" />
+        </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1790,6 +1815,8 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <EntitySet Name="PatronsPreferences" EntityType="Self.PatronsPreferences" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsSessionTokens" EntityType="Self.PatronsSessionTokens" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatesG" EntityType="Self.StatesG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrackGroupOrderDetails" EntityType="Self.TrackGroupOrderDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrackGroupOrders" EntityType="Self.TrackGroupOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsResetPasswordTokens" EntityType="Self.PatronsResetPasswordTokens" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [PatronsResetPasswordTokens].[PatronsResetPasswordTokenID] AS [PatronsResetPasswordTokenID], 
@@ -4194,6 +4221,8 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           </FunctionImport>
           <EntitySet Name="PatronsFavourites" EntityType="DrinkingBuddyEntity.PatronsFavourite" />
           <EntitySet Name="TempVersions" EntityType="DrinkingBuddyEntity.TempVersion" />
+          <EntitySet Name="TrackGroupOrders" EntityType="DrinkingBuddyEntity.TrackGroupOrder" />
+          <EntitySet Name="TrackGroupOrderDetails" EntityType="DrinkingBuddyEntity.TrackGroupOrderDetail" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4334,6 +4363,31 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
             <PropertyRef Name="LatestVersion" />
           </Key>
           <Property Name="LatestVersion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TrackGroupOrder">
+          <Key>
+            <PropertyRef Name="TrackGroupOrderID" />
+          </Key>
+          <Property Name="TrackGroupOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HotelID" Type="Int32" Nullable="false" />
+          <Property Name="PatronID" Type="Int32" />
+          <Property Name="PatronsGroupID" Type="Int32" />
+          <Property Name="FinalAmountForOrder" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="PaymentGatewayReturnID" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="DateTimeOfOrder" Type="DateTime" Precision="3" />
+          <Property Name="PatronsOrderNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TrackGroupOrderDetail">
+          <Key>
+            <PropertyRef Name="TrackGroupOrderDetailID" />
+          </Key>
+          <Property Name="TrackGroupOrderDetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HotelMenuItemID" Type="Int32" Nullable="false" />
+          <Property Name="QTYOrdered" Type="Int32" />
+          <Property Name="HotelSpecialID" Type="Int32" />
+          <Property Name="AcceptedPricePerItem" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="PatronsOrderDetailsNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="TrackGroupOrderID" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5351,6 +5405,33 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.TempVersion">
               <MappingFragment StoreEntitySet="TempVersion">
                 <ScalarProperty Name="LatestVersion" ColumnName="LatestVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrackGroupOrders">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.TrackGroupOrder">
+              <MappingFragment StoreEntitySet="TrackGroupOrders">
+                <ScalarProperty Name="PatronsOrderNotes" ColumnName="PatronsOrderNotes" />
+                <ScalarProperty Name="DateTimeOfOrder" ColumnName="DateTimeOfOrder" />
+                <ScalarProperty Name="PaymentGatewayReturnID" ColumnName="PaymentGatewayReturnID" />
+                <ScalarProperty Name="FinalAmountForOrder" ColumnName="FinalAmountForOrder" />
+                <ScalarProperty Name="PatronsGroupID" ColumnName="PatronsGroupID" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="TrackGroupOrderID" ColumnName="TrackGroupOrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrackGroupOrderDetails">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.TrackGroupOrderDetail">
+              <MappingFragment StoreEntitySet="TrackGroupOrderDetails">
+                <ScalarProperty Name="TrackGroupOrderID" ColumnName="TrackGroupOrderID" />
+                <ScalarProperty Name="PatronsOrderDetailsNotes" ColumnName="PatronsOrderDetailsNotes" />
+                <ScalarProperty Name="AcceptedPricePerItem" ColumnName="AcceptedPricePerItem" />
+                <ScalarProperty Name="HotelSpecialID" ColumnName="HotelSpecialID" />
+                <ScalarProperty Name="QTYOrdered" ColumnName="QTYOrdered" />
+                <ScalarProperty Name="HotelMenuItemID" ColumnName="HotelMenuItemID" />
+                <ScalarProperty Name="TrackGroupOrderDetailID" ColumnName="TrackGroupOrderDetailID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

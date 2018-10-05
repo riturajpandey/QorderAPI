@@ -451,6 +451,12 @@
     <Compile Include="Entities\TempVersion.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\TrackGroupOrder.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TrackGroupOrderDetail.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Facebook\FacebookBackChannelHandler.cs" />
     <Compile Include="Filter\APIAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
