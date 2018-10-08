@@ -22,5 +22,6 @@ namespace DrinkingBuddy.Entities
         public string PaymentGatewayReturnID { get; set; }
         public Nullable<System.DateTime> DateTimeOfOrder { get; set; }
         public string PatronsOrderNotes { get; set; }
+        public Nullable<int> OpenMinutes { get; set; }
     }
 }

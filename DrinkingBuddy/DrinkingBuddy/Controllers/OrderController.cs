@@ -266,50 +266,57 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        //[HttpGet]
-        //[Route("FinalOrderOfGroup")]
-        //public IHttpActionResult FinalOrderOfGroup(int PatronID, int PatronsGroupID, int OpenMinutes)
-        //{
-        //    try
-        //    {
-        //        if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
-        //        {
-        //            var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
-        //            var PatronsOrderDetais=_context.TrackGroupOrderDetails.Where(m=>m.TrackGroupOrderID==patrons)
+        [HttpGet]
+        [Route("FinalOrderOfGroup")]
+        public IHttpActionResult FinalOrderOfGroup(int PatronID, int PatronsGroupID, int OpenMinutes)
+        {
+            try
+            {
+                if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
+                {
+                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
+                    var PatronsOrderDetais = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == PatronsOrders.TrackGroupOrderID).ToList();
 
-        //            var config = new MapperConfiguration(cfg =>
-        //            {
-        //                cfg.CreateMap<TrackGroupOrder, OrderBindingModel>();
-        //                cfg.CreateMap<TrackGroupOrderDetail, GroupOrderMenu>();
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<TrackGroupOrder, OrderBindingModel>();
+                        cfg.CreateMap<TrackGroupOrderDetail, OrderMenu>();
 
-        //            });
+                    });
 
-        //            IMapper mapper = config.CreateMapper();
-        //            var dataOrder = mapper.Map<PatronsOrder>(PatronsOrders);
-        //            var dataOrderDetail = mapper.Map<List<GroupOrderMenu>>();
-
-
-        //            //code to wait for the time set by patron.
-        //            var timer = new System.Threading.Timer(
-        //                    e => InsertInOrders(model),
-        //              null,
-        //             TimeSpan.Zero,
-        //             TimeSpan.FromMinutes(OpenMinutes));
+                    IMapper mapper = config.CreateMapper();
+                    var dataOrder = mapper.Map<OrderBindingModel>(PatronsOrders);
+                    var dataOrderDetail = mapper.Map<List<OrderMenu>>(PatronsOrderDetais);
 
 
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("The Passed parameter's are not valid.");
-        //        }
+                    OrderBindingModel data = new OrderBindingModel();
+                    data = dataOrder;
+                    data.OrderMenus = dataOrderDetail;
+                    
+                    //code to wait for the time set by patron.
+                    var timer = new System.Threading.Timer(
+                            e => InsertInOrders(data),
+                      null,
+                     TimeSpan.FromMinutes(OpenMinutes),
+                     TimeSpan.Zero);
 
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+                  
+
+                    return Ok(new ResponseModel { Message = "The group order has initiated.", Status = "Success" });
+                }
+                else
+                {
+                    return BadRequest("The Passed parameter's are not valid.");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         public object InsertInOrders(OrderBindingModel model)
@@ -507,7 +514,7 @@ namespace DrinkingBuddy.Controllers
 
 
         //TODO:-Method to check the Encryption.(Only for testing purpose.)
-        [HttpPost]
+        [HttpGet]
         [Route("ShowCard")]
         public IHttpActionResult ShowCard(int PatronsID)
         {

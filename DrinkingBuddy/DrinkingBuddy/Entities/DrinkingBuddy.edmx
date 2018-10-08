@@ -539,10 +539,10 @@
           <Property Name="EmailAddress" Type="varchar" MaxLength="500" />
           <Property Name="Gassword" Type="varchar" MaxLength="500" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="DeviceToken" Type="varchar" MaxLength="50" />
           <Property Name="DeviceType" Type="varchar" MaxLength="50" />
           <Property Name="RegisterOn" Type="datetime" />
           <Property Name="LastLogOn" Type="datetime" />
+          <Property Name="DeviceToken" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="PatronsFavourites">
           <Key>
@@ -829,6 +829,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <Property Name="PaymentGatewayReturnID" Type="varchar" MaxLength="256" />
           <Property Name="DateTimeOfOrder" Type="datetime" />
           <Property Name="PatronsOrderNotes" Type="varchar" MaxLength="1000" />
+          <Property Name="OpenMinutes" Type="int" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -2746,7 +2747,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <NavigationProperty Name="PatronsPreferences" Relationship="Self.FK_PatronsPreferences_Patrons" FromRole="Patrons" ToRole="PatronsPreferences" />
           <NavigationProperty Name="PatronsResetPasswordTokens" Relationship="Self.FK_PatronsResetPasswordTokens_Patrons" FromRole="Patrons" ToRole="PatronsResetPasswordTokens" />
           <NavigationProperty Name="PatronsSessionTokens" Relationship="Self.FK_PatronsSessionTokens_Patrons" FromRole="Patrons" ToRole="PatronsSessionTokens" />
-          <Property Name="DeviceToken" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DeviceType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RegisterOn" Type="DateTime" Precision="3" />
           <Property Name="LastLogOn" Type="DateTime" Precision="3" />
@@ -4376,6 +4377,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <Property Name="PaymentGatewayReturnID" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="DateTimeOfOrder" Type="DateTime" Precision="3" />
           <Property Name="PatronsOrderNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="OpenMinutes" Type="Int32" />
         </EntityType>
         <EntityType Name="TrackGroupOrderDetail">
           <Key>
@@ -5411,6 +5413,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <EntitySetMapping Name="TrackGroupOrders">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.TrackGroupOrder">
               <MappingFragment StoreEntitySet="TrackGroupOrders">
+                <ScalarProperty Name="OpenMinutes" ColumnName="OpenMinutes" />
                 <ScalarProperty Name="PatronsOrderNotes" ColumnName="PatronsOrderNotes" />
                 <ScalarProperty Name="DateTimeOfOrder" ColumnName="DateTimeOfOrder" />
                 <ScalarProperty Name="PaymentGatewayReturnID" ColumnName="PaymentGatewayReturnID" />
