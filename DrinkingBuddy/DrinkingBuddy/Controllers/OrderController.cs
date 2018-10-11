@@ -62,11 +62,19 @@ namespace DrinkingBuddy.Controllers
                     if (Rows > 0)
                     {
 
-                        var orders = _context.PatronsOrders.Where(m => m.DateTimeOfOrder == model.DateTimeOfOrder).FirstOrDefault();
+                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID&m.HotelID==model.HotelID).ToList();
+                        PatronsOrder _PatronsOrder = new PatronsOrder();
+                        foreach (var item in orders)
+                        {
+                            if (item.DateTimeOfOrder==model.DateTimeOfOrder)
+                            {
+                                _PatronsOrder = item;
+                            }
+                        }
 
                         for (int i = 0; i < dataOrderDetail.Count(); i++)
                         {
-                            dataOrderDetail[i].PatronsOrdersID = orders.PatronsOrdersID;
+                            dataOrderDetail[i].PatronsOrdersID = _PatronsOrder.PatronsOrdersID;
 
                         }
                         _context.PatronsOrdersDetails.AddRange(dataOrderDetail);
@@ -74,7 +82,7 @@ namespace DrinkingBuddy.Controllers
                         if (DetailOrder > 0)
                         {
                             PlaceOrderResponse response = new PlaceOrderResponse();
-                            response.OrderId = orders.PatronsOrdersID;
+                            response.OrderId = _PatronsOrder.PatronsOrdersID; 
                             return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
                         }
                         else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
@@ -274,7 +282,7 @@ namespace DrinkingBuddy.Controllers
             {
                 if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
                 {
-                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
+                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID&m.OpenMinutes==OpenMinutes).FirstOrDefault();
                     var PatronsOrderDetais = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == PatronsOrders.TrackGroupOrderID).ToList();
 
                     var config = new MapperConfiguration(cfg =>

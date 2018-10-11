@@ -83,6 +83,7 @@ namespace DrinkingBuddy.Models
     public class HotelsMenuResponseModel
     {
         private string _DrinkImage;
+        private bool _Favourite;
         public int HotelMenuID { get; set; }
         public string DrinkName { get; set; }
         public Nullable<decimal> DrinkSize { get; set; }
@@ -99,6 +100,29 @@ namespace DrinkingBuddy.Models
                 return _DrinkImage= "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
             }
 
+
+        }
+        public bool IsFavourite
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.PatronsFavourites.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    if (Catagory == null)
+                    {
+                        _Favourite = false;
+                    }
+                    else
+                    {
+                        _Favourite = true;
+                    }
+                }
+
+                return _Favourite;
+
+
+            }
 
         }
     }

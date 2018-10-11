@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DrinkingBuddyEntity.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DrinkingBuddyEntity.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -555,6 +555,19 @@
           <Property Name="HotelSubCatagoryID" Type="int" Nullable="false" />
           <Property Name="HotelMenuID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="PatronsGroupInvitation">
+          <Key>
+            <PropertyRef Name="PatronsGroupInvitationID" />
+          </Key>
+          <Property Name="PatronsGroupInvitationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HotelID" Type="int" />
+          <Property Name="MasterPatronID" Type="int" />
+          <Property Name="PatronsGroupID" Type="int" Nullable="false" />
+          <Property Name="PatronID" Type="int" Nullable="false" />
+          <Property Name="RequestSentDateTime" Type="datetime" />
+          <Property Name="RequestAccepedDateTime" Type="datetime" />
+          <Property Name="IsAccepted" Type="bit" />
+        </EntityType>
         <EntityType Name="PatronsGroups">
           <Key>
             <PropertyRef Name="PatronsGroupID" />
@@ -830,6 +843,78 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <Property Name="DateTimeOfOrder" Type="datetime" />
           <Property Name="PatronsOrderNotes" Type="varchar" MaxLength="1000" />
           <Property Name="OpenMinutes" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DrinkingBuddy.dbo.BarSalesView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BarSalesView">
+          <Key>
+            <PropertyRef Name="BarOrQ" />
+            <PropertyRef Name="OrderCollected" />
+            <PropertyRef Name="DeliveredByHotel" />
+            <PropertyRef Name="HotelID" />
+            <PropertyRef Name="StaffMemberWhoDeliveredOrderID" />
+          </Key>
+          <Property Name="BarOrQ" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="DateTimeCollected" Type="datetime" />
+          <Property Name="DrinkName" Type="varchar" MaxLength="500" />
+          <Property Name="DrinkSize" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="DrinkNameAndSize" Type="varchar" MaxLength="551" />
+          <Property Name="QTYOrdered" Type="int" />
+          <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="varchar" MaxLength="256" />
+          <Property Name="PriceAtTimeOfBuying" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="OrderCollected" Type="int" Nullable="false" />
+          <Property Name="DeliveredByHotel" Type="int" Nullable="false" />
+          <Property Name="FinalAmountOfOrder" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="HotelID" Type="int" Nullable="false" />
+          <Property Name="StaffMemberWhoStartedOrderName" Type="int" />
+          <Property Name="StaffMemberWhoStartedOrderID" Type="int" />
+          <Property Name="StaffMemberWhoCompletedOrderName" Type="int" />
+          <Property Name="StaffMemberWhoCompletedOrderID" Type="int" />
+          <Property Name="StaffMemberWhoDeliveredOrderName" Type="varchar" MaxLength="201" />
+          <Property Name="StaffMemberWhoDeliveredOrderID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DrinkingBuddy.dbo.qOrderView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="qOrderView">
+          <Key>
+            <PropertyRef Name="BarOrQ" />
+            <PropertyRef Name="DeliveredByHotel" />
+          </Key>
+          <Property Name="BarOrQ" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="DateTimeCollected" Type="datetime" />
+          <Property Name="DrinkName" Type="varchar" MaxLength="500" />
+          <Property Name="DrinkSize" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="DrinkNameAndSize" Type="varchar" MaxLength="551" />
+          <Property Name="QTYOrdered" Type="int" />
+          <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="varchar" MaxLength="256" />
+          <Property Name="PriceAtTimeOfBuying" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="OrderCollected" Type="bit" />
+          <Property Name="DeliveredByHotel" Type="bit" Nullable="false" />
+          <Property Name="FinalAmountForOrder" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="StaffMemberWhoStartedOrderName" Type="varchar" MaxLength="201" />
+          <Property Name="StaffMemberWhoStartedOrderID" Type="int" />
+          <Property Name="StaffMemberWhoCompletedOrderName" Type="varchar" MaxLength="201" />
+          <Property Name="StaffMemberWhoCompletedOrderID" Type="int" />
+          <Property Name="StaffMemberWhoDeliveredOrderName" Type="varchar" MaxLength="201" />
+          <Property Name="StaffMemberWhoDeliveredOrderID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="start_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="end_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -1803,6 +1888,7 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <EntitySet Name="HotelTaxGroups" EntityType="Self.HotelTaxGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patrons" EntityType="Self.Patrons" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsFavourites" EntityType="Self.PatronsFavourites" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronsGroupInvitation" EntityType="Self.PatronsGroupInvitation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsGroups" EntityType="Self.PatronsGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsGroupsMembers" EntityType="Self.PatronsGroupsMembers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsHotelLogIns" EntityType="Self.PatronsHotelLogIns" Schema="dbo" store:Type="Tables" />
@@ -1830,6 +1916,59 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
             <DefiningQuery>SELECT 
     [TempVersion].[LatestVersion] AS [LatestVersion]
     FROM [dbo].[TempVersion] AS [TempVersion]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="BarSalesView" EntityType="Self.BarSalesView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BarSalesView].[BarOrQ] AS [BarOrQ], 
+    [BarSalesView].[DateTimeCollected] AS [DateTimeCollected], 
+    [BarSalesView].[DrinkName] AS [DrinkName], 
+    [BarSalesView].[DrinkSize] AS [DrinkSize], 
+    [BarSalesView].[DrinkNameAndSize] AS [DrinkNameAndSize], 
+    [BarSalesView].[QTYOrdered] AS [QTYOrdered], 
+    [BarSalesView].[CategoryNameOfMenuItemAtTimeOfBuying] AS [CategoryNameOfMenuItemAtTimeOfBuying], 
+    [BarSalesView].[PriceAtTimeOfBuying] AS [PriceAtTimeOfBuying], 
+    [BarSalesView].[OrderCollected] AS [OrderCollected], 
+    [BarSalesView].[DeliveredByHotel] AS [DeliveredByHotel], 
+    [BarSalesView].[FinalAmountOfOrder] AS [FinalAmountOfOrder], 
+    [BarSalesView].[HotelID] AS [HotelID], 
+    [BarSalesView].[StaffMemberWhoStartedOrderName] AS [StaffMemberWhoStartedOrderName], 
+    [BarSalesView].[StaffMemberWhoStartedOrderID] AS [StaffMemberWhoStartedOrderID], 
+    [BarSalesView].[StaffMemberWhoCompletedOrderName] AS [StaffMemberWhoCompletedOrderName], 
+    [BarSalesView].[StaffMemberWhoCompletedOrderID] AS [StaffMemberWhoCompletedOrderID], 
+    [BarSalesView].[StaffMemberWhoDeliveredOrderName] AS [StaffMemberWhoDeliveredOrderName], 
+    [BarSalesView].[StaffMemberWhoDeliveredOrderID] AS [StaffMemberWhoDeliveredOrderID]
+    FROM [dbo].[BarSalesView] AS [BarSalesView]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="qOrderView" EntityType="Self.qOrderView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [qOrderView].[BarOrQ] AS [BarOrQ], 
+    [qOrderView].[DateTimeCollected] AS [DateTimeCollected], 
+    [qOrderView].[DrinkName] AS [DrinkName], 
+    [qOrderView].[DrinkSize] AS [DrinkSize], 
+    [qOrderView].[DrinkNameAndSize] AS [DrinkNameAndSize], 
+    [qOrderView].[QTYOrdered] AS [QTYOrdered], 
+    [qOrderView].[CategoryNameOfMenuItemAtTimeOfBuying] AS [CategoryNameOfMenuItemAtTimeOfBuying], 
+    [qOrderView].[PriceAtTimeOfBuying] AS [PriceAtTimeOfBuying], 
+    [qOrderView].[OrderCollected] AS [OrderCollected], 
+    [qOrderView].[DeliveredByHotel] AS [DeliveredByHotel], 
+    [qOrderView].[FinalAmountForOrder] AS [FinalAmountForOrder], 
+    [qOrderView].[StaffMemberWhoStartedOrderName] AS [StaffMemberWhoStartedOrderName], 
+    [qOrderView].[StaffMemberWhoStartedOrderID] AS [StaffMemberWhoStartedOrderID], 
+    [qOrderView].[StaffMemberWhoCompletedOrderName] AS [StaffMemberWhoCompletedOrderName], 
+    [qOrderView].[StaffMemberWhoCompletedOrderID] AS [StaffMemberWhoCompletedOrderID], 
+    [qOrderView].[StaffMemberWhoDeliveredOrderName] AS [StaffMemberWhoDeliveredOrderName], 
+    [qOrderView].[StaffMemberWhoDeliveredOrderID] AS [StaffMemberWhoDeliveredOrderID]
+    FROM [dbo].[qOrderView] AS [qOrderView]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" store:Type="Views" store:Schema="sys">
+            <DefiningQuery>SELECT 
+    [database_firewall_rules].[id] AS [id], 
+    [database_firewall_rules].[name] AS [name], 
+    [database_firewall_rules].[start_ip_address] AS [start_ip_address], 
+    [database_firewall_rules].[end_ip_address] AS [end_ip_address], 
+    [database_firewall_rules].[create_date] AS [create_date], 
+    [database_firewall_rules].[modify_date] AS [modify_date]
+    FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -4224,6 +4363,10 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <EntitySet Name="TempVersions" EntityType="DrinkingBuddyEntity.TempVersion" />
           <EntitySet Name="TrackGroupOrders" EntityType="DrinkingBuddyEntity.TrackGroupOrder" />
           <EntitySet Name="TrackGroupOrderDetails" EntityType="DrinkingBuddyEntity.TrackGroupOrderDetail" />
+          <EntitySet Name="PatronsGroupInvitations" EntityType="DrinkingBuddyEntity.PatronsGroupInvitation" />
+          <EntitySet Name="BarSalesViews" EntityType="DrinkingBuddyEntity.BarSalesView" />
+          <EntitySet Name="qOrderViews" EntityType="DrinkingBuddyEntity.qOrderView" />
+          <EntitySet Name="database_firewall_rules" EntityType="DrinkingBuddyEntity.database_firewall_rules" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4390,6 +4533,85 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
           <Property Name="AcceptedPricePerItem" Type="Decimal" Precision="9" Scale="2" />
           <Property Name="PatronsOrderDetailsNotes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="TrackGroupOrderID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PatronsGroupInvitation">
+          <Key>
+            <PropertyRef Name="PatronsGroupInvitationID" />
+          </Key>
+          <Property Name="PatronsGroupInvitationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HotelID" Type="Int32" />
+          <Property Name="MasterPatronID" Type="Int32" />
+          <Property Name="PatronsGroupID" Type="Int32" Nullable="false" />
+          <Property Name="PatronID" Type="Int32" Nullable="false" />
+          <Property Name="RequestSentDateTime" Type="DateTime" Precision="3" />
+          <Property Name="RequestAccepedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsAccepted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="BarSalesView">
+          <Key>
+            <PropertyRef Name="BarOrQ" />
+            <PropertyRef Name="OrderCollected" />
+            <PropertyRef Name="DeliveredByHotel" />
+            <PropertyRef Name="HotelID" />
+            <PropertyRef Name="StaffMemberWhoDeliveredOrderID" />
+          </Key>
+          <Property Name="BarOrQ" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="DateTimeCollected" Type="DateTime" Precision="3" />
+          <Property Name="DrinkName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DrinkSize" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="DrinkNameAndSize" Type="String" MaxLength="551" FixedLength="false" Unicode="false" />
+          <Property Name="QTYOrdered" Type="Int32" />
+          <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="PriceAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="OrderCollected" Type="Int32" Nullable="false" />
+          <Property Name="DeliveredByHotel" Type="Int32" Nullable="false" />
+          <Property Name="FinalAmountOfOrder" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="HotelID" Type="Int32" Nullable="false" />
+          <Property Name="StaffMemberWhoStartedOrderName" Type="Int32" />
+          <Property Name="StaffMemberWhoStartedOrderID" Type="Int32" />
+          <Property Name="StaffMemberWhoCompletedOrderName" Type="Int32" />
+          <Property Name="StaffMemberWhoCompletedOrderID" Type="Int32" />
+          <Property Name="StaffMemberWhoDeliveredOrderName" Type="String" MaxLength="201" FixedLength="false" Unicode="false" />
+          <Property Name="StaffMemberWhoDeliveredOrderID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="qOrderView">
+          <Key>
+            <PropertyRef Name="BarOrQ" />
+            <PropertyRef Name="DeliveredByHotel" />
+          </Key>
+          <Property Name="BarOrQ" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="DateTimeCollected" Type="DateTime" Precision="3" />
+          <Property Name="DrinkName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DrinkSize" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="DrinkNameAndSize" Type="String" MaxLength="551" FixedLength="false" Unicode="false" />
+          <Property Name="QTYOrdered" Type="Int32" />
+          <Property Name="CategoryNameOfMenuItemAtTimeOfBuying" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="PriceAtTimeOfBuying" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="OrderCollected" Type="Boolean" />
+          <Property Name="DeliveredByHotel" Type="Boolean" Nullable="false" />
+          <Property Name="FinalAmountForOrder" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="StaffMemberWhoStartedOrderName" Type="String" MaxLength="201" FixedLength="false" Unicode="false" />
+          <Property Name="StaffMemberWhoStartedOrderID" Type="Int32" />
+          <Property Name="StaffMemberWhoCompletedOrderName" Type="String" MaxLength="201" FixedLength="false" Unicode="false" />
+          <Property Name="StaffMemberWhoCompletedOrderID" Type="Int32" />
+          <Property Name="StaffMemberWhoDeliveredOrderName" Type="String" MaxLength="201" FixedLength="false" Unicode="false" />
+          <Property Name="StaffMemberWhoDeliveredOrderID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="start_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="end_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5435,6 +5657,79 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.TempVersion' does not have a pri
                 <ScalarProperty Name="QTYOrdered" ColumnName="QTYOrdered" />
                 <ScalarProperty Name="HotelMenuItemID" ColumnName="HotelMenuItemID" />
                 <ScalarProperty Name="TrackGroupOrderDetailID" ColumnName="TrackGroupOrderDetailID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronsGroupInvitations">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsGroupInvitation">
+              <MappingFragment StoreEntitySet="PatronsGroupInvitation">
+                <ScalarProperty Name="IsAccepted" ColumnName="IsAccepted" />
+                <ScalarProperty Name="RequestAccepedDateTime" ColumnName="RequestAccepedDateTime" />
+                <ScalarProperty Name="RequestSentDateTime" ColumnName="RequestSentDateTime" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronsGroupID" ColumnName="PatronsGroupID" />
+                <ScalarProperty Name="MasterPatronID" ColumnName="MasterPatronID" />
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="PatronsGroupInvitationID" ColumnName="PatronsGroupInvitationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BarSalesViews">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.BarSalesView">
+              <MappingFragment StoreEntitySet="BarSalesView">
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderID" ColumnName="StaffMemberWhoDeliveredOrderID" />
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderName" ColumnName="StaffMemberWhoDeliveredOrderName" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderID" ColumnName="StaffMemberWhoCompletedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderName" ColumnName="StaffMemberWhoCompletedOrderName" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderID" ColumnName="StaffMemberWhoStartedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderName" ColumnName="StaffMemberWhoStartedOrderName" />
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="FinalAmountOfOrder" ColumnName="FinalAmountOfOrder" />
+                <ScalarProperty Name="DeliveredByHotel" ColumnName="DeliveredByHotel" />
+                <ScalarProperty Name="OrderCollected" ColumnName="OrderCollected" />
+                <ScalarProperty Name="PriceAtTimeOfBuying" ColumnName="PriceAtTimeOfBuying" />
+                <ScalarProperty Name="CategoryNameOfMenuItemAtTimeOfBuying" ColumnName="CategoryNameOfMenuItemAtTimeOfBuying" />
+                <ScalarProperty Name="QTYOrdered" ColumnName="QTYOrdered" />
+                <ScalarProperty Name="DrinkNameAndSize" ColumnName="DrinkNameAndSize" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DateTimeCollected" ColumnName="DateTimeCollected" />
+                <ScalarProperty Name="BarOrQ" ColumnName="BarOrQ" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="qOrderViews">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.qOrderView">
+              <MappingFragment StoreEntitySet="qOrderView">
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderID" ColumnName="StaffMemberWhoDeliveredOrderID" />
+                <ScalarProperty Name="StaffMemberWhoDeliveredOrderName" ColumnName="StaffMemberWhoDeliveredOrderName" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderID" ColumnName="StaffMemberWhoCompletedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoCompletedOrderName" ColumnName="StaffMemberWhoCompletedOrderName" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderID" ColumnName="StaffMemberWhoStartedOrderID" />
+                <ScalarProperty Name="StaffMemberWhoStartedOrderName" ColumnName="StaffMemberWhoStartedOrderName" />
+                <ScalarProperty Name="FinalAmountForOrder" ColumnName="FinalAmountForOrder" />
+                <ScalarProperty Name="DeliveredByHotel" ColumnName="DeliveredByHotel" />
+                <ScalarProperty Name="OrderCollected" ColumnName="OrderCollected" />
+                <ScalarProperty Name="PriceAtTimeOfBuying" ColumnName="PriceAtTimeOfBuying" />
+                <ScalarProperty Name="CategoryNameOfMenuItemAtTimeOfBuying" ColumnName="CategoryNameOfMenuItemAtTimeOfBuying" />
+                <ScalarProperty Name="QTYOrdered" ColumnName="QTYOrdered" />
+                <ScalarProperty Name="DrinkNameAndSize" ColumnName="DrinkNameAndSize" />
+                <ScalarProperty Name="DrinkSize" ColumnName="DrinkSize" />
+                <ScalarProperty Name="DrinkName" ColumnName="DrinkName" />
+                <ScalarProperty Name="DateTimeCollected" ColumnName="DateTimeCollected" />
+                <ScalarProperty Name="BarOrQ" ColumnName="BarOrQ" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="database_firewall_rules">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.database_firewall_rules">
+              <MappingFragment StoreEntitySet="database_firewall_rules">
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="end_ip_address" ColumnName="end_ip_address" />
+                <ScalarProperty Name="start_ip_address" ColumnName="start_ip_address" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

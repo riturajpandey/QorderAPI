@@ -80,7 +80,7 @@ namespace DrinkingBuddy.Models
         public decimal? FinalAmountForOrder { get; set; }
         public string PaymentGatewayReturnID { get; set; }
         public DateTime? DateTimeOfOrder { get; set; }
-       
+        public Nullable<int> OpenMinutes { get; set; }
     }
 
 }

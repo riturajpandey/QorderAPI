@@ -253,7 +253,13 @@
     <Compile Include="Entities\AspNetUserLogin.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\BarSalesView.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\C__MigrationHistory.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\database_firewall_rules.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\DrinkingBuddy.Context.cs">
@@ -406,6 +412,9 @@
     <Compile Include="Entities\PatronsGroup.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\PatronsGroupInvitation.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\PatronsGroupsMember.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -440,6 +449,9 @@
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\PatronsSessionToken.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\qOrderView.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\ReportGetSalesByDateRange_Result.cs">

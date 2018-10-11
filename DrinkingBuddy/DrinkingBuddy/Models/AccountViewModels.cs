@@ -111,7 +111,7 @@ namespace DrinkingBuddy.Models
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var Catagory = _context.PatronsHotelLogIns.Where(m => m.PatronID == this.PatronsID).FirstOrDefault();
+                    var Catagory = _context.PatronsHotelLogIns.Where(m => m.PatronID == this.PatronsID&m.LogoutDateTime==null).FirstOrDefault();
                     if (Catagory == null)
                     {
                         _HotelID = 0;

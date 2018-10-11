@@ -154,6 +154,7 @@ namespace DrinkingBuddy.Models
         public Nullable<decimal> DrinkSize
         {
             get { 
+
              using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
                     var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();

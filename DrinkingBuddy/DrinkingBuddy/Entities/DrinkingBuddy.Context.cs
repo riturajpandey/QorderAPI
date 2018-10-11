@@ -83,6 +83,10 @@ namespace DrinkingBuddy.Entities
         public virtual DbSet<TempVersion> TempVersions { get; set; }
         public virtual DbSet<TrackGroupOrder> TrackGroupOrders { get; set; }
         public virtual DbSet<TrackGroupOrderDetail> TrackGroupOrderDetails { get; set; }
+        public virtual DbSet<PatronsGroupInvitation> PatronsGroupInvitations { get; set; }
+        public virtual DbSet<BarSalesView> BarSalesViews { get; set; }
+        public virtual DbSet<qOrderView> qOrderViews { get; set; }
+        public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
     
         [DbFunction("DrinkingBuddyEntities", "fnGetBestCurrentPriceForHotelMenuItem")]
         public virtual IQueryable<fnGetBestCurrentPriceForHotelMenuItem_Result> fnGetBestCurrentPriceForHotelMenuItem(Nullable<int> hotelID, Nullable<int> hotelMenuItemIDpassed)

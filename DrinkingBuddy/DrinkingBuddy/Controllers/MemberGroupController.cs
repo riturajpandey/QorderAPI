@@ -30,7 +30,8 @@ namespace DrinkingBuddy.Controllers
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
 
-        #region MemberGroup
+
+        #region Master Patron
 
         [HttpPost]
         [Route("StartGroup")]
@@ -137,6 +138,163 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("IsGroupActive")]
+        public IHttpActionResult IsGroupActive(int PatronsGroupID)
+        {
+            try
+            {
+                if (PatronsGroupID != 0)
+                {
+                    var Isgroupalive = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
+                    if (Isgroupalive.GroupStopDateTime > DateTime.Now)
+                    {
+                        return Ok(new ResponseModel { Message = "The Group is Active.", Status = "Success" });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "The Group has been Expired.", Status = "Failed" });
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
+
+        [HttpGet]
+        [Route("RemovePatron")]
+        public IHttpActionResult RemovePatron(int PatrongroupID, int PatronsID)
+        {
+            try
+            {
+                if (PatrongroupID != null & PatronsID != null)
+                {
+                    var _patroningroup = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == PatrongroupID & m.MemberPatronID == PatronsID).FirstOrDefault();
+                    if (_patroningroup != null)
+                    {
+                        _context.PatronsGroupsMembers.Remove(_patroningroup);
+                        int i = _context.SaveChanges();
+                        if (i > 0)
+                        {
+                            return Ok(new ResponseModel { Message = "Patron Removed Successfully.", Status = "Success" });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Request Execution failed.", Status = "Success" });
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Patron is not found in the goup.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Passed Parameter Invalid.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [HttpGet]//To show list of member in perticular group
+        [Route("GetMemberByGroup")]
+        public IHttpActionResult GetMemberByGroup(int GroupID)
+        {
+            try
+            {
+                if (GroupID != null)
+                {
+                    var members = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == GroupID).ToList();
+                    if (members != null)
+                    {
+
+                        List<MemberByGroupResponse> response = new List<MemberByGroupResponse>();
+                        foreach (var item in members)
+                        {
+                            MemberByGroupResponse single = new MemberByGroupResponse();
+                            single.PatronID = item.MemberPatronID;
+                            response.Add(single);
+                        }
+                        return Ok(new ResponseModel { Message = "Request Executed Successfully.", Status = "Success", Data = response });
+
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Patron Removed Successfully.", Status = "Success" });
+
+                    }
+                }
+                else
+                {
+                    return BadRequest("Invalid Passed Parameter");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpGet]//To show a list of Patrons logged-in in a specifi hotel for invitation.
+        [Route("GetLoggedInPatrons")]
+        public IHttpActionResult GetLoggedInPatrons(int HotelID)
+        {
+            try
+            {
+                if (HotelID > 0)
+                {
+                    var patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.LogoutDateTime == null).ToList();
+
+                    List<MemberByGroupResponse> response = new List<MemberByGroupResponse>();
+                    foreach (var item in patrons)
+                    {
+                        MemberByGroupResponse single = new MemberByGroupResponse();
+                        single.PatronID = item.PatronID;
+                        response.Add(single);
+                    }
+                    if (response != null)
+                    {
+                        return Ok(new ResponseModel { Message = "Request Executed Successfully.", Status = "Success", Data = response });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "No Patron Found in This Hotel.", Status = "Success" });
+                    }
+                }
+                else
+                {
+
+                    return BadRequest("Passed Parameter Invalid");
+                }
+            }
+            catch
+            (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        #endregion
+
+        #region Member Patron
+
         [HttpPost]
         [Route("AcceptInvite")]
         public IHttpActionResult AcceptInvite(AcceptInviteModel model)
@@ -235,13 +393,73 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpGet]//To check if the person have gorup and status in the group.
+        [Route("IsExistInGroup")]
+        public IHttpActionResult IsExistInGroup(int PatronsID, int HotelID)
+        {
+            try
+            {
+                if (PatronsID > 0 & HotelID > 0)
+                {
+                    var _Patrons = _context.PatronsGroups.Where(m => m.MasterPatronID == PatronsID & m.HotelID == HotelID & m.IsActive == true).FirstOrDefault();
+
+                    if (_Patrons != null)
+                    {
+                        GroupByPatronResponse _response = new GroupByPatronResponse();
+                        _response.MasterPatronID = _Patrons.MasterPatronID;
+                        _response.IsMaster = true;
+                        _response.GroupID = _Patrons.PatronsGroupID;
+
+                        var memberpatrons = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == _Patrons.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+                        foreach (var item in memberpatrons)
+                        {
+                            MemberByGroupResponse data = new MemberByGroupResponse();
+                            data.PatronID = item.MemberPatronID;
+                            _response.MemeberPatrons.Add(data);
+                        }
+                        return Ok(new ResponseModel { Message = "Patrons have one group and he is a Master", Status = "Success", Data = _response });
+                    }
+                    else
+                    {
+                        var IsMemeber = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == PatronsID).FirstOrDefault();
+                        if (IsMemeber != null)
+                        {
+                            var groupdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == IsMemeber.PatronsGroupID).FirstOrDefault();
+                            GroupByPatronResponse _response = new GroupByPatronResponse();
+                            _response.GroupID = groupdetails.PatronsGroupID;
+                            _response.MasterPatronID = groupdetails.MasterPatronID;
+                            _response.IsMaster = false;
+                            return Ok(new ResponseModel { Message = "Patron have one group in the Hotel", Status = "Success", Data = _response });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Patron deos not have any group", Status = "Success", });
+                        }
+
+                    }
+                }
+                else
+                {
+                    return BadRequest("Invalid Passed Parameter.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+
+        }
+
+
         [HttpGet]
         [Route("GetDeviceWithToken")]
         public IHttpActionResult GetDeviceWithToken(int HotelID)
         {
             try
             {
-                if (HotelID!=0)
+                if (HotelID != 0)
                 {
                     var Patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.LogoutDateTime == null).ToList();
 
@@ -258,7 +476,7 @@ namespace DrinkingBuddy.Controllers
                         _DeviceTokenResponse.Add(DeviceTokenResponse);
 
                     }
-                    return Ok(new ResponseModel { Message = "Request completed Successfully.", Status = "Success",Data= _DeviceTokenResponse });
+                    return Ok(new ResponseModel { Message = "Request completed Successfully.", Status = "Success", Data = _DeviceTokenResponse });
                 }
                 else
                 {
@@ -266,42 +484,96 @@ namespace DrinkingBuddy.Controllers
                 }
             }
             catch (Exception e)
-            {return BadRequest(e.Message);}
+            { return BadRequest(e.Message); }
 
         }
 
+        #endregion
+
+        #region Invitation
+
         [HttpGet]
-        [Route("IsGroupActive")]
-        public IHttpActionResult IsGroupActive(int PatronsGroupID)
+        [Route("GetAllInvites")]
+        public IHttpActionResult GetAllInvites(int PatronID, int HotelID)
         {
             try
             {
-                if (PatronsGroupID != 0)
+                if (PatronID !=0 & HotelID !=0)
                 {
-                    var Isgroupalive = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
-                    if(Isgroupalive.GroupStopDateTime>DateTime.Now)
+                    var Invites = _context.PatronsGroupInvitations.Where(m => m.HotelID== HotelID & m.PatronID== PatronID).ToList();
+                    if (Invites!=null)
                     {
-                        return Ok(new ResponseModel { Message = "The Group is Active.", Status = "Success"});
+                        List<InvitationResponse> invitationResponse = new List<InvitationResponse>();
+                        foreach (var item in Invites)
+                        {
+                            InvitationResponse invitation = new InvitationResponse();
+                            invitation.PatronsGroupID = item.PatronsGroupID;
+                            invitation.HotelID = item.HotelID;
+                            invitation.MasterPatornID = item.MasterPatronID;
+
+                            invitationResponse.Add(invitation);
+                        }
+                        return Ok(new ResponseModel { Message = "Requeset Executed Successfully", Status = "Success", Data = invitationResponse });
                     }
                     else
                     {
-                        return Ok(new ResponseModel { Message = "The Group has been Expired.", Status = "Failed"});
+                        return Ok(new ResponseModel { Message = "No Invitation is Available for this patron.", Status = "Success"});
                     }
                 }
                 else
                 {
-                    return BadRequest();
-
+                    return BadRequest("Passed Parameter's Invalid");
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
         }
-        
-        #endregion
 
+        [HttpGet]
+        [Route("DeclineInvite")]
+        public IHttpActionResult DeclineInvite(int PatronID, int HotelID)
+        {
+            try
+            {
+                if (PatronID!=0& HotelID!=0)
+                {
+                    var request = _context.PatronsGroupInvitations.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).FirstOrDefault();
+                    if (request!=null)
+                    {
+                        request.IsAccepted = false;
+                        _context.Entry(request).State = EntityState.Modified;
+                        int i=_context.SaveChanges();
+                        if (i>0)
+                        {
+                            return Ok(new ResponseModel { Message = "Status has been Updated Successfully", Status = "Success" });
+                        }
+                        else
+                        {
+                            return Ok(new ResponseModel { Message = "Status Updation Failed", Status = "Success" });
+
+                        }
+                        
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "No Request is Available.", Status = "Success"});
+                    }
+                }
+                else
+                {
+                    return BadRequest("Passed Parameter's Invalid");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+       #endregion
     }
 }

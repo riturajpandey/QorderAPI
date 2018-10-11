@@ -557,16 +557,27 @@ namespace DrinkingBuddy.Controllers
                 if(PatronID!=0&HotelID!=0)
                 {
                     var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
+
+                    List<HotelMenu> MenuList = new List<HotelMenu>();
+
+                    foreach (var item in Favourite)
+                    {
+                        HotelMenu _HotelMenu = new HotelMenu();
+                        _HotelMenu = _context.HotelMenus.Where(m => m.HotelMenuID == item.HotelMenuID).FirstOrDefault();
+
+                        MenuList.Add(_HotelMenu);
+                    }
+
                     var config = new MapperConfiguration(cfg =>
                     {
                         cfg.CreateMap<PatronsFavourite, PatronsFavouritesResponseModel>();
-                        
-                        
+                        cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>();
 
-                    });
+                   });
 
                     IMapper mapper = config.CreateMapper();
-                    var data = mapper.Map<List<PatronsFavouritesResponseModel>>(Favourite);
+                    var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
+                    
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
                 }
                 else
@@ -626,6 +637,45 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+
+        [HttpGet]
+        [Route("RemoveFavourites")]
+        public IHttpActionResult RemoveFavourites(int PatronsID, int HotelMenuID)
+        {
+            try
+            {
+
+                if (PatronsID != null & HotelMenuID != null)
+                {
+                    var FavRecord = _context.PatronsFavourites.Where(m => m.PatronID == PatronsID & m.HotelMenuID == HotelMenuID).FirstOrDefault();
+
+                    _context.PatronsFavourites.Remove(FavRecord);
+                    int row = _context.SaveChanges();
+                    if (row>0)
+                    {
+                        return Ok(new ResponseModel { Message = "Removed from Favourite Successfully.", Status = "Success"});
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Removed from Favourite Failed.", Status = "Success"});
+                    }
+                }
+                else
+                {
+                    return BadRequest("Parameters Invalid");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+
+
+
+        }
+
         #endregion 
 
         [HttpPost]
@@ -637,7 +687,7 @@ namespace DrinkingBuddy.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID).FirstOrDefault();
+                    var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID&m.LogoutDateTime==null).FirstOrDefault();
                     if (PatronHotelLogins != null)
                     {
                         PatronHotelLogins.LogoutDateTime = DateTime.Now;
