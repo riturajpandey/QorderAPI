@@ -75,6 +75,12 @@ namespace DrinkingBuddy.Controllers
 
                             if (Response != null)
                             {
+                                //code to De-activate group after 5 hours.
+                                var timer = new System.Threading.Timer(
+                                        e => DeActivateGruopById(Response.PatronsGroupID),
+                                  null,
+                                 TimeSpan.FromHours(5),
+                                 TimeSpan.Zero);
 
                                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Response });
                             }
@@ -103,17 +109,76 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+
+        //TODO:The method will Deactivated the group and the members associated with the gruop after 5 Hours.
+        private object DeActivateGruopById(int GroupID)
+        {
+            try
+            {
+                if (GroupID > 0)
+                {
+                    var group = _context.PatronsGroups.Where(m => m.PatronsGroupID == GroupID).FirstOrDefault();
+                    if (group != null)
+                    {
+                        group.IsActive = false;
+                        _context.Entry(group).State = EntityState.Modified;
+                        int i = _context.SaveChanges();
+
+                        if (i > 0)
+                        {
+                            var groupmember = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == GroupID).ToList();
+                            foreach (var item in groupmember)
+                            {
+                                item.DateTimeLeftGroup = DateTime.Now;
+                                groupmember.Add(item);
+                            }
+
+                            _context.Entry(groupmember).State = EntityState.Modified;
+                            int row = _context.SaveChanges();
+                            if (row > 0)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        //TODO:The method will update the group as inactive and all the members associated with the group.
         [HttpPost]
         [Route("StopGroup")]
-        public IHttpActionResult StopGroup(StopGroup model)
+        public IHttpActionResult StopGroup(int PatronGroupID)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    PatronsGroup data = _context.PatronsGroups.Where(m => m.MasterPatronID == model.PatronID & m.HotelID == model.HotelID & m.IsActive == true).FirstOrDefault();
+                    PatronsGroup data = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronGroupID).FirstOrDefault();
 
-                    data.GroupStopDateTime = model.GroupStopDateTime;
+                    data.GroupStopDateTime = DateTime.Now;
                     data.IsActive = false;
                     _context.Entry(data).State = EntityState.Modified;
                     int result = _context.SaveChanges();
@@ -252,19 +317,20 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]//To show a list of Patrons logged-in in a specifi hotel for invitation.
         [Route("GetLoggedInPatrons")]
-        public IHttpActionResult GetLoggedInPatrons(int HotelID)
+        public IHttpActionResult GetLoggedInPatrons(int HotelID, int PatronID)
         {
             try
             {
-                if (HotelID > 0)
+                if (HotelID > 0 & PatronID > 0)
                 {
-                    var patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.LogoutDateTime == null).ToList();
+                    var patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.PatronID != PatronID & m.LogoutDateTime == null).ToList();
 
-                    List<MemberByGroupResponse> response = new List<MemberByGroupResponse>();
+                    List<PatronByHotelResponse> response = new List<PatronByHotelResponse>();
                     foreach (var item in patrons)
                     {
-                        MemberByGroupResponse single = new MemberByGroupResponse();
+                        PatronByHotelResponse single = new PatronByHotelResponse();
                         single.PatronID = item.PatronID;
+                        single.HotelID = item.HotelID;
                         response.Add(single);
                     }
                     if (response != null)
@@ -291,6 +357,48 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpPost]
+        [Route("SendInvitation")]
+        public IHttpActionResult SendInvitation(SendInviteBinding model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<SendInviteBinding, PatronsGroupInvitation>();
+                        cfg.CreateMap<PatronsGroupInvitation, SendInviteBinding>();
+
+                    });
+
+                    IMapper mapper = config.CreateMapper();
+                    var data = mapper.Map<PatronsGroupInvitation>(model);
+                    data.RequestSentDateTime = DateTime.Now;
+                    _context.PatronsGroupInvitations.Add(data);
+                    int i = _context.SaveChanges();
+                    if (i > 0)
+                    {
+                        return Ok(new ResponseModel { Message = "The Invitation Has been Saved.", Status = "Success" });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "The Invitation Has been Saved.", Status = "Success" });
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
         #endregion
 
         #region Member Patron
@@ -305,23 +413,34 @@ namespace DrinkingBuddy.Controllers
                 {
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<AcceptInviteModel, PatronsGroupsMember>();
-                            cfg.CreateMap<PatronsGroupsMember, AcceptInviteModel>();
 
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<PatronsGroupsMember>(model);
-
-                        _context.PatronsGroupsMembers.Add(data);
+                        var ChangeInvitestatus = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.PatronID == model.MemberPatronID & m.IsAccepted == null).FirstOrDefault();
+                        ChangeInvitestatus.IsAccepted = true;
+                        ChangeInvitestatus.RequestAccepedDateTime = DateTime.Now;
+                        _context.Entry(ChangeInvitestatus).State = EntityState.Modified;
                         int Rows = _context.SaveChanges();
-
                         if (Rows > 0)
                         {
-                            return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success" });
+                            var config = new MapperConfiguration(cfg =>
+                            {
+                                cfg.CreateMap<AcceptInviteModel, PatronsGroupsMember>();
+                                cfg.CreateMap<PatronsGroupsMember, AcceptInviteModel>();
 
+                            });
+
+                            IMapper mapper = config.CreateMapper();
+                            var data = mapper.Map<PatronsGroupsMember>(model);
+                            _context.PatronsGroupsMembers.Add(data);
+
+                            int row = _context.SaveChanges();
+                            if (row > 0)
+                            {
+                                return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success" });
+                            }
+                            else
+                            {
+                                return Ok(new ResponseModel { Message = "The member could not be added.", Status = "Success" });
+                            }
                         }
                         else
                         {
@@ -411,13 +530,16 @@ namespace DrinkingBuddy.Controllers
                         _response.GroupID = _Patrons.PatronsGroupID;
 
                         var memberpatrons = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == _Patrons.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+
+                        List<MemberByGroupResponse> data = new List<MemberByGroupResponse>();
                         foreach (var item in memberpatrons)
                         {
-                            MemberByGroupResponse data = new MemberByGroupResponse();
-                            data.PatronID = item.MemberPatronID;
-                            _response.MemeberPatrons.Add(data);
+                            MemberByGroupResponse single = new MemberByGroupResponse();
+                            single.PatronID = item.MemberPatronID;
+                            data.Add(single);
                         }
-                        return Ok(new ResponseModel { Message = "Patrons have one group and he is a Master", Status = "Success", Data = _response });
+                        _response.MemeberPatrons = data;
+                        return Ok(new ResponseModel { Message = "Patrons have one group and he is the Master", Status = "Success", Data = _response });
                     }
                     else
                     {
@@ -429,6 +551,18 @@ namespace DrinkingBuddy.Controllers
                             _response.GroupID = groupdetails.PatronsGroupID;
                             _response.MasterPatronID = groupdetails.MasterPatronID;
                             _response.IsMaster = false;
+
+                            var memberpatrons = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == groupdetails.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+
+                            List<MemberByGroupResponse> data = new List<MemberByGroupResponse>();
+                            foreach (var item in memberpatrons)
+                            {
+                                MemberByGroupResponse single = new MemberByGroupResponse();
+                                single.PatronID = item.MemberPatronID;
+                                data.Add(single);
+                            }
+                            _response.MemeberPatrons = data;
+
                             return Ok(new ResponseModel { Message = "Patron have one group in the Hotel", Status = "Success", Data = _response });
                         }
                         else
@@ -498,10 +632,10 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (PatronID !=0 & HotelID !=0)
+                if (PatronID != 0 & HotelID != 0)
                 {
-                    var Invites = _context.PatronsGroupInvitations.Where(m => m.HotelID== HotelID & m.PatronID== PatronID).ToList();
-                    if (Invites!=null)
+                    var Invites = _context.PatronsGroupInvitations.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
+                    if (Invites != null)
                     {
                         List<InvitationResponse> invitationResponse = new List<InvitationResponse>();
                         foreach (var item in Invites)
@@ -517,7 +651,7 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        return Ok(new ResponseModel { Message = "No Invitation is Available for this patron.", Status = "Success"});
+                        return Ok(new ResponseModel { Message = "No Invitation is Available for this patron.", Status = "Success" });
                     }
                 }
                 else
@@ -533,19 +667,19 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("DeclineInvite")]
-        public IHttpActionResult DeclineInvite(int PatronID, int HotelID)
+        public IHttpActionResult DeclineInvite(int PatronID, int GroupID)
         {
             try
             {
-                if (PatronID!=0& HotelID!=0)
+                if (PatronID != 0 & GroupID != 0)
                 {
-                    var request = _context.PatronsGroupInvitations.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).FirstOrDefault();
-                    if (request!=null)
+                    var request = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == GroupID & m.PatronID == PatronID).FirstOrDefault();
+                    if (request != null)
                     {
                         request.IsAccepted = false;
                         _context.Entry(request).State = EntityState.Modified;
-                        int i=_context.SaveChanges();
-                        if (i>0)
+                        int i = _context.SaveChanges();
+                        if (i > 0)
                         {
                             return Ok(new ResponseModel { Message = "Status has been Updated Successfully", Status = "Success" });
                         }
@@ -554,11 +688,11 @@ namespace DrinkingBuddy.Controllers
                             return Ok(new ResponseModel { Message = "Status Updation Failed", Status = "Success" });
 
                         }
-                        
+
                     }
                     else
                     {
-                        return Ok(new ResponseModel { Message = "No Request is Available.", Status = "Success"});
+                        return Ok(new ResponseModel { Message = "No Request is Available.", Status = "Success" });
                     }
                 }
                 else
@@ -574,6 +708,6 @@ namespace DrinkingBuddy.Controllers
 
 
         }
-       #endregion
+        #endregion
     }
 }

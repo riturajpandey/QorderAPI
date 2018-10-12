@@ -23,13 +23,6 @@ namespace DrinkingBuddy.Models
 
     }
 
-    public class StopGroup
-    {
-        public int PatronID { get; set; }
-        public int HotelID { get; set; }
-        public DateTime GroupStopDateTime { get; set; }
-    }
-
     public class AcceptInviteModel
     {
         public int PatronsGroupID { get; set; }
@@ -68,7 +61,7 @@ namespace DrinkingBuddy.Models
                     var Patrons = _context.Patrons.Where(m => m.PatronsID == this.MasterPatronID).FirstOrDefault();
                     if (Patrons != null)
                     {
-                        return _MasterPatronnName = Patrons.FirstName +" "+ Patrons.LastName;
+                        return _MasterPatronnName = Patrons.FirstName + " " + Patrons.LastName;
                     }
                     else
                     {
@@ -77,14 +70,13 @@ namespace DrinkingBuddy.Models
                 }
             }
         }
-        public int PatronGruopMemeberID { get; set; }
         public List<MemberByGroupResponse> MemeberPatrons { get; set; }
     }
 
     public class MemberByGroupResponse
     {
         private string _PatronName;
-        public int PatronID { get; set; }
+        public int? PatronID { get; set; }
         public string PatronName
         {
             get
@@ -94,7 +86,7 @@ namespace DrinkingBuddy.Models
                     var Catagory = _context.Patrons.Where(m => m.PatronsID == this.PatronID).FirstOrDefault();
                     if (Catagory != null)
                     {
-                        _PatronName = Catagory.FirstName +" "+ Catagory.LastName;
+                        _PatronName = Catagory.FirstName + " " + Catagory.LastName;
                     }
                     else
                     {
@@ -108,6 +100,96 @@ namespace DrinkingBuddy.Models
             }
 
 
+        }
+
+    }
+
+    public class PatronByHotelResponse
+    {
+        private string _HotelName;
+        private string _PatronName;
+        private string _InvitationStatus;
+
+        public int? PatronID { get; set; }
+        public string PatronName
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.Patrons.Where(m => m.PatronsID == this.PatronID).FirstOrDefault();
+                    if (Catagory != null)
+                    {
+                        _PatronName = Catagory.FirstName + " " + Catagory.LastName;
+                    }
+                    else
+                    {
+                        _PatronName = "";
+                    }
+                }
+
+                return _PatronName;
+
+
+            }
+
+
+        }
+        public int HotelID { get; set; }
+        public string HotelName
+        {
+            get
+            {
+
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var Catagory = _context.Hotels.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
+                    if (Catagory != null)
+                    {
+                        _HotelName = Catagory.HotelName;
+                    }
+                    else
+                    {
+                        _HotelName = "";
+                    }
+                }
+
+                return _HotelName;
+
+
+            }
+
+        }
+        public string InvitationStatus
+        {
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+                    var  data = _context.PatronsGroupInvitations.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
+                    if (data != null)
+                    {
+                        if (data.IsAccepted==true)
+                        {
+                            _InvitationStatus = "Accepted";
+                        }
+                        if (data.IsAccepted == false)
+                        {
+                            _InvitationStatus = "Rejected";
+                        }
+                        if (data.IsAccepted == null)
+                        {
+                            _InvitationStatus = "Invited";
+                        }
+                    }
+                    else
+                    {
+                        _InvitationStatus = "Invite";
+                    }
+                }
+
+                return _InvitationStatus;
+            }
         }
 
     }
@@ -127,7 +209,7 @@ namespace DrinkingBuddy.Models
                     var Catagory = _context.Patrons.Where(m => m.PatronsID == this.MasterPatornID).FirstOrDefault();
                     if (Catagory != null)
                     {
-                        _MasterPatronName = Catagory.FirstName +" "+Catagory.LastName;
+                        _MasterPatronName = Catagory.FirstName + " " + Catagory.LastName;
                     }
                     else
                     {
@@ -141,7 +223,8 @@ namespace DrinkingBuddy.Models
 
         }
         public int? HotelID { get; set; }
-        public string HotelName {
+        public string HotelName
+        {
 
             get
             {
@@ -162,5 +245,13 @@ namespace DrinkingBuddy.Models
 
             }
         }
+    }
+
+    public class SendInviteBinding
+    {
+        public int HotelID { get; set; }
+        public int MasterPatronID { get; set; }
+        public int PatronsGroupID { get; set; }
+        public int PatronID { get; set; }
     }
 }

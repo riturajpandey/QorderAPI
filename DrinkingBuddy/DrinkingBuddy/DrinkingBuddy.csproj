@@ -239,7 +239,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MemberGroupController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Encryption\EncryptionLibrary.cs" />
     <Compile Include="Entities\AspNetRole.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>

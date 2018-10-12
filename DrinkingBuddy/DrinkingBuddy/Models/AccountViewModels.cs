@@ -118,15 +118,8 @@ namespace DrinkingBuddy.Models
                     }
                     else
                     {
-                        if (Catagory.LogoutDateTime < DateTime.Now)
-                        {
-                            _HotelID = Catagory.HotelID;
-                        }
-                        else
-                        {
-                            _HotelID = 0;
-                        }
 
+                        _HotelID = Catagory.HotelID;
                     }
                 }
                 return _HotelID;
