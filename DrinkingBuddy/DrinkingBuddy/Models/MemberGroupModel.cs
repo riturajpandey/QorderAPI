@@ -108,8 +108,6 @@ namespace DrinkingBuddy.Models
     {
         private string _HotelName;
         private string _PatronName;
-        private string _InvitationStatus;
-
         public int? PatronID { get; set; }
         public string PatronName
         {
@@ -160,37 +158,8 @@ namespace DrinkingBuddy.Models
             }
 
         }
-        public string InvitationStatus
-        {
-            get
-            {
-                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                {
-                    var  data = _context.PatronsGroupInvitations.Where(m => m.HotelID == this.HotelID).FirstOrDefault();
-                    if (data != null)
-                    {
-                        if (data.IsAccepted==true)
-                        {
-                            _InvitationStatus = "Accepted";
-                        }
-                        if (data.IsAccepted == false)
-                        {
-                            _InvitationStatus = "Rejected";
-                        }
-                        if (data.IsAccepted == null)
-                        {
-                            _InvitationStatus = "Invited";
-                        }
-                    }
-                    else
-                    {
-                        _InvitationStatus = "Invite";
-                    }
-                }
-
-                return _InvitationStatus;
-            }
-        }
+        public string InvitationStatus { get; set; }
+       
 
     }
 

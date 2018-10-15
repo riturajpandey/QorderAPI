@@ -12,15 +12,13 @@ namespace DrinkingBuddy.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class PatronsGroupInvitation
+    public partial class PatronsWallet
     {
-        public int PatronsGroupInvitationID { get; set; }
-        public Nullable<int> HotelID { get; set; }
-        public Nullable<int> MasterPatronID { get; set; }
-        public int PatronsGroupID { get; set; }
+        public int PatronsWalletID { get; set; }
         public int PatronID { get; set; }
-        public Nullable<System.DateTime> RequestSentDateTime { get; set; }
-        public Nullable<bool> IsAccepted { get; set; }
-        public Nullable<System.DateTime> RequestAcceptDateTime { get; set; }
+        public Nullable<System.DateTime> WalletStartDateTime { get; set; }
+        public Nullable<decimal> Balance { get; set; }
+        public Nullable<System.DateTime> LastTransDateTime { get; set; }
+        public Nullable<bool> IsEmpty { get; set; }
     }
 }

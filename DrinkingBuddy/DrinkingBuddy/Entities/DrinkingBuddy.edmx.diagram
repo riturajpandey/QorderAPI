@@ -128,10 +128,11 @@
         <EntityTypeShape EntityType="DrinkingBuddyEntity.TempVersion" Width="1.5" PointX="3.375" PointY="9.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.TrackGroupOrder" Width="1.5" PointX="10.375" PointY="0.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.TrackGroupOrderDetail" Width="1.5" PointX="9.375" PointY="10.75" />
-        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsGroupInvitation" Width="1.5" PointX="3.375" PointY="11.75" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsGroupInvitation" Width="2.625" PointX="3.375" PointY="11.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.BarSalesView" Width="1.5" PointX="11.375" PointY="4.75" />
-        <EntityTypeShape EntityType="DrinkingBuddyEntity.qOrderView" Width="1.5" PointX="5.375" PointY="11.75" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.qOrderView" Width="1.5" PointX="6.25" PointY="11.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.database_firewall_rules" Width="1.5" PointX="11.375" PointY="10.75" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsWallet" Width="1.5" PointX="12.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

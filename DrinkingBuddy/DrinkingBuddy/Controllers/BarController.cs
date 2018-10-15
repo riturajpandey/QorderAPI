@@ -645,7 +645,7 @@ namespace DrinkingBuddy.Controllers
             try
             {
 
-                if (PatronsID != null & HotelMenuID != null)
+                if (PatronsID != 0 & HotelMenuID != 0)
                 {
                     var FavRecord = _context.PatronsFavourites.Where(m => m.PatronID == PatronsID & m.HotelMenuID == HotelMenuID).FirstOrDefault();
 

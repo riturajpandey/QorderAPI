@@ -565,7 +565,7 @@
           <Property Name="PatronsGroupID" Type="int" Nullable="false" />
           <Property Name="PatronID" Type="int" Nullable="false" />
           <Property Name="RequestSentDateTime" Type="datetime" />
-          <Property Name="RequestAccepedDateTime" Type="datetime" />
+          <Property Name="RequestAcceptDateTime" Type="datetime" />
           <Property Name="IsAccepted" Type="bit" />
         </EntityType>
         <EntityType Name="PatronsGroups">
@@ -797,6 +797,17 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="DateTimeGiven" Type="datetime" Nullable="false" />
           <Property Name="DateTimeExpiry" Type="datetime" />
           <Property Name="fbLogin" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PatronsWallet">
+          <Key>
+            <PropertyRef Name="PatronsWalletID" />
+          </Key>
+          <Property Name="PatronsWalletID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID" Type="int" Nullable="false" />
+          <Property Name="WalletStartDateTime" Type="datetime" />
+          <Property Name="Balance" Type="money" />
+          <Property Name="LastTransDateTime" Type="datetime" />
+          <Property Name="IsEmpty" Type="bit" />
         </EntityType>
         <EntityType Name="StatesG">
           <Key>
@@ -1901,6 +1912,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="PatronsPaymentMethods" EntityType="Self.PatronsPaymentMethods" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsPreferences" EntityType="Self.PatronsPreferences" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsSessionTokens" EntityType="Self.PatronsSessionTokens" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronsWallet" EntityType="Self.PatronsWallet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatesG" EntityType="Self.StatesG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrackGroupOrderDetails" EntityType="Self.TrackGroupOrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrackGroupOrders" EntityType="Self.TrackGroupOrders" Schema="dbo" store:Type="Tables" />
@@ -4367,6 +4379,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="BarSalesViews" EntityType="DrinkingBuddyEntity.BarSalesView" />
           <EntitySet Name="qOrderViews" EntityType="DrinkingBuddyEntity.qOrderView" />
           <EntitySet Name="database_firewall_rules" EntityType="DrinkingBuddyEntity.database_firewall_rules" />
+          <EntitySet Name="PatronsWallets" EntityType="DrinkingBuddyEntity.PatronsWallet" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4544,8 +4557,8 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="PatronsGroupID" Type="Int32" Nullable="false" />
           <Property Name="PatronID" Type="Int32" Nullable="false" />
           <Property Name="RequestSentDateTime" Type="DateTime" Precision="3" />
-          <Property Name="RequestAccepedDateTime" Type="DateTime" Precision="3" />
           <Property Name="IsAccepted" Type="Boolean" />
+          <Property Name="RequestAcceptDateTime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="BarSalesView">
           <Key>
@@ -4612,6 +4625,17 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="end_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="PatronsWallet">
+          <Key>
+            <PropertyRef Name="PatronsWalletID" />
+          </Key>
+          <Property Name="PatronsWalletID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID" Type="Int32" Nullable="false" />
+          <Property Name="WalletStartDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Balance" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="LastTransDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsEmpty" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5663,8 +5687,8 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySetMapping Name="PatronsGroupInvitations">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsGroupInvitation">
               <MappingFragment StoreEntitySet="PatronsGroupInvitation">
+                <ScalarProperty Name="RequestAcceptDateTime" ColumnName="RequestAcceptDateTime" />
                 <ScalarProperty Name="IsAccepted" ColumnName="IsAccepted" />
-                <ScalarProperty Name="RequestAccepedDateTime" ColumnName="RequestAccepedDateTime" />
                 <ScalarProperty Name="RequestSentDateTime" ColumnName="RequestSentDateTime" />
                 <ScalarProperty Name="PatronID" ColumnName="PatronID" />
                 <ScalarProperty Name="PatronsGroupID" ColumnName="PatronsGroupID" />
@@ -5730,6 +5754,18 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
                 <ScalarProperty Name="start_ip_address" ColumnName="start_ip_address" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronsWallets">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsWallet">
+              <MappingFragment StoreEntitySet="PatronsWallet">
+                <ScalarProperty Name="IsEmpty" ColumnName="IsEmpty" />
+                <ScalarProperty Name="LastTransDateTime" ColumnName="LastTransDateTime" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="WalletStartDateTime" ColumnName="WalletStartDateTime" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
