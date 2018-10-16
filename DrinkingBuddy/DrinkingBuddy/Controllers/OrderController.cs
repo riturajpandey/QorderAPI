@@ -391,6 +391,7 @@ namespace DrinkingBuddy.Controllers
         #endregion
 
         #region Card Details
+
         //TODO:-To Insert the Card Details for the Patron's The Encryption use Patron's Login Password to Encrypt.
         [HttpPost]
         [Route("PatronsCardDetails")]

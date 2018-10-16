@@ -285,7 +285,7 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("Menus")]
-        public IHttpActionResult Menus(int HotelId, int SubCatagoryId)
+        public IHttpActionResult Menus(int HotelId, int SubCatagoryId, int PatronID)
         {
             try
             {
@@ -298,7 +298,9 @@ namespace DrinkingBuddy.Controllers
                         {
                             var config = new MapperConfiguration(cfg =>
                             {
-                                cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>();
+                                cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>()
+                                .ForMember(m => m.PatronID, opt => opt.Ignore())
+                                .ForMember(m => m.HotelID, opt => opt.Ignore());
                                 cfg.CreateMap<HotelsMenuResponseModel, HotelMenu>();
 
                             });
@@ -306,11 +308,23 @@ namespace DrinkingBuddy.Controllers
                             IMapper mapper = config.CreateMapper();
                             var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
 
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                            List<HotelsMenuResponseModel> listresponse = new List<HotelsMenuResponseModel>();
+
+                            foreach (var item in data)
+                            {
+                                item.PatronID = PatronID;
+                                item.HotelID = HotelId;
+
+                                listresponse.Add(item);
+
+                            }
+
+
+                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = listresponse });
                         }
                         else
                         {
-                            return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+                            return Ok(new ResponseModel { Message = "No Drinks found for this hotel or subcatagory", Status = "Success" });
                         }
                     }
                 }

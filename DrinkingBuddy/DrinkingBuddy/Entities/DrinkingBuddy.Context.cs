@@ -88,6 +88,10 @@ namespace DrinkingBuddy.Entities
         public virtual DbSet<qOrderView> qOrderViews { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
         public virtual DbSet<PatronsWallet> PatronsWallets { get; set; }
+        public virtual DbSet<PatronCreditTransection> PatronCreditTransections { get; set; }
+        public virtual DbSet<PatronPurchaseTransection> PatronPurchaseTransections { get; set; }
+        public virtual DbSet<PatronTransferTransection> PatronTransferTransections { get; set; }
+        public virtual DbSet<PatronWithdrawalTransection> PatronWithdrawalTransections { get; set; }
     
         [DbFunction("DrinkingBuddyEntities", "fnGetBestCurrentPriceForHotelMenuItem")]
         public virtual IQueryable<fnGetBestCurrentPriceForHotelMenuItem_Result> fnGetBestCurrentPriceForHotelMenuItem(Nullable<int> hotelID, Nullable<int> hotelMenuItemIDpassed)

@@ -36,12 +36,13 @@ namespace DrinkingBuddy.Models
         public string CategoryName { get; set; }
         public int Drinkcount
         {
-            get{
+            get
+            {
 
-                using(DrinkingBuddyEntities _context=new DrinkingBuddyEntities())
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
                     _Drinkcount = _context.HotelMenus.Where(m => m.HotelCategoryID == this.HotelMenuCategoryID).Count();
-               }
+                }
 
                 return _Drinkcount;
             }
@@ -49,12 +50,13 @@ namespace DrinkingBuddy.Models
 
 
         }
-       // public byte[] CategoryImage { get; set; }
-        public string CatagoryImage {
+        // public byte[] CategoryImage { get; set; }
+        public string CatagoryImage
+        {
             get
             {
 
-               return  _CatagoryImage = "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
+                return _CatagoryImage = "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
 
             }
         }
@@ -86,6 +88,8 @@ namespace DrinkingBuddy.Models
         private bool _Favourite;
         public int HotelMenuID { get; set; }
         public string DrinkName { get; set; }
+        public int PatronID { get; set; }
+        public int HotelID { get; set; }
         public Nullable<decimal> DrinkSize { get; set; }
         public string DrinkUnitMlLitreUnit { get; set; }
         public Nullable<decimal> DrinkPrice { get; set; }
@@ -95,9 +99,10 @@ namespace DrinkingBuddy.Models
         public string PercentAlcoholForPatronsApp { get; set; }
         public string DrinkImage
         {
-            get {
+            get
+            {
 
-                return _DrinkImage= "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
+                return _DrinkImage = "http://drinkingbuddyapi.azurewebsites.net/DrinkImage/Beer.png";
             }
 
 
@@ -108,7 +113,7 @@ namespace DrinkingBuddy.Models
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
-                    var Catagory = _context.PatronsFavourites.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
+                    var Catagory = _context.PatronsFavourites.Where(m => m.HotelMenuID == this.HotelMenuID & m.PatronID == this.PatronID&m.HotelID==this.HotelID).FirstOrDefault();
                     if (Catagory == null)
                     {
                         _Favourite = false;

@@ -153,7 +153,7 @@ namespace DrinkingBuddy.Controllers
                                 var groupInvitation = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == GroupID).ToList();
                                 _context.PatronsGroupInvitations.RemoveRange(groupInvitation);
                                 int j = _context.SaveChanges();
-                                if (j>0)
+                                if (j > 0)
                                 {
                                     return true;
                                 }
@@ -200,22 +200,22 @@ namespace DrinkingBuddy.Controllers
                 if (ModelState.IsValid)
                 {
                     PatronsGroup data = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronGroupID).FirstOrDefault();
-                   _context.PatronsGroups.Remove(data);
+                    _context.PatronsGroups.Remove(data);
                     int result = _context.SaveChanges();
                     if (result > 0)
                     {
 
                         var patroninvitation = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == PatronGroupID).ToList();
                         _context.PatronsGroupInvitations.RemoveRange(patroninvitation);
-                        int row= _context.SaveChanges();
-                        if (row>0)
+                        int row = _context.SaveChanges();
+                        if (row > 0)
                         {
-                           
+
 
                             var patronmember = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == PatronGroupID).ToList();
                             _context.PatronsGroupsMembers.RemoveRange(patronmember);
                             int i = _context.SaveChanges();
-                            if (i>0)
+                            if (i > 0)
                             {
                                 return Ok(new ResponseModel { Message = "The Group and invitation along with Group member has been deleted Successfully", Status = "Success" });
                             }
@@ -229,7 +229,7 @@ namespace DrinkingBuddy.Controllers
                             return Ok(new ResponseModel { Message = "The Group has been Stop but there is no invitation", Status = "Success" });
                         }
 
-                       
+
 
                     }
                     else
@@ -325,9 +325,9 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (GroupID != null)
+                if (GroupID != 0)
                 {
-                    var members = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == GroupID).ToList();
+                    var members = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == GroupID & m.DateTimeLeftGroup == null).ToList();
                     if (members != null)
                     {
 
@@ -362,7 +362,7 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]//To show a list of Patrons logged-in in a specifi hotel for invitation.
         [Route("GetLoggedInPatrons")]
-        public IHttpActionResult GetLoggedInPatrons(int HotelID, int PatronID,int GroupID)
+        public IHttpActionResult GetLoggedInPatrons(int HotelID, int PatronID, int GroupID)
         {
             try
             {
@@ -375,7 +375,7 @@ namespace DrinkingBuddy.Controllers
                     {
                         PatronByHotelResponse single = new PatronByHotelResponse();
 
-                        var data = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == GroupID & m.PatronID==item.PatronID).FirstOrDefault();
+                        var data = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == GroupID & m.PatronID == item.PatronID).FirstOrDefault();
                         if (data != null)
                         {
                             if (data.IsAccepted == true)
@@ -396,12 +396,12 @@ namespace DrinkingBuddy.Controllers
                             single.InvitationStatus = "Invite";
                         }
 
-                       
+
                         single.PatronID = item.PatronID;
                         single.HotelID = item.HotelID;
                         response.Add(single);
                     }
-              
+
                     if (response.Count() != 0)
                     {
 
@@ -470,6 +470,7 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+
         #endregion
 
         #region Member Patron
@@ -506,17 +507,16 @@ namespace DrinkingBuddy.Controllers
                             int row = _context.SaveChanges();
                             if (row > 0)
                             {
-                                var IsMemeber = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.MemberPatronID).FirstOrDefault();
-                                if (IsMemeber != null)
+                                var groupdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == model.PatronsGroupID).FirstOrDefault();
+                                GroupByPatronResponse _response = new GroupByPatronResponse();
+                                _response.GroupID = model.PatronsGroupID;
+                                _response.MasterPatronID = groupdetails.MasterPatronID;
+                                _response.IsMaster = false;
+
+                                var memberpatrons = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == groupdetails.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+
+                                if (memberpatrons.Count() > 0)
                                 {
-                                    var groupdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == IsMemeber.PatronsGroupID).FirstOrDefault();
-                                    GroupByPatronResponse _response = new GroupByPatronResponse();
-                                    _response.GroupID = groupdetails.PatronsGroupID;
-                                    _response.MasterPatronID = groupdetails.MasterPatronID;
-                                    _response.IsMaster = false;
-
-                                    var memberpatrons = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == groupdetails.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
-
                                     List<MemberByGroupResponse> listsingle = new List<MemberByGroupResponse>();
                                     foreach (var item in memberpatrons)
                                     {
@@ -527,11 +527,16 @@ namespace DrinkingBuddy.Controllers
                                     _response.MemeberPatrons = listsingle;
 
                                     return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success", Data = _response });
+
                                 }
                                 else
                                 {
-                                    return Ok(new ResponseModel { Message = "The member could not be added.", Status = "Success" });
+                                    _response.MemeberPatrons = null;
+
+                                    return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success", Data = _response });
+
                                 }
+
                             }
                             else
                             {
@@ -569,6 +574,7 @@ namespace DrinkingBuddy.Controllers
                     using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                     {
                         var PatronGroupMember = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.MemberPatronID & m.PatronsGroupID == model.PatronsGroupID).FirstOrDefault();
+                        var patronInvitation = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.PatronID == model.MemberPatronID).FirstOrDefault();
 
                         var config = new MapperConfiguration(cfg =>
                         {
@@ -582,6 +588,7 @@ namespace DrinkingBuddy.Controllers
                         data.DateTimeLeftGroup = model.DateTimeLeftGroup;
 
                         _context.Entry(data).State = EntityState.Modified;
+                        _context.PatronsGroupInvitations.Remove(patronInvitation);
                         int Rows = _context.SaveChanges();
 
                         if (Rows > 0)
@@ -640,7 +647,7 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        var IsMemeber = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == PatronsID).FirstOrDefault();
+                        var IsMemeber = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == PatronsID & m.DateTimeLeftGroup == null).FirstOrDefault();
                         if (IsMemeber != null)
                         {
                             var groupdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == IsMemeber.PatronsGroupID).FirstOrDefault();
@@ -731,7 +738,7 @@ namespace DrinkingBuddy.Controllers
             {
                 if (PatronID != 0 & HotelID != 0)
                 {
-                    var Invites = _context.PatronsGroupInvitations.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
+                    var Invites = _context.PatronsGroupInvitations.Where(m => m.HotelID == HotelID & m.PatronID == PatronID & m.IsAccepted == null).ToList();
                     if (Invites.Count() != 0)
                     {
                         List<InvitationResponse> invitationResponse = new List<InvitationResponse>();
@@ -805,6 +812,7 @@ namespace DrinkingBuddy.Controllers
 
 
         }
+
         #endregion
     }
 }

@@ -522,6 +522,31 @@
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="StateID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="PatronCreditTransection">
+          <Key>
+            <PropertyRef Name="PatronCreditTransectionID" />
+          </Key>
+          <Property Name="PatronCreditTransectionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID" Type="int" />
+          <Property Name="Credit_Amount" Type="money" />
+          <Property Name="CreditDatetime" Type="datetime" />
+          <Property Name="Previouse_Balance" Type="money" />
+          <Property Name="Updated_Balance" Type="money" />
+          <Property Name="PatronsWalletID" Type="int" />
+          <Property Name="IsPatronTransfer" Type="bit" />
+          <Property Name="IsCardDeposite" Type="bit" />
+        </EntityType>
+        <EntityType Name="PatronPurchaseTransection">
+          <Key>
+            <PropertyRef Name="PatronPurchaseTransectionID" />
+          </Key>
+          <Property Name="PatronPurchaseTransectionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID" Type="int" />
+          <Property Name="PatronsWalletID" Type="int" />
+          <Property Name="PatronsOrdersID" Type="int" />
+          <Property Name="PurchaseDatetime" Type="datetime" />
+          <Property Name="AmountPaidInOrder" Type="money" />
+        </EntityType>
         <EntityType Name="Patrons">
           <Key>
             <PropertyRef Name="PatronsID" />
@@ -808,6 +833,30 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="Balance" Type="money" />
           <Property Name="LastTransDateTime" Type="datetime" />
           <Property Name="IsEmpty" Type="bit" />
+        </EntityType>
+        <EntityType Name="PatronTransferTransection">
+          <Key>
+            <PropertyRef Name="PatronTransferTransectionID" />
+          </Key>
+          <Property Name="PatronTransferTransectionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID_Sender" Type="int" />
+          <Property Name="PatronID_Reciver" Type="int" />
+          <Property Name="TransferDateTime" Type="datetime" />
+          <Property Name="PatronWalletID_Sender" Type="int" />
+          <Property Name="PatronWalletID_Reciver" Type="int" />
+          <Property Name="Amount_Transfer" Type="money" />
+        </EntityType>
+        <EntityType Name="PatronWithdrawalTransection">
+          <Key>
+            <PropertyRef Name="PatronWithdrawalTransectionID" />
+          </Key>
+          <Property Name="PatronWithdrawalTransectionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID" Type="int" />
+          <Property Name="Withdrawal_Amount" Type="money" />
+          <Property Name="WithdrawalDatetime" Type="datetime" />
+          <Property Name="Previouse_Balance" Type="money" />
+          <Property Name="Updated_Balance" Type="money" />
+          <Property Name="PatronsWalletID" Type="int" />
         </EntityType>
         <EntityType Name="StatesG">
           <Key>
@@ -1897,6 +1946,8 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="HotelSpecials" EntityType="Self.HotelSpecials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HotelSpecialsMeta" EntityType="Self.HotelSpecialsMeta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HotelTaxGroups" EntityType="Self.HotelTaxGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronCreditTransection" EntityType="Self.PatronCreditTransection" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronPurchaseTransection" EntityType="Self.PatronPurchaseTransection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patrons" EntityType="Self.Patrons" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsFavourites" EntityType="Self.PatronsFavourites" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsGroupInvitation" EntityType="Self.PatronsGroupInvitation" Schema="dbo" store:Type="Tables" />
@@ -1913,6 +1964,8 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="PatronsPreferences" EntityType="Self.PatronsPreferences" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsSessionTokens" EntityType="Self.PatronsSessionTokens" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsWallet" EntityType="Self.PatronsWallet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronTransferTransection" EntityType="Self.PatronTransferTransection" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronWithdrawalTransection" EntityType="Self.PatronWithdrawalTransection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StatesG" EntityType="Self.StatesG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrackGroupOrderDetails" EntityType="Self.TrackGroupOrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrackGroupOrders" EntityType="Self.TrackGroupOrders" Schema="dbo" store:Type="Tables" />
@@ -4380,6 +4433,10 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="qOrderViews" EntityType="DrinkingBuddyEntity.qOrderView" />
           <EntitySet Name="database_firewall_rules" EntityType="DrinkingBuddyEntity.database_firewall_rules" />
           <EntitySet Name="PatronsWallets" EntityType="DrinkingBuddyEntity.PatronsWallet" />
+          <EntitySet Name="PatronCreditTransections" EntityType="DrinkingBuddyEntity.PatronCreditTransection" />
+          <EntitySet Name="PatronPurchaseTransections" EntityType="DrinkingBuddyEntity.PatronPurchaseTransection" />
+          <EntitySet Name="PatronTransferTransections" EntityType="DrinkingBuddyEntity.PatronTransferTransection" />
+          <EntitySet Name="PatronWithdrawalTransections" EntityType="DrinkingBuddyEntity.PatronWithdrawalTransection" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4636,6 +4693,55 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="Balance" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="LastTransDateTime" Type="DateTime" Precision="3" />
           <Property Name="IsEmpty" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="PatronCreditTransection">
+          <Key>
+            <PropertyRef Name="PatronCreditTransectionID" />
+          </Key>
+          <Property Name="PatronCreditTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID" Type="Int32" />
+          <Property Name="Credit_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CreditDatetime" Type="DateTime" Precision="3" />
+          <Property Name="Previouse_Balance" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Updated_Balance" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PatronsWalletID" Type="Int32" />
+          <Property Name="IsPatronTransfer" Type="Boolean" />
+          <Property Name="IsCardDeposite" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="PatronPurchaseTransection">
+          <Key>
+            <PropertyRef Name="PatronPurchaseTransectionID" />
+          </Key>
+          <Property Name="PatronPurchaseTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID" Type="Int32" />
+          <Property Name="PatronsWalletID" Type="Int32" />
+          <Property Name="PatronsOrdersID" Type="Int32" />
+          <Property Name="PurchaseDatetime" Type="DateTime" Precision="3" />
+          <Property Name="AmountPaidInOrder" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="PatronTransferTransection">
+          <Key>
+            <PropertyRef Name="PatronTransferTransectionID" />
+          </Key>
+          <Property Name="PatronTransferTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID_Sender" Type="Int32" />
+          <Property Name="PatronID_Reciver" Type="Int32" />
+          <Property Name="PatronWalletID_Sender" Type="Int32" />
+          <Property Name="PatronWalletID_Reciver" Type="Int32" />
+          <Property Name="Amount_Transfer" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TransferDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PatronWithdrawalTransection">
+          <Key>
+            <PropertyRef Name="PatronWithdrawalTransectionID" />
+          </Key>
+          <Property Name="PatronWithdrawalTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID" Type="Int32" />
+          <Property Name="Withdrawal_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="WithdrawalDatetime" Type="DateTime" Precision="3" />
+          <Property Name="Previouse_Balance" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Updated_Balance" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PatronsWalletID" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5766,6 +5872,59 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
                 <ScalarProperty Name="WalletStartDateTime" ColumnName="WalletStartDateTime" />
                 <ScalarProperty Name="PatronID" ColumnName="PatronID" />
                 <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronCreditTransections">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronCreditTransection">
+              <MappingFragment StoreEntitySet="PatronCreditTransection">
+                <ScalarProperty Name="IsCardDeposite" ColumnName="IsCardDeposite" />
+                <ScalarProperty Name="IsPatronTransfer" ColumnName="IsPatronTransfer" />
+                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
+                <ScalarProperty Name="Updated_Balance" ColumnName="Updated_Balance" />
+                <ScalarProperty Name="Previouse_Balance" ColumnName="Previouse_Balance" />
+                <ScalarProperty Name="CreditDatetime" ColumnName="CreditDatetime" />
+                <ScalarProperty Name="Credit_Amount" ColumnName="Credit_Amount" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronCreditTransectionID" ColumnName="PatronCreditTransectionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronPurchaseTransections">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronPurchaseTransection">
+              <MappingFragment StoreEntitySet="PatronPurchaseTransection">
+                <ScalarProperty Name="AmountPaidInOrder" ColumnName="AmountPaidInOrder" />
+                <ScalarProperty Name="PurchaseDatetime" ColumnName="PurchaseDatetime" />
+                <ScalarProperty Name="PatronsOrdersID" ColumnName="PatronsOrdersID" />
+                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronPurchaseTransectionID" ColumnName="PatronPurchaseTransectionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronTransferTransections">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronTransferTransection">
+              <MappingFragment StoreEntitySet="PatronTransferTransection">
+                <ScalarProperty Name="TransferDateTime" ColumnName="TransferDateTime" />
+                <ScalarProperty Name="Amount_Transfer" ColumnName="Amount_Transfer" />
+                <ScalarProperty Name="PatronWalletID_Reciver" ColumnName="PatronWalletID_Reciver" />
+                <ScalarProperty Name="PatronWalletID_Sender" ColumnName="PatronWalletID_Sender" />
+                <ScalarProperty Name="PatronID_Reciver" ColumnName="PatronID_Reciver" />
+                <ScalarProperty Name="PatronID_Sender" ColumnName="PatronID_Sender" />
+                <ScalarProperty Name="PatronTransferTransectionID" ColumnName="PatronTransferTransectionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronWithdrawalTransections">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronWithdrawalTransection">
+              <MappingFragment StoreEntitySet="PatronWithdrawalTransection">
+                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
+                <ScalarProperty Name="Updated_Balance" ColumnName="Updated_Balance" />
+                <ScalarProperty Name="Previouse_Balance" ColumnName="Previouse_Balance" />
+                <ScalarProperty Name="WithdrawalDatetime" ColumnName="WithdrawalDatetime" />
+                <ScalarProperty Name="Withdrawal_Amount" ColumnName="Withdrawal_Amount" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronWithdrawalTransectionID" ColumnName="PatronWithdrawalTransectionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
