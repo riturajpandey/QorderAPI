@@ -77,7 +77,7 @@ namespace DrinkingBuddy.Controllers
 
                             //CODE FOR GroupByPatronResponse MODEL.
 
-                            var groupdetails = _context.PatronsGroups.Where(m => m.MasterPatronID == model.MasterPatronID).FirstOrDefault();
+                            var groupdetails = _context.PatronsGroups.Where(m => m.MasterPatronID == model.MasterPatronID & m.HotelID == model.HotelID).OrderByDescending(m=>m.GroupStartedDateTime==model.GroupStartedDateTime).FirstOrDefault();
                             GroupByPatronResponse Response = new GroupByPatronResponse();
                             Response.GroupID = groupdetails.PatronsGroupID;
                             Response.MasterPatronID = groupdetails.MasterPatronID;
@@ -257,7 +257,7 @@ namespace DrinkingBuddy.Controllers
                 if (PatronsGroupID != 0)
                 {
                     var Isgroupalive = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
-                    if (Isgroupalive.GroupStopDateTime > DateTime.Now)
+                    if (Isgroupalive!=null)
                     {
                         return Ok(new ResponseModel { Message = "The Group is Active.", Status = "Success" });
                     }

@@ -62,11 +62,11 @@ namespace DrinkingBuddy.Controllers
                     if (Rows > 0)
                     {
 
-                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID&m.HotelID==model.HotelID).ToList();
+                        var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID & m.HotelID == model.HotelID).ToList();
                         PatronsOrder _PatronsOrder = new PatronsOrder();
                         foreach (var item in orders)
                         {
-                            if (item.DateTimeOfOrder==model.DateTimeOfOrder)
+                            if (item.DateTimeOfOrder == model.DateTimeOfOrder)
                             {
                                 _PatronsOrder = item;
                             }
@@ -82,7 +82,7 @@ namespace DrinkingBuddy.Controllers
                         if (DetailOrder > 0)
                         {
                             PlaceOrderResponse response = new PlaceOrderResponse();
-                            response.OrderId = _PatronsOrder.PatronsOrdersID; 
+                            response.OrderId = _PatronsOrder.PatronsOrdersID;
                             return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
                         }
                         else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
@@ -106,22 +106,20 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-
-
         [HttpGet]
         [Route("OrderHistory")]
         public IHttpActionResult OrderHistory(int PatonID)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (PatonID > 0)
                 {
 
                     var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID).ToList();
-                    List<OrderHistoryRespones> _ListOrderHistory = new List<OrderHistoryRespones>();
+                    List<OrderHistoryResponse> _ListOrderHistory = new List<OrderHistoryResponse>();
                     foreach (var item in Patrnsorder)
                     {
-                        OrderHistoryRespones data = new OrderHistoryRespones();
+                        OrderHistoryResponse data = new OrderHistoryResponse();
                         data.DateTimeOfOrder = item.DateTimeOfOrder;
                         var result = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
                         data.HotelName = result.HotelName;
@@ -132,19 +130,28 @@ namespace DrinkingBuddy.Controllers
                     {
                         int PatronsOrderId = _ListOrderHistory[i].PatronsOrdersID;
                         var PatronsDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == PatronsOrderId).FirstOrDefault();
-                        if (PatronsDetails.ItemNameAtTimeOfBuying == null)
-                        { _ListOrderHistory[i].DrinkName = ""; }
-                        else { _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying; }
-                        if (PatronsDetails.QTYOrdered == null)
-                        { _ListOrderHistory[i].QTYOrdered = 0; }
-                        else { _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered; }
-                        if (PatronsDetails.SizeAtTimeOfBuying == null)
-                        { _ListOrderHistory[i].Size = ""; }
-                        else { _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying; }
-                        if (PatronsDetails.PriceAtTimeOfBuying == null)
-                        { _ListOrderHistory[i].Price = 0; }
-                        else { _ListOrderHistory[i].Price = PatronsDetails.PriceAtTimeOfBuying; }
-
+                        if (PatronsDetails != null)
+                        {
+                            if (PatronsDetails.ItemNameAtTimeOfBuying == null)
+                            { _ListOrderHistory[i].DrinkName = ""; }
+                            else { _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying; }
+                            if (PatronsDetails.QTYOrdered == null)
+                            { _ListOrderHistory[i].QTYOrdered = 0; }
+                            else { _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered; }
+                            if (PatronsDetails.SizeAtTimeOfBuying == null)
+                            { _ListOrderHistory[i].Size = ""; }
+                            else { _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying; }
+                            if (PatronsDetails.PriceAtTimeOfBuying == null)
+                            { _ListOrderHistory[i].Price = 0; }
+                            else { _ListOrderHistory[i].Price = PatronsDetails.PriceAtTimeOfBuying; }
+                        }
+                        else
+                        {
+                            _ListOrderHistory[i].DrinkName = "";
+                            _ListOrderHistory[i].QTYOrdered = 0;
+                            _ListOrderHistory[i].Size = "";
+                            _ListOrderHistory[i].Price = 0;
+                        }
                     }
 
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = _ListOrderHistory });
@@ -184,7 +191,7 @@ namespace DrinkingBuddy.Controllers
 
                     if (patronsdetails.BarCompletedOrder == true || patronsdetails.OrderCollected == true)
                     {
-                      return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response.Status });
+                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response.Status });
                     }
                     else
                     {
@@ -217,17 +224,69 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-       #endregion
+        [HttpGet]
+        [Route("CurrentOrders")]
+        public IHttpActionResult CurrentOrders(int OrderId)
+        {
+            try
+            {
+                if (OrderId > 0)
+                {
+                    var orderDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == OrderId).ToList();
+                    var order = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderId).FirstOrDefault();
+                    if (orderDetails == null & order == null)
+                    {
+                        return BadRequest();
+                    }
+                    List<OrderHistoryResponse> currentorderreponse = new List<OrderHistoryResponse>();
+
+                    foreach (var item in orderDetails)
+                    {
+                        OrderHistoryResponse single = new OrderHistoryResponse();
+
+                        var hotel = _context.Hotels.Where(m => m.HotelID == order.HotelID).FirstOrDefault();
+
+                        single.DrinkName = item.ItemNameAtTimeOfBuying;
+                        if (item.QTYOrdered != null)
+                        { single.QTYOrdered = item.QTYOrdered; }
+                        else { single.QTYOrdered = 0; }
+                        single.Size = item.SizeAtTimeOfBuying;
+                        if (item.PriceAtTimeOfBuying != null)
+                        { single.Price = item.PriceAtTimeOfBuying; }
+                        else { single.Price = 0; }
+                       // single.Price = item.PriceAtTimeOfBuying;
+                        single.PatronsOrdersID = OrderId;
+                        single.HotelName = hotel.HotelName;
+                        single.DateTimeOfOrder = order.DateTimeOfOrder;
+
+                        currentorderreponse.Add(single);
+                    }
+
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = currentorderreponse });
+                }
+                else
+                {
+                    return Ok(new ResponseModel { Message = "Not a vaild OrerId.", Status = "Success" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        #endregion
 
         #region GroupOrders
 
-        [HttpPost] 
+        [HttpPost]
         [Route("GroupOrder")]
         public IHttpActionResult GroupOrder(GroupOrderBindingModel model)
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var config = new MapperConfiguration(cfg =>
                     {
@@ -243,12 +302,12 @@ namespace DrinkingBuddy.Controllers
                     var dataOrderDetail = mapper.Map<List<TrackGroupOrderDetail>>(model.OrderMenus);
 
                     _context.TrackGroupOrders.Add(dataOrder);
-                    int i=_context.SaveChanges();
-                    if(i>0)
+                    int i = _context.SaveChanges();
+                    if (i > 0)
                     {
                         _context.TrackGroupOrderDetails.AddRange(dataOrderDetail);
                         int DetailOrder = _context.SaveChanges();
-                        if (DetailOrder>0)
+                        if (DetailOrder > 0)
                         {
                             return Ok(new ResponseModel { Message = "Order Added Successfully.", Status = "Success" });
                         }
@@ -282,7 +341,7 @@ namespace DrinkingBuddy.Controllers
             {
                 if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
                 {
-                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID&m.OpenMinutes==OpenMinutes).FirstOrDefault();
+                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes).FirstOrDefault();
                     var PatronsOrderDetais = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == PatronsOrders.TrackGroupOrderID).ToList();
 
                     var config = new MapperConfiguration(cfg =>
@@ -300,7 +359,7 @@ namespace DrinkingBuddy.Controllers
                     OrderBindingModel data = new OrderBindingModel();
                     data = dataOrder;
                     data.OrderMenus = dataOrderDetail;
-                    
+
                     //code to wait for the time set by patron.
                     var timer = new System.Threading.Timer(
                             e => InsertInOrders(data),
@@ -309,7 +368,7 @@ namespace DrinkingBuddy.Controllers
                      TimeSpan.Zero);
 
 
-                  
+
 
                     return Ok(new ResponseModel { Message = "The group order has initiated.", Status = "Success" });
                 }

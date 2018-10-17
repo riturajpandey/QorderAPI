@@ -106,7 +106,7 @@ namespace DrinkingBuddy.Models
 
     }
 
-    public class OrderHistoryRespones
+    public class OrderHistoryResponse
     {
         public string HotelName { get; set; }
         public DateTime? DateTimeOfOrder { get; set; }

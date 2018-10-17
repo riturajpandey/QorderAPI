@@ -16,7 +16,6 @@ namespace DrinkingBuddy.Entities
     {
         public int PatronPurchaseTransectionID { get; set; }
         public Nullable<int> PatronID { get; set; }
-        public Nullable<int> PatronsWalletID { get; set; }
         public Nullable<int> PatronsOrdersID { get; set; }
         public Nullable<System.DateTime> PurchaseDatetime { get; set; }
         public Nullable<decimal> AmountPaidInOrder { get; set; }

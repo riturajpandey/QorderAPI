@@ -30,4 +30,22 @@ namespace DrinkingBuddy.Models
         
     }
 
+    public class TransferModel
+    {
+        public int SenderPatronID { get; set; }
+        public string Email { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    public class TransferResponsemodel
+    {
+       public decimal? UpdatedBalace { get; set; }
+    }
+
+    public class Startwalletresponse
+    {
+        public int PatronwalletID { get; set; }
+        public decimal? CurrentBalance { get; set; }
+
+    }
 }

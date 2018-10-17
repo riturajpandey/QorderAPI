@@ -20,7 +20,6 @@ namespace DrinkingBuddy.Entities
         public Nullable<System.DateTime> CreditDatetime { get; set; }
         public Nullable<decimal> Previouse_Balance { get; set; }
         public Nullable<decimal> Updated_Balance { get; set; }
-        public Nullable<int> PatronsWalletID { get; set; }
         public Nullable<bool> IsPatronTransfer { get; set; }
         public Nullable<bool> IsCardDeposite { get; set; }
     }

@@ -532,7 +532,6 @@
           <Property Name="CreditDatetime" Type="datetime" />
           <Property Name="Previouse_Balance" Type="money" />
           <Property Name="Updated_Balance" Type="money" />
-          <Property Name="PatronsWalletID" Type="int" />
           <Property Name="IsPatronTransfer" Type="bit" />
           <Property Name="IsCardDeposite" Type="bit" />
         </EntityType>
@@ -542,7 +541,6 @@
           </Key>
           <Property Name="PatronPurchaseTransectionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PatronID" Type="int" />
-          <Property Name="PatronsWalletID" Type="int" />
           <Property Name="PatronsOrdersID" Type="int" />
           <Property Name="PurchaseDatetime" Type="datetime" />
           <Property Name="AmountPaidInOrder" Type="money" />
@@ -842,8 +840,6 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="PatronID_Sender" Type="int" />
           <Property Name="PatronID_Reciver" Type="int" />
           <Property Name="TransferDateTime" Type="datetime" />
-          <Property Name="PatronWalletID_Sender" Type="int" />
-          <Property Name="PatronWalletID_Reciver" Type="int" />
           <Property Name="Amount_Transfer" Type="money" />
         </EntityType>
         <EntityType Name="PatronWithdrawalTransection">
@@ -856,7 +852,6 @@ warning 6002: The table/view 'DrinkingBuddy.dbo.PatronsResetPasswordTokens' does
           <Property Name="WithdrawalDatetime" Type="datetime" />
           <Property Name="Previouse_Balance" Type="money" />
           <Property Name="Updated_Balance" Type="money" />
-          <Property Name="PatronsWalletID" Type="int" />
         </EntityType>
         <EntityType Name="StatesG">
           <Key>
@@ -4704,7 +4699,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="CreditDatetime" Type="DateTime" Precision="3" />
           <Property Name="Previouse_Balance" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Updated_Balance" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="PatronsWalletID" Type="Int32" />
           <Property Name="IsPatronTransfer" Type="Boolean" />
           <Property Name="IsCardDeposite" Type="Boolean" />
         </EntityType>
@@ -4714,7 +4708,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           </Key>
           <Property Name="PatronPurchaseTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PatronID" Type="Int32" />
-          <Property Name="PatronsWalletID" Type="Int32" />
           <Property Name="PatronsOrdersID" Type="Int32" />
           <Property Name="PurchaseDatetime" Type="DateTime" Precision="3" />
           <Property Name="AmountPaidInOrder" Type="Decimal" Precision="19" Scale="4" />
@@ -4726,8 +4719,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="PatronTransferTransectionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PatronID_Sender" Type="Int32" />
           <Property Name="PatronID_Reciver" Type="Int32" />
-          <Property Name="PatronWalletID_Sender" Type="Int32" />
-          <Property Name="PatronWalletID_Reciver" Type="Int32" />
           <Property Name="Amount_Transfer" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="TransferDateTime" Type="DateTime" Precision="3" />
         </EntityType>
@@ -4741,7 +4732,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="WithdrawalDatetime" Type="DateTime" Precision="3" />
           <Property Name="Previouse_Balance" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Updated_Balance" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="PatronsWalletID" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5880,7 +5870,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
               <MappingFragment StoreEntitySet="PatronCreditTransection">
                 <ScalarProperty Name="IsCardDeposite" ColumnName="IsCardDeposite" />
                 <ScalarProperty Name="IsPatronTransfer" ColumnName="IsPatronTransfer" />
-                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
                 <ScalarProperty Name="Updated_Balance" ColumnName="Updated_Balance" />
                 <ScalarProperty Name="Previouse_Balance" ColumnName="Previouse_Balance" />
                 <ScalarProperty Name="CreditDatetime" ColumnName="CreditDatetime" />
@@ -5896,7 +5885,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
                 <ScalarProperty Name="AmountPaidInOrder" ColumnName="AmountPaidInOrder" />
                 <ScalarProperty Name="PurchaseDatetime" ColumnName="PurchaseDatetime" />
                 <ScalarProperty Name="PatronsOrdersID" ColumnName="PatronsOrdersID" />
-                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
                 <ScalarProperty Name="PatronID" ColumnName="PatronID" />
                 <ScalarProperty Name="PatronPurchaseTransectionID" ColumnName="PatronPurchaseTransectionID" />
               </MappingFragment>
@@ -5907,8 +5895,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
               <MappingFragment StoreEntitySet="PatronTransferTransection">
                 <ScalarProperty Name="TransferDateTime" ColumnName="TransferDateTime" />
                 <ScalarProperty Name="Amount_Transfer" ColumnName="Amount_Transfer" />
-                <ScalarProperty Name="PatronWalletID_Reciver" ColumnName="PatronWalletID_Reciver" />
-                <ScalarProperty Name="PatronWalletID_Sender" ColumnName="PatronWalletID_Sender" />
                 <ScalarProperty Name="PatronID_Reciver" ColumnName="PatronID_Reciver" />
                 <ScalarProperty Name="PatronID_Sender" ColumnName="PatronID_Sender" />
                 <ScalarProperty Name="PatronTransferTransectionID" ColumnName="PatronTransferTransectionID" />
@@ -5918,7 +5904,6 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySetMapping Name="PatronWithdrawalTransections">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronWithdrawalTransection">
               <MappingFragment StoreEntitySet="PatronWithdrawalTransection">
-                <ScalarProperty Name="PatronsWalletID" ColumnName="PatronsWalletID" />
                 <ScalarProperty Name="Updated_Balance" ColumnName="Updated_Balance" />
                 <ScalarProperty Name="Previouse_Balance" ColumnName="Previouse_Balance" />
                 <ScalarProperty Name="WithdrawalDatetime" ColumnName="WithdrawalDatetime" />
