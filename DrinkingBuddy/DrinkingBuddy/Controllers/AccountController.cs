@@ -613,7 +613,19 @@ namespace DrinkingBuddy.Controllers
                                 else { Usermodel.PhoneNumber = user.PhoneMobile; }
                                 Usermodel.Token = "";
                                 Usermodel.StateId = 0;
-                                return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
+
+                                bool done = StartWallet(user.PatronsID);
+                                if (done == true)
+                                {
+                                    return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
+                                }
+                                else
+                                {
+
+                                    return Ok(new ResponseModel { Message = "The Wallet Initialization could not be done.", Status = "Failed" });
+                                }
+
+                               
                             }
                             else
                             {
@@ -663,6 +675,9 @@ namespace DrinkingBuddy.Controllers
 
             }
         }
+
+
+
 
         // POST api/Account/RegisterExternal
         [OverrideAuthentication]
@@ -834,6 +849,40 @@ namespace DrinkingBuddy.Controllers
                 return ex.Message;
             }
 
+        }
+
+
+        private bool StartWallet(int PatronId)
+        {
+
+            if (PatronId > 0)
+            {
+                var IsExist = _context.PatronsWallets.Where(m => m.PatronID == PatronId).FirstOrDefault();
+                if (IsExist != null)
+                {
+                    return false;
+                }
+                PatronsWallet patronswallet = new PatronsWallet();
+                patronswallet.PatronID = PatronId;
+                patronswallet.WalletStartDateTime = DateTime.Now;
+                patronswallet.Balance = 0;
+                patronswallet.IsEmpty = true;
+
+                _context.PatronsWallets.Add(patronswallet);
+                int i = _context.SaveChanges();
+                if (i > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         [HttpPost]

@@ -31,55 +31,6 @@ namespace DrinkingBuddy.Controllers
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
 
-
-        [HttpGet]
-        [Route("StartWallet")]
-        public IHttpActionResult StartWallet(int PatronId)
-        {
-            try
-            {
-                if (PatronId > 0)
-                {
-                    var IsExist = _context.PatronsWallets.Where(m => m.PatronID == PatronId).FirstOrDefault();
-                    if (IsExist != null)
-                    {
-                        return BadRequest("Wallet already exist for this patron.");
-                    }
-                    PatronsWallet patronswallet = new PatronsWallet();
-                    patronswallet.PatronID = PatronId;
-                    patronswallet.WalletStartDateTime = DateTime.Now;
-                    patronswallet.Balance = 0;
-                    patronswallet.IsEmpty = true;
-
-                    _context.PatronsWallets.Add(patronswallet);
-                    int i = _context.SaveChanges();
-                    if (i > 0)
-                    {
-                        var result = _context.PatronsWallets.Where(m => m.PatronID == PatronId).FirstOrDefault();
-                        Startwalletresponse response = new Startwalletresponse();
-                        response.PatronwalletID = result.PatronsWalletID;
-                        response.CurrentBalance = result.Balance;
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
-
-                    }
-                    else
-                    {
-                        return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
-
-                    }
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-        }
-
         [HttpGet]
         [Route("GetCurrentBalance")]
         public IHttpActionResult GetCurrentBalance(int PatronID)
@@ -276,17 +227,17 @@ namespace DrinkingBuddy.Controllers
                 {
 
                     var data = _context.PatronsWallets.Where(m => m.PatronID == PatronID).FirstOrDefault();
-                    if (data==null)
+                    if (data == null)
                     {
                         return BadRequest("The patron does not have any wallet yet");
 
                     }
                     data.Balance = data.Balance + Amount;
                     data.LastTransDateTime = DateTime.Now;
-                    
+
                     _context.Entry(data).State = EntityState.Modified;
                     int row = _context.SaveChanges();
-                    if (row>0)
+                    if (row > 0)
                     {
                         PatronCreditTransection credit = new PatronCreditTransection();
                         credit.PatronID = PatronID;
@@ -298,22 +249,19 @@ namespace DrinkingBuddy.Controllers
 
                         _context.PatronCreditTransections.Add(credit);
                         int i = _context.SaveChanges();
-                        if (i>0)
+                        if (i > 0)
                         {
                             var result = _context.PatronsWallets.Where(m => m.PatronID == PatronID).FirstOrDefault();
                             TransferResponsemodel response = new TransferResponsemodel();
                             response.UpdatedBalace = result.Balance;
 
-                            return Ok(new ResponseModel { Message = "Request Executed Successfully.", Status = "Success", Data=response});
+                            return Ok(new ResponseModel { Message = "Request Executed Successfully.", Status = "Success", Data = response });
                         }
                         else
                         {
                             return Ok(new ResponseModel { Message = "No Patron was found with this detail.", Status = "Success" });
 
                         }
-                         return Ok(new ResponseModel { Message = "No Patron was found with this detail.", Status = "Success" });
-                      
-
                     }
                     else
                     {

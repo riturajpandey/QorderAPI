@@ -62,14 +62,6 @@ namespace DrinkingBuddy.Models
         public int OrderId { get; set; }
     }
 
-    public class GroupOrderMenu
-    {
-        public int HotelMenuItemId { get; set; }
-        public int QTYOrdered { get; set; }
-        public int? HotelSpecialID { get; set; }
-        public decimal? AcceptedPricePerItem { get; set; }
-        public string PatronsOrderDetailsNotes { get; set; }
-    }
 
     public class GroupOrderBindingModel
     {
@@ -81,6 +73,16 @@ namespace DrinkingBuddy.Models
         public string PaymentGatewayReturnID { get; set; }
         public DateTime? DateTimeOfOrder { get; set; }
         public Nullable<int> OpenMinutes { get; set; }
+    }
+
+    public class GroupOrderMenu
+    {
+        public int HotelMenuItemId { get; set; }
+        public int QTYOrdered { get; set; }
+        public int? HotelSpecialID { get; set; }
+        public decimal? AcceptedPricePerItem { get; set; }
+        public string PatronsOrderDetailsNotes { get; set; }
+        public int TrackGroupOrderID { get; set; }
     }
 
 }

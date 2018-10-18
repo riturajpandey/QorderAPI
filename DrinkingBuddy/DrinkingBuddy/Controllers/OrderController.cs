@@ -254,7 +254,7 @@ namespace DrinkingBuddy.Controllers
                         if (item.PriceAtTimeOfBuying != null)
                         { single.Price = item.PriceAtTimeOfBuying; }
                         else { single.Price = 0; }
-                       // single.Price = item.PriceAtTimeOfBuying;
+                        // single.Price = item.PriceAtTimeOfBuying;
                         single.PatronsOrdersID = OrderId;
                         single.HotelName = hotel.HotelName;
                         single.DateTimeOfOrder = order.DateTimeOfOrder;
@@ -293,7 +293,7 @@ namespace DrinkingBuddy.Controllers
                         cfg.CreateMap<GroupOrderBindingModel, TrackGroupOrder>();
 
 
-                        cfg.CreateMap<OrderMenu, TrackGroupOrderDetail>();
+                        cfg.CreateMap<GroupOrderMenu, TrackGroupOrderDetail>();
 
                     });
 
@@ -305,7 +305,17 @@ namespace DrinkingBuddy.Controllers
                     int i = _context.SaveChanges();
                     if (i > 0)
                     {
-                        _context.TrackGroupOrderDetails.AddRange(dataOrderDetail);
+                        var trackorders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.OpenMinutes == model.OpenMinutes).FirstOrDefault();
+                        List<TrackGroupOrderDetail> trackGroupOrderDetail = new List<TrackGroupOrderDetail>();
+                        foreach (var item in dataOrderDetail)
+                        {
+
+                            item.TrackGroupOrderID = trackorders.TrackGroupOrderID;
+                            trackGroupOrderDetail.Add(item);
+
+                        }
+
+                        _context.TrackGroupOrderDetails.AddRange(trackGroupOrderDetail);
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
                         {
@@ -341,34 +351,31 @@ namespace DrinkingBuddy.Controllers
             {
                 if (PatronID != 0 & PatronsGroupID != 0 & OpenMinutes != 0)
                 {
-                    var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes).FirstOrDefault();
-                    var PatronsOrderDetais = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == PatronsOrders.TrackGroupOrderID).ToList();
+                    //var PatronsOrders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes).FirstOrDefault();
+                    //var PatronsOrderDetais = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == PatronsOrders.TrackGroupOrderID).ToList();
 
-                    var config = new MapperConfiguration(cfg =>
-                    {
-                        cfg.CreateMap<TrackGroupOrder, OrderBindingModel>();
-                        cfg.CreateMap<TrackGroupOrderDetail, OrderMenu>();
+                    //var config = new MapperConfiguration(cfg =>
+                    //{
+                    //    cfg.CreateMap<TrackGroupOrder, OrderBindingModel>();
+                    //    cfg.CreateMap<TrackGroupOrderDetail, OrderMenu>();
 
-                    });
+                    //});
 
-                    IMapper mapper = config.CreateMapper();
-                    var dataOrder = mapper.Map<OrderBindingModel>(PatronsOrders);
-                    var dataOrderDetail = mapper.Map<List<OrderMenu>>(PatronsOrderDetais);
+                    //IMapper mapper = config.CreateMapper();
+                    //var dataOrder = mapper.Map<OrderBindingModel>(PatronsOrders);
+                    //var dataOrderDetail = mapper.Map<List<OrderMenu>>(PatronsOrderDetais);
 
 
-                    OrderBindingModel data = new OrderBindingModel();
-                    data = dataOrder;
-                    data.OrderMenus = dataOrderDetail;
+                    //OrderBindingModel data = new OrderBindingModel();
+                    //data = dataOrder;
+                    //data.OrderMenus = dataOrderDetail;
 
-                    //code to wait for the time set by patron.
+                    // code to wait for the time set by patron.
                     var timer = new System.Threading.Timer(
-                            e => InsertInOrders(data),
+                            e => InsertInOrders(PatronID, PatronsGroupID, OpenMinutes),
                       null,
                      TimeSpan.FromMinutes(OpenMinutes),
                      TimeSpan.Zero);
-
-
-
 
                     return Ok(new ResponseModel { Message = "The group order has initiated.", Status = "Success" });
                 }
@@ -386,32 +393,36 @@ namespace DrinkingBuddy.Controllers
         }
 
 
-        public object InsertInOrders(OrderBindingModel model)
+        public object InsertInOrders(int PatronID, int PatronsGroupID, int OpenMinutes)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (PatronID > 0 & PatronsGroupID > 0 & OpenMinutes > 0)
                 {
+
+                    var trackorders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes).FirstOrDefault();
+
+                    var trackorderdetails = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == trackorders.TrackGroupOrderID).ToList();
 
                     var config = new MapperConfiguration(cfg =>
                     {
-                        cfg.CreateMap<OrderBindingModel, PatronsOrder>();
+                        cfg.CreateMap<TrackGroupOrder, PatronsOrder>();
 
                         //  cfg.CreateMap<OrderBindingModel, PatronsOrdersDetail>();
-                        cfg.CreateMap<OrderMenu, PatronsOrdersDetail>();
+                        cfg.CreateMap<TrackGroupOrderDetail, PatronsOrdersDetail>();
 
                     });
 
                     IMapper mapper = config.CreateMapper();
-                    var dataOrder = mapper.Map<PatronsOrder>(model);
-                    var dataOrderDetail = mapper.Map<List<PatronsOrdersDetail>>(model.OrderMenus);
+                    var dataOrder = mapper.Map<PatronsOrder>(trackorders);
+                    var dataOrderDetail = mapper.Map<List<PatronsOrdersDetail>>(trackorderdetails);
 
                     _context.PatronsOrders.Add(dataOrder);
                     int Rows = _context.SaveChanges();
                     if (Rows > 0)
                     {
 
-                        var orders = _context.PatronsOrders.Where(m => m.DateTimeOfOrder == model.DateTimeOfOrder).FirstOrDefault();
+                        var orders = _context.PatronsOrders.Where(m => m.DateTimeOfOrder == trackorders.DateTimeOfOrder).FirstOrDefault();
 
                         for (int i = 0; i < dataOrderDetail.Count(); i++)
                         {
@@ -446,6 +457,7 @@ namespace DrinkingBuddy.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         #endregion
 
