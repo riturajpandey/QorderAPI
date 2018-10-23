@@ -137,6 +137,7 @@
         <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronPurchaseTransection" Width="2.5" PointX="13.75" PointY="3.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronTransferTransection" Width="2.875" PointX="13.75" PointY="6.75" />
         <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronWithdrawalTransection" Width="3.125" PointX="13.75" PointY="11.125" />
+        <EntityTypeShape EntityType="DrinkingBuddyEntity.PatronsNotification" Width="1.5" PointX="14.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -239,6 +239,7 @@
     <Compile Include="Controllers\DrankBankController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MemberGroupController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Encryption\EncryptionLibrary.cs" />
     <Compile Include="Entities\AspNetRole.cs">
@@ -430,6 +431,9 @@
     <Compile Include="Entities\PatronsHotelSubscription.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\PatronsNotification.cs">
+      <DependentUpon>DrinkingBuddy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\PatronsOrder.cs">
       <DependentUpon>DrinkingBuddy.tt</DependentUpon>
     </Compile>
@@ -496,10 +500,12 @@
     <Compile Include="Models\HotelResponseModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MemberGroupModel.cs" />
+    <Compile Include="Models\Notifications.cs" />
     <Compile Include="Models\OrderBindingModel.cs" />
     <Compile Include="Models\OrderResponseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
+    <Compile Include="Notification\PushNotification.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -582,7 +588,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="PushNotification\" />
     <Folder Include="Views\Bar\" />
     <Folder Include="Views\MemberGroup\" />
   </ItemGroup>

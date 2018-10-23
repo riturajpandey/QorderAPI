@@ -50,10 +50,11 @@ namespace DrinkingBuddy.Models
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
                     var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == this.FreeItemMenuId).FirstOrDefault();
-                    if (Menu != null) { 
-                    if (Menu.DrinkName != null)
-                    { _FreeItemMenu=Menu.DrinkName; }
-                    else { _FreeItemMenu = ""; }
+                    if (Menu != null)
+                    {
+                        if (Menu.DrinkName != null)
+                        { _FreeItemMenu = Menu.DrinkName; }
+                        else { _FreeItemMenu = ""; }
                     }
                     else
                     {
@@ -64,8 +65,8 @@ namespace DrinkingBuddy.Models
             }
         }
         public int FreeItemQty { get; set; }
-    }   
-        
+    }
+
     public class SpecialReponseModel
     {
         private DateTime _EndDate;
@@ -73,7 +74,8 @@ namespace DrinkingBuddy.Models
         public int HotelSpecialID { get; set; }
         public int HotelId { get; set; }
         public string DescriptionOfSpecial { get; set; }
-        public DateTime EndDate {
+        public DateTime EndDate
+        {
 
             get
             {
@@ -88,8 +90,9 @@ namespace DrinkingBuddy.Models
             }
 
         }
-        public string HotelName {
-          get
+        public string HotelName
+        {
+            get
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
@@ -106,23 +109,58 @@ namespace DrinkingBuddy.Models
 
     }
 
-    public class OrderHistoryResponse
+
+
+    public class CurrentOrderResponse
     {
+        public int PatronsOrdersID { get; set; }
         public string HotelName { get; set; }
         public DateTime? DateTimeOfOrder { get; set; }
+        public Nullable<decimal> FinalAmount { get; set; }
+        public string Status { get; set; }
+        public int? EstMinutes { get; set; }
+        public int? DrinkCount { get; set; }
+        public Nullable<int> LinQ { get; set; }
+        public List<CurrentDrink> DrinkList { get; set; }
+    }
+
+
+    public class CurrentDrink
+    {
         public string DrinkName { get; set; }
-        public int PatronsOrdersID { get; set; }
         public int? QTYOrdered { get; set; }
         public string Size { get; set; }
-        public Nullable<decimal> Price {get;set;}
+        public Nullable<decimal> Price { get; set; }
+        public int? EstMinutes { get; set; }
+
+    }
+
+    public class OrderHistoryResponse
+    {
+        public int PatronsOrdersID { get; set; }
+        public string HotelName { get; set; }
+        public DateTime? DateTimeOfOrder { get; set; }
+        public Nullable<decimal> FinalAmount { get; set; }
+        public int? DrinkCount { get; set; }
+        public List<DrinkHistory> DrinkList { get; set; }
+    }
+
+    public class DrinkHistory
+    {
+        public string DrinkName { get; set; }
+        public string Size { get; set; }
+        public Nullable<decimal> Price { get; set; }
+        public int? QuantityOrdered { get; set; }
     }
 
     public class TrackingResponse
     {
-       public string Status { get; set; }
+        public string Status { get; set; }
         public int? EstMinutes { get; set; }
 
-   }
+    }
+
+
 }
 
 

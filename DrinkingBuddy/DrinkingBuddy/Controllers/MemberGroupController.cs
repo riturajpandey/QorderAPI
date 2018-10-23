@@ -19,6 +19,7 @@ using DrinkingBuddy.Entities;
 using DrinkingBuddy.Filter;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Results;
+using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Data.Entity;
 
@@ -29,7 +30,9 @@ namespace DrinkingBuddy.Controllers
     public class MemberGroupController : ApiController
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
+        PushNotification push = new PushNotification();
 
+        string Message;
 
         #region Master Patron
 
@@ -77,7 +80,7 @@ namespace DrinkingBuddy.Controllers
 
                             //CODE FOR GroupByPatronResponse MODEL.
 
-                            var groupdetails = _context.PatronsGroups.Where(m => m.MasterPatronID == model.MasterPatronID & m.HotelID == model.HotelID).OrderByDescending(m=>m.GroupStartedDateTime==model.GroupStartedDateTime).FirstOrDefault();
+                            var groupdetails = _context.PatronsGroups.Where(m => m.MasterPatronID == model.MasterPatronID & m.HotelID == model.HotelID).OrderByDescending(m => m.GroupStartedDateTime == model.GroupStartedDateTime).FirstOrDefault();
                             GroupByPatronResponse Response = new GroupByPatronResponse();
                             Response.GroupID = groupdetails.PatronsGroupID;
                             Response.MasterPatronID = groupdetails.MasterPatronID;
@@ -155,6 +158,51 @@ namespace DrinkingBuddy.Controllers
                                 int j = _context.SaveChanges();
                                 if (j > 0)
                                 {
+                                    var groups = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == GroupID).ToList();
+                                    if (groups.Count()>0)
+                                    {
+                                        return false;
+                                    }
+                                    var mester = _context.PatronsGroups.Where(m => m.PatronsGroupID == groups[1].PatronsGroupID).FirstOrDefault();
+                                    if (mester==null)
+                                    {
+                                        return false;
+                                    }
+                                    var masterpatrondetails = _context.Patrons.Where(m => m.PatronsID ==mester.MasterPatronID).FirstOrDefault();
+                                    if (masterpatrondetails==null)
+                                    {
+                                        return false;
+                                    }
+                                    var hotel = _context.Hotels.Where(m => m.HotelID == mester.HotelID).FirstOrDefault();
+                                    if (hotel==null)
+                                    {
+                                        return false;
+                                    }
+
+                                    List<string> devicetoken = new List<string>();
+                                    string token = masterpatrondetails.DeviceToken;
+                                    devicetoken.Add(token);
+
+                                    foreach (var item in groups)
+                                    {
+                                        var patron = _context.Patrons.Where(m=>m.PatronsID==item.MemberPatronID).FirstOrDefault();
+                                        if (patron==null)
+                                        {
+                                            return false;
+                                        }
+                                        devicetoken.Add(patron.DeviceToken);
+
+                                    }
+
+                                    Message ="Your group of " + hotel.HotelName+"has expired.";
+                                    push.SendNotification(devicetoken, Message);
+                                    NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                    notificationBindingModel.DateTimeSent = DateTime.Now;
+                                    notificationBindingModel.PatronID = masterpatrondetails.PatronsID;
+                                    notificationBindingModel.NotificationContent = Message;
+                                    notificationBindingModel.NotificationType = "Group Invites";
+                                    push.InsertNotification(notificationBindingModel);
+
                                     return true;
                                 }
                                 else
@@ -190,7 +238,7 @@ namespace DrinkingBuddy.Controllers
         }
 
 
-        //TODO:The method will update the group as inactive and all the members associated with the group.
+        //   TODO:The method will update the group as inactive and all the members associated with the group.
         [HttpGet]
         [Route("StopGroup")]
         public IHttpActionResult StopGroup(int PatronGroupID)
@@ -217,6 +265,52 @@ namespace DrinkingBuddy.Controllers
                             int i = _context.SaveChanges();
                             if (i > 0)
                             {
+                                var group = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronGroupID).FirstOrDefault();
+                                if (group==null)
+                                {
+                                    return BadRequest("No group found for notification.");
+                                }
+
+                                var groupmemebers = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == PatronGroupID).ToList();
+                                if (groupmemebers.Count()>0)
+                                {
+                                    return BadRequest("No members found for notification.");
+                                }
+
+                                var master = _context.Patrons.Where(m => m.PatronsID == group.MasterPatronID).FirstOrDefault();
+                                if (master==null)
+                                {
+                                    return BadRequest("No master found for notification.");
+                                }
+
+                                var hotel = _context.Hotels.Where(m => m.HotelID == group.HotelID).FirstOrDefault();
+                                if (hotel==null)
+                                {
+                                    return BadRequest("No Hotel Found to Display");
+                                }
+
+                                List<string> devicetoken = new List<string>();
+                                foreach (var item in groupmemebers)
+                                {
+                                    var patron = _context.Patrons.Where(m => m.PatronsID == item.MemberPatronID).FirstOrDefault();
+                                   
+                                    var token = patron.DeviceToken;
+                                    devicetoken.Add(token);
+                                }
+
+
+                                //Message to be sent to the all group memebers.
+                                Message = master.FirstName + " " + master.LastName + " have stopped the Group,Created in " + hotel.HotelName;
+                                push.SendNotification(devicetoken, Message);
+                                foreach (var item in groupmemebers)
+                                {
+                                    NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                    notificationBindingModel.DateTimeSent = DateTime.Now;
+                                    notificationBindingModel.PatronID = item.MemberPatronID;
+                                    notificationBindingModel.NotificationContent = Message;
+                                    notificationBindingModel.NotificationType = "Group Invites";
+                                    push.InsertNotification(notificationBindingModel);
+                                }
                                 return Ok(new ResponseModel { Message = "The Group and invitation along with Group member has been deleted Successfully", Status = "Success" });
                             }
                             else
@@ -257,7 +351,7 @@ namespace DrinkingBuddy.Controllers
                 if (PatronsGroupID != 0)
                 {
                     var Isgroupalive = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronsGroupID).FirstOrDefault();
-                    if (Isgroupalive!=null)
+                    if (Isgroupalive != null)
                     {
                         return Ok(new ResponseModel { Message = "The Group is Active.", Status = "Success" });
                     }
@@ -314,7 +408,7 @@ namespace DrinkingBuddy.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
 
         }
@@ -450,6 +544,24 @@ namespace DrinkingBuddy.Controllers
                     int i = _context.SaveChanges();
                     if (i > 0)
                     {
+                        var Masterdetails = _context.Patrons.Where(m => m.PatronsID == model.MasterPatronID).FirstOrDefault();
+                        var ReciverPatron = _context.Patrons.Where(m => m.PatronsID == model.PatronID).FirstOrDefault();
+                        var hotel = _context.Hotels.Where(m => m.HotelID == model.HotelID).FirstOrDefault();
+
+                        List<string> devicetoken = new List<string>();
+                        string token = ReciverPatron.DeviceToken;
+                        devicetoken.Add(token);
+
+                        Message = Masterdetails.FirstName + " " + Masterdetails.LastName + " have inivited you to join his Group in " + hotel.HotelName;
+                        push.SendNotification(devicetoken, Message);
+                        NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                        notificationBindingModel.DateTimeSent = DateTime.Now;
+                        notificationBindingModel.PatronID = ReciverPatron.PatronsID;
+                        notificationBindingModel.NotificationContent = Message;
+                        notificationBindingModel.NotificationType = "Group Invites";
+                        push.InsertNotification(notificationBindingModel);
+
+
                         return Ok(new ResponseModel { Message = "The Invitation Has been Saved.", Status = "Success" });
                     }
                     else
@@ -526,6 +638,26 @@ namespace DrinkingBuddy.Controllers
                                     }
                                     _response.MemeberPatrons = listsingle;
 
+
+                                    var group = _context.PatronsGroups.Where(m => m.PatronsGroupID == model.PatronsGroupID).FirstOrDefault();
+                                    var sendermaster = _context.Patrons.Where(m => m.PatronsID == group.MasterPatronID).FirstOrDefault();
+                                    var ReciverPatron = _context.Patrons.Where(m => m.PatronsID == model.MemberPatronID).FirstOrDefault();
+                                    var hotel = _context.Hotels.Where(m => m.HotelID == group.HotelID).FirstOrDefault();
+
+                                    List<string> devicetoken = new List<string>();
+                                    string token = sendermaster.DeviceToken;
+                                    devicetoken.Add(token);
+
+                                    Message = ReciverPatron.FirstName + " " + ReciverPatron.LastName + " have accepted your invitation in " + hotel.HotelName;
+                                    push.SendNotification(devicetoken, Message);
+                                    NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                    notificationBindingModel.DateTimeSent = DateTime.Now;
+                                    notificationBindingModel.PatronID = sendermaster.PatronsID;
+                                    notificationBindingModel.NotificationContent = Message;
+                                    notificationBindingModel.NotificationType = "Group Invites";
+                                    push.InsertNotification(notificationBindingModel);
+
+
                                     return Ok(new ResponseModel { Message = "The Member has been added Succesfully", Status = "Success", Data = _response });
 
                                 }
@@ -593,6 +725,26 @@ namespace DrinkingBuddy.Controllers
 
                         if (Rows > 0)
                         {
+                            var leaver = _context.Patrons.Where(m=>m.PatronsID==model.MemberPatronID).FirstOrDefault();
+                            var group = _context.PatronsGroups.Where(m => m.PatronsGroupID == model.PatronsGroupID).FirstOrDefault();
+                            var master = _context.Patrons.Where(m=>m.PatronsID==group.MasterPatronID).FirstOrDefault();
+
+                            List<string> devicetoken = new List<string>();
+                            string token = master.DeviceToken;
+                            devicetoken.Add(token);
+
+                            //Message to be sent to the master of the group.
+                            Message = leaver.FirstName + " " + leaver.LastName + " have Left the Group.";
+                            push.SendNotification(devicetoken, Message);
+                           
+                                NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                notificationBindingModel.DateTimeSent = DateTime.Now;
+                                notificationBindingModel.PatronID = master.PatronsID;
+                                notificationBindingModel.NotificationContent = Message;
+                                notificationBindingModel.NotificationType = "Group Invites";
+                                push.InsertNotification(notificationBindingModel);
+                           
+
                             return Ok(new ResponseModel { Message = "Request executed Successfully", Status = "Success" });
 
                         }
@@ -785,6 +937,26 @@ namespace DrinkingBuddy.Controllers
                         int i = _context.SaveChanges();
                         if (i > 0)
                         {
+
+                            var group = _context.PatronsGroups.Where(m => m.PatronsGroupID == PatronID).FirstOrDefault();
+                            var sendermaster = _context.Patrons.Where(m => m.PatronsID == group.MasterPatronID).FirstOrDefault();
+                            var ReciverPatron = _context.Patrons.Where(m => m.PatronsID == PatronID).FirstOrDefault();
+                           
+
+                            List<string> devicetoken = new List<string>();
+                            string token = sendermaster.DeviceToken;
+                            devicetoken.Add(token);
+
+                            Message = ReciverPatron.FirstName + " " + ReciverPatron.LastName + " have rejected your invitation";
+                            push.SendNotification(devicetoken, Message);
+                            NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                            notificationBindingModel.DateTimeSent = DateTime.Now;
+                            notificationBindingModel.PatronID = sendermaster.PatronsID;
+                            notificationBindingModel.NotificationContent = Message;
+                            notificationBindingModel.NotificationType = "Group Invites";
+                            push.InsertNotification(notificationBindingModel);
+
+
                             return Ok(new ResponseModel { Message = "Status has been Updated Successfully", Status = "Success" });
                         }
                         else

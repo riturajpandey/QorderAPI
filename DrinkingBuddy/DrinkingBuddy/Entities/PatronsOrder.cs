@@ -38,6 +38,7 @@ namespace DrinkingBuddy.Entities
         public Nullable<int> BarStaffWhoStartedOrder { get; set; }
         public Nullable<int> BarStaffWhoCompletedOrder { get; set; }
         public Nullable<int> BarStaffWhoDeliveredOrder { get; set; }
+        public Nullable<int> LinQ { get; set; }
     
         public virtual Hotel Hotel { get; set; }
         public virtual Patron Patron { get; set; }

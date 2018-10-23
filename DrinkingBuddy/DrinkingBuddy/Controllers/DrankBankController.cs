@@ -19,6 +19,7 @@ using DrinkingBuddy.Entities;
 using DrinkingBuddy.Filter;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Results;
+using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Data.Entity;
 
@@ -30,6 +31,8 @@ namespace DrinkingBuddy.Controllers
     public class DrankBankController : ApiController
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
+        PushNotification push = new PushNotification();
+        string Message;
 
         [HttpGet]
         [Route("GetCurrentBalance")]
@@ -185,6 +188,25 @@ namespace DrinkingBuddy.Controllers
                                         {
                                             TransferResponsemodel response = new TransferResponsemodel();
                                             response.UpdatedBalace = senderwallet.Balance;
+
+                                            //Message to be sent to the reciver patron 
+
+                                            var reciver = _context.Patrons.Where(m=>m.EmailAddress==model.Email).FirstOrDefault();
+                                            var sender = _context.Patrons.Where(m => m.PatronsID == model.SenderPatronID).FirstOrDefault();
+                                            List<string> devicetoken = new List<string>();
+                                            string token = reciver.DeviceToken;
+                                            devicetoken.Add(token);
+
+
+                                            Message ="$"+model.Amount+" have been transered in you account by"+ sender.FirstName + " " + sender.LastName + Message;
+                                            push.SendNotification(devicetoken, Message);
+                                            NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                            notificationBindingModel.DateTimeSent = DateTime.Now;
+                                            notificationBindingModel.PatronID = sender.PatronsID;
+                                            notificationBindingModel.NotificationContent = Message;
+                                            notificationBindingModel.NotificationType = "Money Transfer";
+                                            push.InsertNotification(notificationBindingModel);
+
 
                                             return Ok(new ResponseModel { Message = "Transection Done Successfully.", Status = "Success", Data = response });
                                         }

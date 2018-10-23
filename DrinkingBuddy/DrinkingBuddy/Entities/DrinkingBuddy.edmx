@@ -633,6 +633,16 @@
           <Property Name="SubsribeEmail" Type="bit" Nullable="false" />
           <Property Name="SubsribePushNotifications" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="PatronsNotification">
+          <Key>
+            <PropertyRef Name="PatronsNotificationID" />
+          </Key>
+          <Property Name="PatronsNotificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PatronID" Type="int" />
+          <Property Name="NotificationContent" Type="varchar(max)" />
+          <Property Name="DateTimeSent" Type="datetime" />
+          <Property Name="NotificationType" Type="varchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="PatronsOrders">
           <Key>
             <PropertyRef Name="PatronsOrdersID" />
@@ -655,6 +665,7 @@
           <Property Name="BarStaffWhoStartedOrder" Type="int" />
           <Property Name="BarStaffWhoCompletedOrder" Type="int" />
           <Property Name="BarStaffWhoDeliveredOrder" Type="int" />
+          <Property Name="LinQ" Type="int" />
         </EntityType>
         <EntityType Name="PatronsOrdersDetails">
           <Key>
@@ -1950,6 +1961,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="PatronsGroupsMembers" EntityType="Self.PatronsGroupsMembers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsHotelLogIns" EntityType="Self.PatronsHotelLogIns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsHotelSubscriptions" EntityType="Self.PatronsHotelSubscriptions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PatronsNotification" EntityType="Self.PatronsNotification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsOrders" EntityType="Self.PatronsOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsOrdersDetails" EntityType="Self.PatronsOrdersDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatronsOrdersFastestWay" EntityType="Self.PatronsOrdersFastestWay" Schema="dbo" store:Type="Tables" />
@@ -3022,6 +3034,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <NavigationProperty Name="Hotel" Relationship="Self.FK_PatronsOrders_Hotels" FromRole="PatronsOrders" ToRole="Hotels" />
           <NavigationProperty Name="Patron" Relationship="Self.FK_PatronsOrders_Patrons" FromRole="PatronsOrders" ToRole="Patrons" />
           <NavigationProperty Name="PatronsOrdersDetails" Relationship="Self.FK_PatronsOrdersDetails_PatronsOrders" FromRole="PatronsOrders" ToRole="PatronsOrdersDetails" />
+          <Property Name="LinQ" Type="Int32" />
         </EntityType>
         <EntityType Name="PatronsOrdersDetail">
           <Key>
@@ -4432,6 +4445,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySet Name="PatronPurchaseTransections" EntityType="DrinkingBuddyEntity.PatronPurchaseTransection" />
           <EntitySet Name="PatronTransferTransections" EntityType="DrinkingBuddyEntity.PatronTransferTransection" />
           <EntitySet Name="PatronWithdrawalTransections" EntityType="DrinkingBuddyEntity.PatronWithdrawalTransection" />
+          <EntitySet Name="PatronsNotifications" EntityType="DrinkingBuddyEntity.PatronsNotification" />
         </EntityContainer>
         <ComplexType Name="fnGetBestCurrentPriceForHotelMenuItem_Result">
           <Property Type="Int32" Name="HotelMenuItemID" Nullable="true" />
@@ -4732,6 +4746,16 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="WithdrawalDatetime" Type="DateTime" Precision="3" />
           <Property Name="Previouse_Balance" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Updated_Balance" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="PatronsNotification">
+          <Key>
+            <PropertyRef Name="PatronsNotificationID" />
+          </Key>
+          <Property Name="PatronsNotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PatronID" Type="Int32" />
+          <Property Name="NotificationContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateTimeSent" Type="DateTime" Precision="3" />
+          <Property Name="NotificationType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5354,6 +5378,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySetMapping Name="PatronsOrders">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsOrder">
               <MappingFragment StoreEntitySet="PatronsOrders">
+                <ScalarProperty Name="LinQ" ColumnName="LinQ" />
                 <ScalarProperty Name="PatronsOrdersID" ColumnName="PatronsOrdersID" />
                 <ScalarProperty Name="HotelID" ColumnName="HotelID" />
                 <ScalarProperty Name="PatronID" ColumnName="PatronID" />
@@ -5910,6 +5935,17 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
                 <ScalarProperty Name="Withdrawal_Amount" ColumnName="Withdrawal_Amount" />
                 <ScalarProperty Name="PatronID" ColumnName="PatronID" />
                 <ScalarProperty Name="PatronWithdrawalTransectionID" ColumnName="PatronWithdrawalTransectionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PatronsNotifications">
+            <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsNotification">
+              <MappingFragment StoreEntitySet="PatronsNotification">
+                <ScalarProperty Name="NotificationType" ColumnName="NotificationType" />
+                <ScalarProperty Name="DateTimeSent" ColumnName="DateTimeSent" />
+                <ScalarProperty Name="NotificationContent" ColumnName="NotificationContent" />
+                <ScalarProperty Name="PatronID" ColumnName="PatronID" />
+                <ScalarProperty Name="PatronsNotificationID" ColumnName="PatronsNotificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

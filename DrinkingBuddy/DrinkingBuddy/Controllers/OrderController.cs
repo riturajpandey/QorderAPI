@@ -21,6 +21,7 @@ using DrinkingBuddy.Entities;
 using DrinkingBuddy.Filter;
 using DrinkingBuddy.Providers;
 using DrinkingBuddy.Results;
+using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Text;
 
@@ -32,6 +33,9 @@ namespace DrinkingBuddy.Controllers
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
         EncryptionLibrary Encryption = new EncryptionLibrary();
+        PushNotification push = new PushNotification();
+
+        string Message;
 
         #region Order
 
@@ -81,8 +85,19 @@ namespace DrinkingBuddy.Controllers
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
                         {
+                            var devicetoken = push.FindDeviceToken(null, model.PatronID);
+                            string Message = "Your Order Have been Placed Successfully.";
+                            var status = push.SendNotification(devicetoken, Message);
+                            NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                            notificationBindingModel.DateTimeSent = DateTime.Now;
+                            notificationBindingModel.PatronID = model.PatronID;
+                            notificationBindingModel.NotificationContent = Message;
+                            notificationBindingModel.NotificationType = "Order";
+                            push.InsertNotification(notificationBindingModel);
+
                             PlaceOrderResponse response = new PlaceOrderResponse();
                             response.OrderId = _PatronsOrder.PatronsOrdersID;
+
                             return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = response });
                         }
                         else { return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" }); }
@@ -115,8 +130,15 @@ namespace DrinkingBuddy.Controllers
                 if (PatonID > 0)
                 {
 
-                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID).ToList();
+                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID & m.OrderCollected == true).ToList();
+
+                    if (Patrnsorder.Count() == 0)
+                    {
+                        return BadRequest();
+                    }
                     List<OrderHistoryResponse> _ListOrderHistory = new List<OrderHistoryResponse>();
+
+
                     foreach (var item in Patrnsorder)
                     {
                         OrderHistoryResponse data = new OrderHistoryResponse();
@@ -124,35 +146,46 @@ namespace DrinkingBuddy.Controllers
                         var result = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
                         data.HotelName = result.HotelName;
                         data.PatronsOrdersID = item.PatronsOrdersID;
-                        _ListOrderHistory.Add(data);
-                    }
-                    for (int i = 0; i < _ListOrderHistory.Count(); i++)
-                    {
-                        int PatronsOrderId = _ListOrderHistory[i].PatronsOrdersID;
-                        var PatronsDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == PatronsOrderId).FirstOrDefault();
-                        if (PatronsDetails != null)
-                        {
-                            if (PatronsDetails.ItemNameAtTimeOfBuying == null)
-                            { _ListOrderHistory[i].DrinkName = ""; }
-                            else { _ListOrderHistory[i].DrinkName = PatronsDetails.ItemNameAtTimeOfBuying; }
-                            if (PatronsDetails.QTYOrdered == null)
-                            { _ListOrderHistory[i].QTYOrdered = 0; }
-                            else { _ListOrderHistory[i].QTYOrdered = PatronsDetails.QTYOrdered; }
-                            if (PatronsDetails.SizeAtTimeOfBuying == null)
-                            { _ListOrderHistory[i].Size = ""; }
-                            else { _ListOrderHistory[i].Size = PatronsDetails.SizeAtTimeOfBuying; }
-                            if (PatronsDetails.PriceAtTimeOfBuying == null)
-                            { _ListOrderHistory[i].Price = 0; }
-                            else { _ListOrderHistory[i].Price = PatronsDetails.PriceAtTimeOfBuying; }
-                        }
+                        if (item.FinalAmountForOrder == null) { data.FinalAmount = 0; }
                         else
                         {
-                            _ListOrderHistory[i].DrinkName = "";
-                            _ListOrderHistory[i].QTYOrdered = 0;
-                            _ListOrderHistory[i].Size = "";
-                            _ListOrderHistory[i].Price = 0;
+                            data.FinalAmount = item.FinalAmountForOrder;
                         }
+
+                        _ListOrderHistory.Add(data);
+
+                        var orderdetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == item.PatronsOrdersID & m.DeliveredByHotel == true).ToList();
+                        //if (orderdetails.Count() == 0)
+                        //{
+
+                        //    return BadRequest();
+                        //}
+                        List<DrinkHistory> _ListDrink = new List<DrinkHistory>();
+                        foreach (var order in orderdetails)
+                        {
+                            DrinkHistory drinkhistory = new DrinkHistory();
+                            var drink = _context.HotelMenus.Where(m => m.HotelMenuID == order.HotelMenuItemID).FirstOrDefault();
+                            drinkhistory.DrinkName = drink.DrinkName;
+                            if (order.QTYOrdered == null) { drinkhistory.QuantityOrdered = 0; }
+                            else { drinkhistory.QuantityOrdered = order.QTYOrdered; }
+                            if (order.AcceptedPricePerItem == null) { drinkhistory.Price = 0; }
+                            else { drinkhistory.Price = order.AcceptedPricePerItem; }
+                            drinkhistory.Size = order.SizeAtTimeOfBuying;
+
+                            _ListDrink.Add(drinkhistory);
+                        }
+
+                        data.DrinkList = _ListDrink;
+                        int? count = 0;
+                        foreach (var num in _ListDrink)
+                        {
+                            count = count + num.QuantityOrdered;
+
+                        }
+
+                        data.DrinkCount = count;
                     }
+
 
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = _ListOrderHistory });
                 }
@@ -170,6 +203,119 @@ namespace DrinkingBuddy.Controllers
         }
 
         [HttpGet]
+        [Route("CurrentOrders")]
+        public IHttpActionResult CurrentOrders(int PatronID)
+        {
+            try
+            {
+                if (PatronID > 0)
+                {
+                    var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).ToList();
+                    List<PatronsOrdersDetail> orderDetails = new List<PatronsOrdersDetail>();
+
+                    List<CurrentOrderResponse> _listcurrentorderreponse = new List<CurrentOrderResponse>();
+
+
+
+                    foreach (var item in order)
+                    {
+                        var hotel = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
+
+                        CurrentOrderResponse current = new CurrentOrderResponse();
+                        current.PatronsOrdersID = item.PatronsOrdersID;
+                        current.DateTimeOfOrder = item.DateTimeOfOrder;
+                        if (item.FinalAmountForOrder == null) { current.FinalAmount = 0; }
+                        else { current.FinalAmount = item.FinalAmountForOrder; }
+                        current.HotelName = hotel.HotelName;
+                        if (item.LinQ == null) { current.LinQ = 0; }
+                        else { current.LinQ = item.LinQ; }
+                        if (item.BarAcceptedOrder == true)
+                        { current.Status = "Accepted"; }
+                        else { current.Status = "Pending"; }
+                        if (item.BarStartedOrder == true)
+                        { current.Status = "Started"; }
+                        if (item.BarCompletedOrder == true)
+                        { current.Status = "Completed"; }
+                        if (item.OrderCollected == true)
+                        { current.Status = "Collected"; }
+
+                        List<CurrentDrink> _listCurrentDrink = new List<CurrentDrink>();
+
+                        orderDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == item.PatronsOrdersID & m.BarCompleted != true & m.DeliveredByHotel != true).ToList();
+
+                        if (orderDetails.Count != 0)
+                        {
+
+
+                            foreach (var data in orderDetails)
+                            {
+                                CurrentDrink single = new CurrentDrink();
+
+                                var menus = _context.HotelMenus.Where(m => m.HotelMenuID == data.HotelMenuItemID).FirstOrDefault();
+
+                                if (menus == null)
+                                {
+                                    return BadRequest();
+                                }
+
+                                single.DrinkName = menus.DrinkName;
+                                if (data.QTYOrdered != null)
+                                { single.QTYOrdered = data.QTYOrdered; }
+                                else { single.QTYOrdered = 0; }
+                                if (data.SizeAtTimeOfBuying == null) { single.Size = ""; }
+                                else { single.Size = data.SizeAtTimeOfBuying; }
+                                if (data.AcceptedPricePerItem != null)
+                                { single.Price = data.AcceptedPricePerItem; }
+                                else { single.Price = 0; }
+                                if (menus.MinutesToServeItem == null) { single.EstMinutes = 0; }
+                                else { single.EstMinutes = menus.MinutesToServeItem; }
+
+
+
+                                _listCurrentDrink.Add(single);
+                            }
+                            int? count = 0;
+                            int? minutes = 0;
+
+                            foreach (var num in _listCurrentDrink)
+                            {
+                                count = count + num.QTYOrdered;
+                                minutes = minutes + num.EstMinutes;
+
+                            }
+
+                            current.DrinkCount = count;
+                            current.EstMinutes = minutes;
+
+
+
+                        }
+                        else
+                        {
+                            // _listCurrentDrink = null;
+                            current.DrinkList = null;
+                            current.DrinkCount = 0;
+                            current.EstMinutes = 0;
+                        }
+
+                        current.DrinkList = _listCurrentDrink;
+                        _listcurrentorderreponse.Add(current);
+                    }
+
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = _listcurrentorderreponse });
+                }
+                else
+                {
+                    return Ok(new ResponseModel { Message = "Not a vaild OrerId.", Status = "Success" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("TrackOrders")]
         public IHttpActionResult TrackOrders(int OrderId)
         {
@@ -179,6 +325,7 @@ namespace DrinkingBuddy.Controllers
                 {
                     TrackingResponse response = new TrackingResponse();
                     var patronsdetails = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderId).FirstOrDefault();
+
                     if (patronsdetails.BarAcceptedOrder == true)
                     { response.Status = "Accepted"; }
                     else { response.Status = "Pending"; }
@@ -224,57 +371,7 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        [HttpGet]
-        [Route("CurrentOrders")]
-        public IHttpActionResult CurrentOrders(int OrderId)
-        {
-            try
-            {
-                if (OrderId > 0)
-                {
-                    var orderDetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == OrderId).ToList();
-                    var order = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderId).FirstOrDefault();
-                    if (orderDetails == null & order == null)
-                    {
-                        return BadRequest();
-                    }
-                    List<OrderHistoryResponse> currentorderreponse = new List<OrderHistoryResponse>();
 
-                    foreach (var item in orderDetails)
-                    {
-                        OrderHistoryResponse single = new OrderHistoryResponse();
-
-                        var hotel = _context.Hotels.Where(m => m.HotelID == order.HotelID).FirstOrDefault();
-
-                        single.DrinkName = item.ItemNameAtTimeOfBuying;
-                        if (item.QTYOrdered != null)
-                        { single.QTYOrdered = item.QTYOrdered; }
-                        else { single.QTYOrdered = 0; }
-                        single.Size = item.SizeAtTimeOfBuying;
-                        if (item.PriceAtTimeOfBuying != null)
-                        { single.Price = item.PriceAtTimeOfBuying; }
-                        else { single.Price = 0; }
-                        // single.Price = item.PriceAtTimeOfBuying;
-                        single.PatronsOrdersID = OrderId;
-                        single.HotelName = hotel.HotelName;
-                        single.DateTimeOfOrder = order.DateTimeOfOrder;
-
-                        currentorderreponse.Add(single);
-                    }
-
-                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = currentorderreponse });
-                }
-                else
-                {
-                    return Ok(new ResponseModel { Message = "Not a vaild OrerId.", Status = "Success" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-        }
 
         #endregion
 
@@ -291,8 +388,6 @@ namespace DrinkingBuddy.Controllers
                     var config = new MapperConfiguration(cfg =>
                     {
                         cfg.CreateMap<GroupOrderBindingModel, TrackGroupOrder>();
-
-
                         cfg.CreateMap<GroupOrderMenu, TrackGroupOrderDetail>();
 
                     });
@@ -305,12 +400,41 @@ namespace DrinkingBuddy.Controllers
                     int i = _context.SaveChanges();
                     if (i > 0)
                     {
-                        var trackorders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.OpenMinutes == model.OpenMinutes).FirstOrDefault();
+                        var OrderInitiater = new TrackGroupOrder();
+
+                        if (model.OpenMinutes > 0)
+                        {
+                            OrderInitiater = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.OpenMinutes == model.OpenMinutes).FirstOrDefault();
+                            if (OrderInitiater == null)
+                            {
+                                return BadRequest("");
+                            }
+
+                        }
+                        else
+                        {
+
+                            var initialpatron = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == model.PatronsGroupID).ToList();
+
+                            if (initialpatron.Count() == 0)
+                            {
+                                return BadRequest();
+                            }
+
+                            foreach (var item in initialpatron)
+                            {
+                                if (item.OpenMinutes > 0)
+                                {
+                                    OrderInitiater = item;
+                                }
+                            }
+                        }
+
                         List<TrackGroupOrderDetail> trackGroupOrderDetail = new List<TrackGroupOrderDetail>();
                         foreach (var item in dataOrderDetail)
                         {
 
-                            item.TrackGroupOrderID = trackorders.TrackGroupOrderID;
+                            item.TrackGroupOrderID = OrderInitiater.TrackGroupOrderID;
                             trackGroupOrderDetail.Add(item);
 
                         }
@@ -319,7 +443,81 @@ namespace DrinkingBuddy.Controllers
                         int DetailOrder = _context.SaveChanges();
                         if (DetailOrder > 0)
                         {
+                            if (model.OpenMinutes > 0)
+                            {
+                                var groups = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == OrderInitiater.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+                                if (groups.Count() == 0)
+                                {
+                                    return BadRequest();
+                                }
+                                List<string> devicetoken = new List<string>();
+                                foreach (var item in groups)
+                                {
+                                    var patrons = _context.Patrons.Where(m => m.PatronsID == item.MemberPatronID).FirstOrDefault();
+                                    string token = patrons.DeviceToken;
+                                    devicetoken.Add(token);
+                                }
+
+                                var starterpatron = _context.Patrons.Where(m => m.PatronsID == OrderInitiater.PatronID).FirstOrDefault();
+                                if (starterpatron == null)
+                                {
+                                    return BadRequest();
+                                }
+
+                                //Messages to be sent to the group members.
+                                Message = " Has Initiated an Order,Please Join to Complete the Order.";
+                                push.SendNotification(devicetoken, starterpatron.FirstName + " " + starterpatron.LastName + Message);
+                                //  NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                //  notificationBindingModel.DateTimeSent = DateTime.Now;
+                                //   notificationBindingModel.PatronID = model.PatronID;
+                                //   notificationBindingModel.NotificationContent = Message;
+                                //   notificationBindingModel.NotificationType = "Order";
+                                //    push.InsertNotification();
+
+
+                                //Message to be sent to the person initiated the order.
+                                Message = " You have Initiated an Order,You group member will be Notified Shortly...";
+                                push.SendNotification(devicetoken, starterpatron.FirstName + " " + starterpatron.LastName + Message);
+                                NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                notificationBindingModel.DateTimeSent = DateTime.Now;
+                                notificationBindingModel.PatronID = starterpatron.PatronsID;
+                                notificationBindingModel.NotificationContent = Message;
+                                notificationBindingModel.NotificationType = "Order";
+                                push.InsertNotification(notificationBindingModel);
+
+                            }
+                            else
+                            {
+
+                                var memberpatron = _context.Patrons.Where(m => m.PatronsID == model.PatronID).FirstOrDefault();
+
+
+                                // var Initiaterdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == OrderInitiater.PatronsGroupID).FirstOrDefault();
+
+                                var Initiaterpatron = _context.Patrons.Where(m => m.PatronsID == OrderInitiater.PatronID).FirstOrDefault();
+
+                                List<string> devicetoken = new List<string>();
+                                string token = Initiaterpatron.DeviceToken;
+                                devicetoken.Add(token);
+                                //Message to be sent to the Order Initiater.
+                                push.SendNotification(devicetoken, memberpatron.FirstName + " " + memberpatron.LastName + " Has joined your group Order.");
+
+                                List<string> tokens = new List<string>();
+                                string tkn = memberpatron.DeviceToken;
+                                tokens.Add(tkn);
+                                Message = "Your Order have been Merge with group Order.";
+                                //Message to be sent to the individual member.
+                                push.SendNotification(tokens, Message);
+                                NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
+                                notificationBindingModel.DateTimeSent = DateTime.Now;
+                                notificationBindingModel.PatronID = memberpatron.PatronsID;
+                                notificationBindingModel.NotificationContent = Message;
+                                notificationBindingModel.NotificationType = "Order";
+                                push.InsertNotification(notificationBindingModel);
+                            }
+
                             return Ok(new ResponseModel { Message = "Order Added Successfully.", Status = "Success" });
+
                         }
                         else
                         {
@@ -342,6 +540,7 @@ namespace DrinkingBuddy.Controllers
             }
 
         }
+
 
         [HttpGet]
         [Route("FinalOrderOfGroup")]
@@ -400,7 +599,7 @@ namespace DrinkingBuddy.Controllers
                 if (PatronID > 0 & PatronsGroupID > 0 & OpenMinutes > 0)
                 {
 
-                    var trackorders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes).FirstOrDefault();
+                    var trackorders = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == PatronsGroupID & m.OpenMinutes == OpenMinutes & m.PatronID == PatronID).FirstOrDefault();
 
                     var trackorderdetails = _context.TrackGroupOrderDetails.Where(m => m.TrackGroupOrderID == trackorders.TrackGroupOrderID).ToList();
 
@@ -457,7 +656,6 @@ namespace DrinkingBuddy.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         #endregion
 
