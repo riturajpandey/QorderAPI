@@ -204,7 +204,7 @@ namespace DrinkingBuddy.Controllers
                                             notificationBindingModel.DateTimeSent = DateTime.Now;
                                             notificationBindingModel.PatronID = sender.PatronsID;
                                             notificationBindingModel.NotificationContent = Message;
-                                            notificationBindingModel.NotificationType = "Money Transfer";
+                                            notificationBindingModel.NotificationType = "Money";
                                             push.InsertNotification(notificationBindingModel);
 
 

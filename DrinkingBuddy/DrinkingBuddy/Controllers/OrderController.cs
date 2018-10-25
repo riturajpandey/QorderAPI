@@ -657,6 +657,64 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("CheckInitial")]
+        public IHttpActionResult CheckInitial(int PatronID, int GroupId, int HotelID)
+        {
+            try
+            {
+                if (PatronID > 0 & GroupId > 0 & HotelID > 0)
+                {
+
+                    DateTime todaysdate = System.DateTime.Today.Date;
+                    string today = todaysdate.ToString("yyyy-MM-dd");
+
+                    var trackorder = _context.TrackGroupOrders.Where(m => m.PatronID == PatronID & m.PatronsGroupID == GroupId & m.HotelID == HotelID).ToList();
+
+                    List<string> listsqldate = new List<string>();
+
+                    foreach (var item in trackorder)
+                    {
+                        DateTime junk = DateTime.Parse(item.DateTimeOfOrder.ToString());
+                        string sqldate = junk.ToString("yyyy-MM-dd");
+
+                        listsqldate.Add(sqldate);
+                    }
+
+                    foreach (var item in listsqldate)
+                    {
+
+                        if (item == today)
+                        {
+
+                            return Ok(new ResponseModel { Message = "Order initiated.", Status = "Success" });
+                        }
+                        else
+                        {
+                            return BadRequest();
+
+                        }
+
+
+                    }
+                    return BadRequest();
+                }
+                else
+                {
+                    return BadRequest("Provided parameters are not valid.");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
+
+
         #endregion
 
         #region Card Details
@@ -823,4 +881,5 @@ namespace DrinkingBuddy.Controllers
 
         #endregion
     }
+
 }

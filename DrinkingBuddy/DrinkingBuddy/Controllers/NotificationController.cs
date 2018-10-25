@@ -29,13 +29,17 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("GetNotification")]
-        public IHttpActionResult GetNotification(int PatronID)
+        public IHttpActionResult GetNotifications(int PatronID)
         {
             try
             {
                 if (PatronID > 0)
                 {
                     var notifications = _context.PatronsNotifications.Where(m => m.PatronID == PatronID).Take(25);
+                    if (notifications.Count() == 0)
+                    {
+                        return BadRequest("No Notification for this patron.");
+                    }
                     var config = new MapperConfiguration(cfg =>
                     {
                         cfg.CreateMap<PatronsNotification, Notifications>();
@@ -61,6 +65,89 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpPost]
+        [Route("MarkRead")]
+        public IHttpActionResult MarkRead(List<int> PatronsNotificationID)
+        {
+            try
+            {
+                if (PatronsNotificationID.Count() > 0)
+                {
+                    List<PatronsNotification> listpatronsNotification = new List<PatronsNotification>();
+                    foreach (var item in PatronsNotificationID)
+                    {
+                        PatronsNotification single = new PatronsNotification();
+                        var notification = _context.PatronsNotifications.Where(m => m.PatronsNotificationID == item).FirstOrDefault();
+                        if (notification == null)
+                        {
+                            return BadRequest("No Notification found for this NotificationId");
+                        }
+                        single = notification;
+                        single.IsRead = true;
+                        listpatronsNotification.Add(single);
+                    }
+                    int row = 0;
+                    foreach (var item in listpatronsNotification)
+                    {
+                        _context.Entry(item).State = EntityState.Modified;
+                        row = _context.SaveChanges();
+                    }
+
+                    if (row > 0)
+                    {
+                        return Ok(new ResponseModel { Message = "Notifications updated as Read.", Status = "Success" });
+                    }
+                    else
+                    {
+                        return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Success" });
+
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpGet]
+        [Route("GetUnread")]
+        public IHttpActionResult GetUnread(int PatronId)
+        {
+            try
+            {
+                if (PatronId > 0)
+                {
+                    var notification = _context.PatronsNotifications.Where(m => m.PatronID == PatronId & m.IsRead == false).ToList();
+                    if (notification.Count() == 0)
+                    {
+                        return BadRequest("No Notification found for this patron.");
+
+                    }
+
+                    var unreadcount = notification.Count();
+                    return Ok(new ResponseModel { Message = "Request Executed Successfully.", Status = "Success", Data = unreadcount });
+                }
+                else
+                {
+                    return BadRequest("The PatonsID is invalid.");
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
 
         //[HttpPost]
         //[Route("SaveNotification")]//TODO:Testing purpoe only rest the method should be used instead.

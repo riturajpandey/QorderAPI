@@ -642,6 +642,7 @@
           <Property Name="NotificationContent" Type="varchar(max)" />
           <Property Name="DateTimeSent" Type="datetime" />
           <Property Name="NotificationType" Type="varchar" MaxLength="50" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="PatronsOrders">
           <Key>
@@ -4756,6 +4757,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <Property Name="NotificationContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DateTimeSent" Type="DateTime" Precision="3" />
           <Property Name="NotificationType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5941,6 +5943,7 @@ warning 6002: The table/view 'DrinkingBuddy.sys.database_firewall_rules' does no
           <EntitySetMapping Name="PatronsNotifications">
             <EntityTypeMapping TypeName="DrinkingBuddyEntity.PatronsNotification">
               <MappingFragment StoreEntitySet="PatronsNotification">
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="NotificationType" ColumnName="NotificationType" />
                 <ScalarProperty Name="DateTimeSent" ColumnName="DateTimeSent" />
                 <ScalarProperty Name="NotificationContent" ColumnName="NotificationContent" />

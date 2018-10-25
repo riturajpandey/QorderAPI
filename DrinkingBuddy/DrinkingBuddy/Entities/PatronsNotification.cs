@@ -19,5 +19,6 @@ namespace DrinkingBuddy.Entities
         public string NotificationContent { get; set; }
         public Nullable<System.DateTime> DateTimeSent { get; set; }
         public string NotificationType { get; set; }
+        public bool IsRead { get; set; }
     }
 }

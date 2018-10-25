@@ -7,6 +7,7 @@ namespace DrinkingBuddy.Models
 {
     public class Notifications
     {
+        public int PatronsNotificationID { get; set; }
         public string NotificationContent { get; set; }
         public Nullable<System.DateTime> DateTimeSent { get; set; }
         public string NotificationType { get; set; }
@@ -19,7 +20,4 @@ namespace DrinkingBuddy.Models
         public Nullable<System.DateTime> DateTimeSent { get; set; }
         public string NotificationType { get; set; }
     }
-
-
 }
-

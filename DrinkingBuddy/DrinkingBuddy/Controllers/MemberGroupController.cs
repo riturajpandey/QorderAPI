@@ -308,7 +308,7 @@ namespace DrinkingBuddy.Controllers
                                     notificationBindingModel.DateTimeSent = DateTime.Now;
                                     notificationBindingModel.PatronID = item.MemberPatronID;
                                     notificationBindingModel.NotificationContent = Message;
-                                    notificationBindingModel.NotificationType = "Group Invites";
+                                    notificationBindingModel.NotificationType = "Group";
                                     push.InsertNotification(notificationBindingModel);
                                 }
                                 return Ok(new ResponseModel { Message = "The Group and invitation along with Group member has been deleted Successfully", Status = "Success" });
@@ -558,7 +558,7 @@ namespace DrinkingBuddy.Controllers
                         notificationBindingModel.DateTimeSent = DateTime.Now;
                         notificationBindingModel.PatronID = ReciverPatron.PatronsID;
                         notificationBindingModel.NotificationContent = Message;
-                        notificationBindingModel.NotificationType = "Group Invites";
+                        notificationBindingModel.NotificationType = "Invites";
                         push.InsertNotification(notificationBindingModel);
 
 
@@ -654,7 +654,7 @@ namespace DrinkingBuddy.Controllers
                                     notificationBindingModel.DateTimeSent = DateTime.Now;
                                     notificationBindingModel.PatronID = sendermaster.PatronsID;
                                     notificationBindingModel.NotificationContent = Message;
-                                    notificationBindingModel.NotificationType = "Group Invites";
+                                    notificationBindingModel.NotificationType = "Invites";
                                     push.InsertNotification(notificationBindingModel);
 
 
@@ -741,7 +741,7 @@ namespace DrinkingBuddy.Controllers
                                 notificationBindingModel.DateTimeSent = DateTime.Now;
                                 notificationBindingModel.PatronID = master.PatronsID;
                                 notificationBindingModel.NotificationContent = Message;
-                                notificationBindingModel.NotificationType = "Group Invites";
+                                notificationBindingModel.NotificationType = "Group";
                                 push.InsertNotification(notificationBindingModel);
                            
 
@@ -878,9 +878,7 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-        #endregion
-
-        #region Invitation
+       
 
         [HttpGet]
         [Route("GetAllInvites")]
@@ -953,7 +951,7 @@ namespace DrinkingBuddy.Controllers
                             notificationBindingModel.DateTimeSent = DateTime.Now;
                             notificationBindingModel.PatronID = sendermaster.PatronsID;
                             notificationBindingModel.NotificationContent = Message;
-                            notificationBindingModel.NotificationType = "Group Invites";
+                            notificationBindingModel.NotificationType = "Invites";
                             push.InsertNotification(notificationBindingModel);
 
 
