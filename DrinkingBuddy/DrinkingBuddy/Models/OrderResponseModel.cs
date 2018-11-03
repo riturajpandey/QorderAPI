@@ -160,6 +160,11 @@ namespace DrinkingBuddy.Models
 
     }
 
+    public class CheckInitialResponse
+    {
+        public bool IsInitiated { get; set; }
+
+    }
 
 }
 

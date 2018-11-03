@@ -67,6 +67,10 @@ namespace DrinkingBuddy.Controllers
                     {
 
                         var orders = _context.PatronsOrders.Where(m => m.PatronID == model.PatronID & m.HotelID == model.HotelID).ToList();
+                        if (orders.Count() == 0)
+                        {
+                            return BadRequest("no Hotel found");
+                        }
                         PatronsOrder _PatronsOrder = new PatronsOrder();
                         foreach (var item in orders)
                         {
@@ -134,7 +138,8 @@ namespace DrinkingBuddy.Controllers
 
                     if (Patrnsorder.Count() == 0)
                     {
-                        return BadRequest();
+                       // return BadRequest("No Order History found");
+                        return Ok(new ResponseModel { Message = "No Orders found for this parton.", Status = "Success",});
                     }
                     List<OrderHistoryResponse> _ListOrderHistory = new List<OrderHistoryResponse>();
 
@@ -144,6 +149,10 @@ namespace DrinkingBuddy.Controllers
                         OrderHistoryResponse data = new OrderHistoryResponse();
                         data.DateTimeOfOrder = item.DateTimeOfOrder;
                         var result = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
+                        if (result == null)
+                        {
+                            return BadRequest("No Hotel found");
+                        }
                         data.HotelName = result.HotelName;
                         data.PatronsOrdersID = item.PatronsOrdersID;
                         if (item.FinalAmountForOrder == null) { data.FinalAmount = 0; }
@@ -155,16 +164,21 @@ namespace DrinkingBuddy.Controllers
                         _ListOrderHistory.Add(data);
 
                         var orderdetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == item.PatronsOrdersID & m.DeliveredByHotel == true).ToList();
-                        //if (orderdetails.Count() == 0)
-                        //{
+                        if (orderdetails.Count() == 0)
+                        {
 
-                        //    return BadRequest();
-                        //}
+                           // return BadRequest("No Order Details Found");
+                            return Ok(new ResponseModel { Message = "No Order Details found for this parton.", Status = "Success", });
+                        }
                         List<DrinkHistory> _ListDrink = new List<DrinkHistory>();
                         foreach (var order in orderdetails)
                         {
                             DrinkHistory drinkhistory = new DrinkHistory();
                             var drink = _context.HotelMenus.Where(m => m.HotelMenuID == order.HotelMenuItemID).FirstOrDefault();
+                            if (drink == null)
+                            {
+                                return BadRequest("No Hotel found");
+                            }
                             drinkhistory.DrinkName = drink.DrinkName;
                             if (order.QTYOrdered == null) { drinkhistory.QuantityOrdered = 0; }
                             else { drinkhistory.QuantityOrdered = order.QTYOrdered; }
@@ -211,16 +225,22 @@ namespace DrinkingBuddy.Controllers
                 if (PatronID > 0)
                 {
                     var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).ToList();
+                    if (order.Count() == 0)
+                    {
+                      //  return BadRequest("No Current Order Exist.");
+                        return Ok(new ResponseModel { Message = "No Current Orders found for this parton.", Status = "Success", });
+                    }
                     List<PatronsOrdersDetail> orderDetails = new List<PatronsOrdersDetail>();
 
                     List<CurrentOrderResponse> _listcurrentorderreponse = new List<CurrentOrderResponse>();
 
-
-
                     foreach (var item in order)
                     {
                         var hotel = _context.Hotels.Where(m => m.HotelID == item.HotelID).FirstOrDefault();
-
+                        if (hotel == null)
+                        {
+                            return BadRequest("No Hotel Found");
+                        }
                         CurrentOrderResponse current = new CurrentOrderResponse();
                         current.PatronsOrdersID = item.PatronsOrdersID;
                         current.DateTimeOfOrder = item.DateTimeOfOrder;
@@ -245,8 +265,6 @@ namespace DrinkingBuddy.Controllers
 
                         if (orderDetails.Count != 0)
                         {
-
-
                             foreach (var data in orderDetails)
                             {
                                 CurrentDrink single = new CurrentDrink();
@@ -255,7 +273,7 @@ namespace DrinkingBuddy.Controllers
 
                                 if (menus == null)
                                 {
-                                    return BadRequest();
+                                    return BadRequest("No Hotel Found");
                                 }
 
                                 single.DrinkName = menus.DrinkName;
@@ -325,6 +343,10 @@ namespace DrinkingBuddy.Controllers
                 {
                     TrackingResponse response = new TrackingResponse();
                     var patronsdetails = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderId).FirstOrDefault();
+                    if (patronsdetails == null)
+                    {
+                        return BadRequest("No Orders found");
+                    }
 
                     if (patronsdetails.BarAcceptedOrder == true)
                     { response.Status = "Accepted"; }
@@ -343,12 +365,20 @@ namespace DrinkingBuddy.Controllers
                     else
                     {
                         var patronsorderdetail = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == OrderId).ToList();
+                        if (patronsorderdetail.Count() == 0)
+                        {
+                            return BadRequest("No Order Details are found");
+
+                        }
                         int? serveminuts = 0;
                         response.EstMinutes = 0;
                         foreach (var item in patronsorderdetail)
                         {
                             var menus = _context.HotelMenus.Where(m => m.HotelMenuID == item.HotelMenuItemID).FirstOrDefault();
-
+                            if (menus == null)
+                            {
+                                return BadRequest("No Menu found");
+                            }
                             serveminuts = menus.MinutesToServeItem;
                             response.EstMinutes = response.EstMinutes + serveminuts;
 
@@ -371,9 +401,8 @@ namespace DrinkingBuddy.Controllers
 
         }
 
-
-
         #endregion
+
 
         #region GroupOrders
 
@@ -394,7 +423,7 @@ namespace DrinkingBuddy.Controllers
 
                     IMapper mapper = config.CreateMapper();
                     var dataOrder = mapper.Map<TrackGroupOrder>(model);
-                    var dataOrderDetail = mapper.Map<List<TrackGroupOrderDetail>>(model.OrderMenus);
+                    var dataOrderDetail = mapper.Map<List<TrackGroupOrderDetail>>(model.GroupOrderMenus);
 
                     _context.TrackGroupOrders.Add(dataOrder);
                     int i = _context.SaveChanges();
@@ -407,7 +436,7 @@ namespace DrinkingBuddy.Controllers
                             OrderInitiater = _context.TrackGroupOrders.Where(m => m.PatronsGroupID == model.PatronsGroupID & m.OpenMinutes == model.OpenMinutes).FirstOrDefault();
                             if (OrderInitiater == null)
                             {
-                                return BadRequest("");
+                                return BadRequest("No Tracking Order found for this group and open minutes.");
                             }
 
                         }
@@ -418,7 +447,7 @@ namespace DrinkingBuddy.Controllers
 
                             if (initialpatron.Count() == 0)
                             {
-                                return BadRequest();
+                                return BadRequest("No Tracking Order found for this Group.");
                             }
 
                             foreach (var item in initialpatron)
@@ -446,22 +475,44 @@ namespace DrinkingBuddy.Controllers
                             if (model.OpenMinutes > 0)
                             {
                                 var groups = _context.PatronsGroupsMembers.Where(m => m.PatronsGroupID == OrderInitiater.PatronsGroupID & m.DateTimeLeftGroup == null).ToList();
+
                                 if (groups.Count() == 0)
                                 {
-                                    return BadRequest();
+                                    return BadRequest("No member found for this group.");
                                 }
-                                List<string> devicetoken = new List<string>();
+                                List<NotificationMember> listmembers = new List<NotificationMember>();
                                 foreach (var item in groups)
                                 {
-                                    var patrons = _context.Patrons.Where(m => m.PatronsID == item.MemberPatronID).FirstOrDefault();
-                                    string token = patrons.DeviceToken;
-                                    devicetoken.Add(token);
+                                    NotificationMember single = new NotificationMember();
+                                    single.PatronGroupID = item.PatronsGroupID;
+                                    single.PatronID = item.MemberPatronID;
+                                    listmembers.Add(single);
+                                }
+                                var ifmaster = _context.PatronsGroups.Where(m => m.PatronsGroupID == OrderInitiater.PatronsGroupID).FirstOrDefault();
+                                NotificationMember singlemember = new NotificationMember();
+                                singlemember.PatronGroupID = ifmaster.PatronsGroupID;
+                                singlemember.PatronID = (int)ifmaster.MasterPatronID;
+
+                                listmembers.Add(singlemember);
+                                List<string> devicetoken = new List<string>();
+                                foreach (var item in listmembers)
+                                {
+                                    var patrons = _context.Patrons.Where(m => m.PatronsID == item.PatronID).FirstOrDefault();
+                                    if (patrons == null)
+                                    {
+                                        return BadRequest("No Patron Found");
+                                    }
+                                    if (patrons.PatronsID != OrderInitiater.PatronID)
+                                    {
+                                        string token = patrons.DeviceToken;
+                                        devicetoken.Add(token);
+                                    }
                                 }
 
                                 var starterpatron = _context.Patrons.Where(m => m.PatronsID == OrderInitiater.PatronID).FirstOrDefault();
                                 if (starterpatron == null)
                                 {
-                                    return BadRequest();
+                                    return BadRequest("No Patron Found");
                                 }
 
                                 //Messages to be sent to the group members.
@@ -477,7 +528,7 @@ namespace DrinkingBuddy.Controllers
 
                                 //Message to be sent to the person initiated the order.
                                 Message = " You have Initiated an Order,You group member will be Notified Shortly...";
-                                push.SendNotification(devicetoken, starterpatron.FirstName + " " + starterpatron.LastName + Message);
+                                push.SendNotification(devicetoken, Message);
                                 NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
                                 notificationBindingModel.DateTimeSent = DateTime.Now;
                                 notificationBindingModel.PatronID = starterpatron.PatronsID;
@@ -490,12 +541,20 @@ namespace DrinkingBuddy.Controllers
                             {
 
                                 var memberpatron = _context.Patrons.Where(m => m.PatronsID == model.PatronID).FirstOrDefault();
-
+                                if (memberpatron == null)
+                                {
+                                    return BadRequest("No Patrons Found");
+                                }
 
                                 // var Initiaterdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == OrderInitiater.PatronsGroupID).FirstOrDefault();
 
                                 var Initiaterpatron = _context.Patrons.Where(m => m.PatronsID == OrderInitiater.PatronID).FirstOrDefault();
 
+                                if (Initiaterpatron == null)
+                                {
+                                    return BadRequest("No Patrons Found");
+
+                                }
                                 List<string> devicetoken = new List<string>();
                                 string token = Initiaterpatron.DeviceToken;
                                 devicetoken.Add(token);
@@ -657,7 +716,6 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("CheckInitial")]
         public IHttpActionResult CheckInitial(int PatronID, int GroupId, int HotelID)
@@ -669,9 +727,17 @@ namespace DrinkingBuddy.Controllers
 
                     DateTime todaysdate = System.DateTime.Today.Date;
                     string today = todaysdate.ToString("yyyy-MM-dd");
+                    CheckInitialResponse response = new CheckInitialResponse();
+
 
                     var trackorder = _context.TrackGroupOrders.Where(m => m.PatronID == PatronID & m.PatronsGroupID == GroupId & m.HotelID == HotelID).ToList();
 
+                    if (trackorder.Count()==0)
+                    {
+                        response.IsInitiated = false;
+                        return Ok(new ResponseModel { Message = "This Group has not initiated any Order.", Status = "Success", Data = response });
+
+                    }
                     List<string> listsqldate = new List<string>();
 
                     foreach (var item in trackorder)
@@ -684,27 +750,26 @@ namespace DrinkingBuddy.Controllers
 
                     foreach (var item in listsqldate)
                     {
-
+                       
                         if (item == today)
                         {
 
-                            return Ok(new ResponseModel { Message = "Order initiated.", Status = "Success" });
+                            response.IsInitiated = true;
+                            return Ok(new ResponseModel { Message = "Order initiated.", Status = "Success", Data = response });
                         }
                         else
                         {
-                            return BadRequest();
+                            response.IsInitiated = false;
+                            return Ok(new ResponseModel { Message = "This Group has not initiated any Order.", Status = "Success", Data = response });
 
                         }
 
 
                     }
-                    return BadRequest();
-                }
-                else
-                {
-                    return BadRequest("Provided parameters are not valid.");
 
                 }
+
+                return BadRequest("Provided parameters are not valid.");
 
             }
             catch (Exception ex)
@@ -731,6 +796,10 @@ namespace DrinkingBuddy.Controllers
 
                     SHA256 mySHA256 = SHA256Managed.Create();
                     var patronsDetails = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
+                    if (patronsDetails==null)
+                    {
+                        return BadRequest("No Patron Found");
+                    }
                     string PatronsPassword = patronsDetails.Gassword;
                     if (patronsDetails.Gassword != null)
                     {
@@ -796,6 +865,10 @@ namespace DrinkingBuddy.Controllers
 
                         SHA256 mySHA256 = SHA256Managed.Create();
                         var patronsDetails = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
+                        if (patronsDetails==null)
+                        {
+                            return BadRequest("No Patron Found with this Details");
+                        }
                         string PatronsPassword = patronsDetails.Gassword;
                         if (patronsDetails.Gassword != null)
                         {

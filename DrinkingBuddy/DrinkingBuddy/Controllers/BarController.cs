@@ -39,58 +39,49 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-
-                    var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.Token, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
-                    if (Hotels != null)
-                    {
-                        List<Mobile_Get_HotelsWithin100ks_Result> ShowHotels = new List<Mobile_Get_HotelsWithin100ks_Result>();
-                        foreach (var item in Hotels)
-                        {
-                            Mobile_Get_HotelsWithin100ks_Result data = new Mobile_Get_HotelsWithin100ks_Result();
-                            data.HotelID = item.HotelID;
-                            if (item.HotelName == null) { data.HotelName = ""; }
-                            else { data.HotelName = item.HotelName; }
-                            if (item.HotelAddress1 == null) { data.HotelAddress1 = ""; }
-                            else { data.HotelAddress1 = item.HotelAddress1; }
-                            if (item.HotelAddress2 == null) { data.HotelAddress2 = ""; }
-                            else { data.HotelAddress2 = item.HotelAddress2; }
-                            if (item.HotelSuburb == null) { data.HotelSuburb = ""; }
-                            else { data.HotelSuburb = item.HotelSuburb; }
-                            if (item.HotelPostcode == null) { data.HotelPostcode = ""; }
-                            else { data.HotelPostcode = item.HotelPostcode; }
-                            if (item.StateName == null) { data.StateName = ""; }
-                            else { data.StateName = item.StateName; }
-                            if (item.StateNameAbbreviation == null) { data.StateNameAbbreviation = ""; }
-                            else { data.StateNameAbbreviation = item.StateNameAbbreviation; }
-                            if (item.HotelStateID == null) { data.HotelStateID = item.HotelStateID; }
-                            else { data.HotelStateID = item.HotelStateID; }
-                            if (item.HotelLat == null) { data.HotelLat = 0; }
-                            else { data.HotelLat = item.HotelLat; }
-                            if (item.HotelLong == null) { data.HotelLong = 0; }
-                            else { data.HotelLong = item.HotelLong; }
-                            if (item.DistanceAway == null) { data.DistanceAway = ""; }
-                            else { data.DistanceAway = item.DistanceAway; }
-
-                            ShowHotels.Add(data);
-
-                        }
-
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = ShowHotels });
-                    }
-                    else
-                    {
-                        return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed" });
-
-                    }
-
-                }
-                else
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Provided Data is invalid");
+                }
+                var Hotels = _context.Mobile_Get_HotelsWithin100ks(model.Token, model.PatronID, model.CurrentLat, model.CurrentLong).ToList();
+                if (Hotels.Count() == 0)
+                {
+                    return Ok(new ResponseModel { Message = "No Near By Hotel Found.", Status = "Failed" });
+                }
+                List<Mobile_Get_HotelsWithin100ks_Result> ShowHotels = new List<Mobile_Get_HotelsWithin100ks_Result>();
+                foreach (var item in Hotels)
+                {
+                    Mobile_Get_HotelsWithin100ks_Result data = new Mobile_Get_HotelsWithin100ks_Result();
+                    data.HotelID = item.HotelID;
+                    if (item.HotelName == null) { data.HotelName = ""; }
+                    else { data.HotelName = item.HotelName; }
+                    if (item.HotelAddress1 == null) { data.HotelAddress1 = ""; }
+                    else { data.HotelAddress1 = item.HotelAddress1; }
+                    if (item.HotelAddress2 == null) { data.HotelAddress2 = ""; }
+                    else { data.HotelAddress2 = item.HotelAddress2; }
+                    if (item.HotelSuburb == null) { data.HotelSuburb = ""; }
+                    else { data.HotelSuburb = item.HotelSuburb; }
+                    if (item.HotelPostcode == null) { data.HotelPostcode = ""; }
+                    else { data.HotelPostcode = item.HotelPostcode; }
+                    if (item.StateName == null) { data.StateName = ""; }
+                    else { data.StateName = item.StateName; }
+                    if (item.StateNameAbbreviation == null) { data.StateNameAbbreviation = ""; }
+                    else { data.StateNameAbbreviation = item.StateNameAbbreviation; }
+                    if (item.HotelStateID == null) { data.HotelStateID = item.HotelStateID; }
+                    else { data.HotelStateID = item.HotelStateID; }
+                    if (item.HotelLat == null) { data.HotelLat = 0; }
+                    else { data.HotelLat = item.HotelLat; }
+                    if (item.HotelLong == null) { data.HotelLong = 0; }
+                    else { data.HotelLong = item.HotelLong; }
+                    if (item.DistanceAway == null) { data.DistanceAway = ""; }
+                    else { data.DistanceAway = item.DistanceAway; }
+
+                    ShowHotels.Add(data);
 
                 }
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = ShowHotels });
+
             }
             catch (Exception ex)
             {
@@ -104,53 +95,40 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var patronExistinLogin = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronId);
-
-                        if (patronExistinLogin != null)
-                        {
-
-                            var config = new MapperConfiguration(cfg =>
-                           {
-
-                               cfg.CreateMap<ConnnectBarModel, PatronsHotelLogIn>();
-
-                           });
-
-                            IMapper mapper = config.CreateMapper();
-                            var data = mapper.Map<PatronsHotelLogIn>(model);
-                            data.LoginDateTime = DateTime.Now;
-                            _context.PatronsHotelLogIns.Add(data);
-                            int i = _context.SaveChanges();
-                            if (i != 0)
-                            {
-                                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", });
-
-                            }
-                            else
-                            {
-                                return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
-                            }
-
-
-                        }
-                        else
-                        {
-                            return BadRequest();
-
-                        }
-                    }
-
-
-                }
-                else
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Passed Data Invalid");
 
                 }
+
+                var patronExistinLogin = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronId);
+
+                if (patronExistinLogin == null)
+                {
+
+                    return BadRequest();
+                }
+                var config = new MapperConfiguration(cfg =>
+                {
+
+
+                    cfg.CreateMap<ConnnectBarModel, PatronsHotelLogIn>();
+
+                });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<PatronsHotelLogIn>(model);
+                data.LoginDateTime = DateTime.Now;
+                _context.PatronsHotelLogIns.Add(data);
+                int i = _context.SaveChanges();
+                if (i == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+
+
+                }
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", });
 
             }
             catch (Exception ex)
@@ -200,43 +178,34 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (HotelId != 0)
-                {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var MenuCatagoryList = _context.HotelMenusCategories.Where(m => m.HotelID == HotelId & m.IsActive == true).ToList();
-                        if (MenuCatagoryList.Count != 0)
-                        {
-                            var config = new MapperConfiguration(cfg =>
-                            {
-                                cfg.CreateMap<HotelMenusCategory, HotelMenuCatagoriesResponseModel>();
-                                cfg.CreateMap<HotelMenuCatagoriesResponseModel, HotelMenusCategory>();
-
-                            });
-
-                            IMapper mapper = config.CreateMapper();
-                            var data = mapper.Map<List<HotelMenuCatagoriesResponseModel>>(MenuCatagoryList);
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
-                        }
-                    }
-
-                }
-                else
+                if (HotelId == 0)
                 {
                     return BadRequest("The Paramenter is not Valid");
                 }
+
+                var MenuCatagoryList = _context.HotelMenusCategories.Where(m => m.HotelID == HotelId & m.IsActive == true).ToList();
+                if (MenuCatagoryList.Count == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+                }
+                var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<HotelMenusCategory, HotelMenuCatagoriesResponseModel>();
+                        cfg.CreateMap<HotelMenuCatagoriesResponseModel, HotelMenusCategory>();
+
+                    });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<HotelMenuCatagoriesResponseModel>>(MenuCatagoryList);
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
 
             }
-
-
         }
 
         [HttpGet]
@@ -245,35 +214,27 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (HotelId != 0 & CatagoryId != 0)
-                {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var MenuList = _context.HotelMenusSubCategories.Where(m => m.HotelMenuCategoryID == CatagoryId & m.HotelID == HotelId & m.IsActive == true).ToList();
-                        if (MenuList.Count != 0)
-                        {
-                            var config = new MapperConfiguration(cfg =>
-                            {
-                                cfg.CreateMap<HotelMenu, HotelMenuSubCategoryResponseModel>();
-                                cfg.CreateMap<HotelMenuSubCategoryResponseModel, HotelMenu>();
-
-                            });
-
-                            IMapper mapper = config.CreateMapper();
-                            var data = mapper.Map<List<HotelMenuSubCategoryResponseModel>>(MenuList);
-
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
-                        }
-                    }
-                }
-                else
+                if (HotelId == 0 & CatagoryId == 0)
                 {
                     return BadRequest("Parameter's are not valid.");
                 }
+
+                var MenuList = _context.HotelMenusSubCategories.Where(m => m.HotelMenuCategoryID == CatagoryId & m.HotelID == HotelId & m.IsActive == true).ToList();
+                if (MenuList.Count == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
+                }
+                var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<HotelMenu, HotelMenuSubCategoryResponseModel>();
+                        cfg.CreateMap<HotelMenuSubCategoryResponseModel, HotelMenu>();
+
+                    });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<HotelMenuSubCategoryResponseModel>>(MenuList);
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
             }
             catch (Exception ex)
             {
@@ -289,14 +250,18 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (HotelId != 0 & SubCatagoryId != 0)
+                if (HotelId == 0 & SubCatagoryId == 0 & PatronID == 0)
                 {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var MenuList = _context.HotelMenus.Where(m => m.HotelSubCategoryID == SubCatagoryId & m.HotelID == HotelId & m.IsActive == true).ToList();
-                        if (MenuList.Count != 0)
-                        {
-                            var config = new MapperConfiguration(cfg =>
+
+                    return BadRequest("The provided Parameter's are not valid.");
+                }
+
+                var MenuList = _context.HotelMenus.Where(m => m.HotelSubCategoryID == SubCatagoryId & m.HotelID == HotelId & m.IsActive == true).ToList();
+                if (MenuList.Count == 0)
+                {
+                    return Ok(new ResponseModel { Message = "No Drinks found for this hotel or subcatagory", Status = "Success" });
+                }
+                var config = new MapperConfiguration(cfg =>
                             {
                                 cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>()
                                 .ForMember(m => m.PatronID, opt => opt.Ignore())
@@ -305,33 +270,23 @@ namespace DrinkingBuddy.Controllers
 
                             });
 
-                            IMapper mapper = config.CreateMapper();
-                            var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
 
-                            List<HotelsMenuResponseModel> listresponse = new List<HotelsMenuResponseModel>();
+                List<HotelsMenuResponseModel> listresponse = new List<HotelsMenuResponseModel>();
 
-                            foreach (var item in data)
-                            {
-                                item.PatronID = PatronID;
-                                item.HotelID = HotelId;
-
-                                listresponse.Add(item);
-
-                            }
-
-
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = listresponse });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "No Drinks found for this hotel or subcatagory", Status = "Success" });
-                        }
-                    }
-                }
-                else
+                foreach (var item in data)
                 {
-                    return BadRequest("The provided Parameter's are not valid.");
+                    item.PatronID = PatronID;
+                    item.HotelID = HotelId;
+
+                    listresponse.Add(item);
+
                 }
+
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = listresponse });
+
             }
 
             catch (Exception ex)
@@ -346,27 +301,22 @@ namespace DrinkingBuddy.Controllers
         [Route("Ingredient")]
         public IHttpActionResult Ingredient(int HotelMenuId)
         {
-
             try
             {
-                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+
+                var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == HotelMenuId).FirstOrDefault();
+                if (Menu == null)
                 {
-                    var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == HotelMenuId).FirstOrDefault();
-                    if (Menu != null)
-                    {
-                        IngredientResponseModel data = new IngredientResponseModel();
+                    return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
 
-                        data.AlcoholPrecent = Menu.PercentAlcoholForPatronsApp;
-                        data.DrinkIngredient = Menu.IngredientsForPatronsApp;
-
-
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                    }
-                    else
-                    {
-                        return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
-                    }
                 }
+                IngredientResponseModel data = new IngredientResponseModel();
+
+                data.AlcoholPrecent = Menu.PercentAlcoholForPatronsApp;
+                data.DrinkIngredient = Menu.IngredientsForPatronsApp;
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+
             }
             catch (Exception ex)
             {
@@ -384,62 +334,53 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                    {
-                        var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == PatronsId).ToList();
-
-                        List<HotelMarketingCoupon> coupons = new List<HotelMarketingCoupon>();
-
-                        foreach (var item in couponsId)
-                        {
-                            // DateTime CurrentDate = Convert.ToDateTime(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
-                            //  DateTime CurrentTime= Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
-
-                            var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
-                            if (singlecoupon.CouponName == null)
-                            { singlecoupon.CouponName = ""; }
-                            else
-                            { singlecoupon.CouponName = singlecoupon.CouponName; }
-                            if (singlecoupon.CouponCode == null)
-                            { singlecoupon.CouponCode = ""; }
-                            else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
-                            if (singlecoupon.DiscountPercent == null)
-                            { singlecoupon.DiscountPercent = 0; }
-                            else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
-                            if (singlecoupon.FreeItemMenuID == null)
-                            { singlecoupon.FreeItemMenuID = 0; }
-                            else { singlecoupon.FreeItemMenuID = singlecoupon.FreeItemMenuID; }
-
-                            coupons.Add(singlecoupon);
-                        }
-
-                        if (coupons.Count != 0)
-                        {
-                            var config = new MapperConfiguration(cfg =>
-                            {
-                                cfg.CreateMap<HotelMarketingCoupon, CouponResponseModel>();
-                                cfg.CreateMap<CouponResponseModel, HotelMarketingCoupon>();
-
-                            });
-
-                            IMapper mapper = config.CreateMapper();
-                            var data = mapper.Map<List<CouponResponseModel>>(coupons);
-
-                            return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                        }
-                        else
-                        {
-                            return Ok(new ResponseModel { Message = "No Coupons found for this Patron.", Status = "Failed" });
-                        }
-
-                    }
-                }
-                else
+                if (PatronsId == 0)
                 {
                     return NotFound();
                 }
+
+                var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == PatronsId).ToList();
+
+                List<HotelMarketingCoupon> coupons = new List<HotelMarketingCoupon>();
+
+                foreach (var item in couponsId)
+                {
+                    // DateTime CurrentDate = Convert.ToDateTime(DateTime.Today.ToString("yyyy-MM-ddTHH:mm:ss"));
+                    //  DateTime CurrentTime= Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
+
+                    var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
+                    if (singlecoupon.CouponName == null)
+                    { singlecoupon.CouponName = ""; }
+                    else
+                    { singlecoupon.CouponName = singlecoupon.CouponName; }
+                    if (singlecoupon.CouponCode == null)
+                    { singlecoupon.CouponCode = ""; }
+                    else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
+                    if (singlecoupon.DiscountPercent == null)
+                    { singlecoupon.DiscountPercent = 0; }
+                    else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
+                    if (singlecoupon.FreeItemMenuID == null)
+                    { singlecoupon.FreeItemMenuID = 0; }
+                    else { singlecoupon.FreeItemMenuID = singlecoupon.FreeItemMenuID; }
+
+                    coupons.Add(singlecoupon);
+                }
+
+                if (coupons.Count == 0)
+                {
+                    return Ok(new ResponseModel { Message = "No Coupons found for this Patron.", Status = "Failed" });
+                }
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<HotelMarketingCoupon, CouponResponseModel>();
+                    cfg.CreateMap<CouponResponseModel, HotelMarketingCoupon>();
+
+                });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<CouponResponseModel>>(coupons);
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
             }
             catch (Exception ex)
             {
@@ -502,53 +443,49 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (HotelID != 0)
-                {
-                    // var Data = _context.GetSpecials(HotelID, null, null, null, null, null).ToList();
-                    var Data = _context.HotelSpecials.Where(m=>m.HotelID==HotelID).ToList();
-                        if (Data.Count() != 0)
-                    {
-                        List<HotelSpecial> Specials = new List<HotelSpecial>();
-
-                        foreach (var item in Data)
-                        {
-                            if (item.CategoryID == null)
-                            { item.CategoryID = 0; }
-                            else { item.CategoryID = item.CategoryID; }
-                            if (item.SubCategoryID == null)
-                            { item.SubCategoryID = 0; }
-                            else { item.SubCategoryID = item.SubCategoryID; }
-                            if (item.NewAmount == null)
-                            { item.NewAmount = 0; }
-                            else { item.NewAmount = item.NewAmount; }
-                           
-                            Specials.Add(item);
-                        }
-
-                        var config = new MapperConfiguration(cfg =>
-                        {
-                            cfg.CreateMap<HotelSpecial, SpecialResponsemodel>();
-                           
-
-                        });
-
-                        IMapper mapper = config.CreateMapper();
-                        var data = mapper.Map<List<SpecialResponsemodel>>(Specials);
-
-
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                    }
-                    else
-                    {
-                        return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed", });
-
-                    }
-
-                }
-                else
+                if (HotelID == 0)
                 {
                     return BadRequest("Parameter's are Invalid");
+
                 }
+
+                // var Data = _context.GetSpecials(HotelID, null, null, null, null, null).ToList();
+                var Data = _context.HotelSpecials.Where(m => m.HotelID == HotelID).ToList();
+                if (Data.Count() == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Something Went Wrong.", Status = "Failed", });
+
+                }
+                List<HotelSpecial> Specials = new List<HotelSpecial>();
+
+                foreach (var item in Data)
+                {
+                    if (item.CategoryID == null)
+                    { item.CategoryID = 0; }
+                    else { item.CategoryID = item.CategoryID; }
+                    if (item.SubCategoryID == null)
+                    { item.SubCategoryID = 0; }
+                    else { item.SubCategoryID = item.SubCategoryID; }
+                    if (item.NewAmount == null)
+                    { item.NewAmount = 0; }
+                    else { item.NewAmount = item.NewAmount; }
+
+                    Specials.Add(item);
+                }
+
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<HotelSpecial, SpecialResponsemodel>();
+
+
+                });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<SpecialResponsemodel>>(Specials);
+
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+
 
             }
             catch (Exception ex)
@@ -568,37 +505,35 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if(PatronID!=0&HotelID!=0)
-                {
-                    var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
-
-                    List<HotelMenu> MenuList = new List<HotelMenu>();
-
-                    foreach (var item in Favourite)
-                    {
-                        HotelMenu _HotelMenu = new HotelMenu();
-                        _HotelMenu = _context.HotelMenus.Where(m => m.HotelMenuID == item.HotelMenuID).FirstOrDefault();
-
-                        MenuList.Add(_HotelMenu);
-                    }
-
-                    var config = new MapperConfiguration(cfg =>
-                    {
-                        cfg.CreateMap<PatronsFavourite, PatronsFavouritesResponseModel>();
-                        cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>();
-
-                   });
-
-                    IMapper mapper = config.CreateMapper();
-                    var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
-                    
-                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-                }
-                else
+                if (PatronID == 0 & HotelID == 0)
                 {
                     return BadRequest("Parameters Invalid");
 
                 }
+                var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == HotelID & m.PatronID == PatronID).ToList();
+
+                List<HotelMenu> MenuList = new List<HotelMenu>();
+
+                foreach (var item in Favourite)
+                {
+                    HotelMenu _HotelMenu = new HotelMenu();
+                    _HotelMenu = _context.HotelMenus.Where(m => m.HotelMenuID == item.HotelMenuID).FirstOrDefault();
+
+                    MenuList.Add(_HotelMenu);
+                }
+
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<PatronsFavourite, PatronsFavouritesResponseModel>();
+                    cfg.CreateMap<HotelMenu, HotelsMenuResponseModel>();
+
+                });
+
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<List<HotelsMenuResponseModel>>(MenuList);
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+
             }
             catch (Exception ex)
             {
@@ -616,32 +551,26 @@ namespace DrinkingBuddy.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var config = new MapperConfiguration(cfg =>
+                    return BadRequest("Parameters Invalid");
+
+                }
+                var config = new MapperConfiguration(cfg =>
                     {
                         cfg.CreateMap<FavoriteModel, PatronsFavourite>();
 
                     });
 
-                    IMapper mapper = config.CreateMapper();
-                    var data = mapper.Map<PatronsFavourite>(model);
-                    _context.PatronsFavourites.Add(data);
-                    int Rows = _context.SaveChanges();
-                    if (Rows > 0)
-                    {
-                        var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == model.HotelID & m.PatronID == model.PatronID).FirstOrDefault();
-                        return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Favourite });
-                    }
-                    else
-                    {
-                        return BadRequest("Parameters Invalid");
-                    }
-
-                    
-                }
-                else
+                IMapper mapper = config.CreateMapper();
+                var data = mapper.Map<PatronsFavourite>(model);
+                _context.PatronsFavourites.Add(data);
+                int Rows = _context.SaveChanges();
+                if (Rows == 0)
                 {
+
                     return BadRequest("Parameters Invalid");
                 }
+                var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == model.HotelID & m.PatronID == model.PatronID).FirstOrDefault();
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Favourite });
 
             }
             catch (Exception ex)
@@ -659,35 +588,26 @@ namespace DrinkingBuddy.Controllers
             try
             {
 
-                if (PatronsID != 0 & HotelMenuID != 0)
-                {
-                    var FavRecord = _context.PatronsFavourites.Where(m => m.PatronID == PatronsID & m.HotelMenuID == HotelMenuID).FirstOrDefault();
-
-                    _context.PatronsFavourites.Remove(FavRecord);
-                    int row = _context.SaveChanges();
-                    if (row>0)
-                    {
-                        return Ok(new ResponseModel { Message = "Removed from Favourite Successfully.", Status = "Success"});
-                    }
-                    else
-                    {
-                        return Ok(new ResponseModel { Message = "Removed from Favourite Failed.", Status = "Success"});
-                    }
-                }
-                else
+                if (PatronsID == 0 & HotelMenuID == 0)
                 {
                     return BadRequest("Parameters Invalid");
                 }
+                var FavRecord = _context.PatronsFavourites.Where(m => m.PatronID == PatronsID & m.HotelMenuID == HotelMenuID).FirstOrDefault();
 
+                _context.PatronsFavourites.Remove(FavRecord);
+                int row = _context.SaveChanges();
+                if (row == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Removed from Favourite Failed.", Status = "Success" });
+                }
+
+                return Ok(new ResponseModel { Message = "Removed from Favourite Successfully.", Status = "Success" });
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
 
             }
-
-
-
         }
 
         #endregion 
@@ -698,60 +618,48 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
 
-                    var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID&m.LogoutDateTime==null).FirstOrDefault();
-                    if (PatronHotelLogins != null)
-                    {
-                        PatronHotelLogins.LogoutDateTime = DateTime.Now;
-                        _context.Entry(PatronHotelLogins).State = EntityState.Modified;
-                        int result = _context.SaveChanges();
-                        if (result > 0)
-                        {
-                            var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).FirstOrDefault();
-                            if (PatronMemberGroup != null)
-                            {
-
-                                //foreach (var item in PatronMemberGroup)
-                                //{
-                                //    item.DateTimeLeftGroup = DateTime.Now;
-                                //    PatronMemberGroup.Add(item);
-                                //}
-
-                                PatronMemberGroup.DateTimeLeftGroup = DateTime.Now;
-
-                                _context.Entry(PatronMemberGroup).State = EntityState.Modified;
-
-                                int result2 = _context.SaveChanges();
-                                if (result2 > 0)
-                                {
-                                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-                                }
-                                else
-                                {
-                                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-                                }
-                            }
-                            else
-                            {
-                                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-                            }
-                        }
-                        else
-                        {
-                            return BadRequest("Something went wrong");
-                        }
-                    }
-                    else
-                    {
-                        return BadRequest("Something went wrong");
-                    }
-                }
-                else
-                {
                     return BadRequest("Provided data is not Appropriate");
                 }
+
+                var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID & m.LogoutDateTime == null).FirstOrDefault();
+                if (PatronHotelLogins == null)
+                {
+                    return BadRequest("Something went wrong");
+                }
+                PatronHotelLogins.LogoutDateTime = DateTime.Now;
+                _context.Entry(PatronHotelLogins).State = EntityState.Modified;
+                int result = _context.SaveChanges();
+                if (result == 0)
+                {
+                    return BadRequest("Something went wrong");
+
+                }
+                var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).FirstOrDefault();
+                if (PatronMemberGroup == null)
+                {
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+
+                }
+                //foreach (var item in PatronMemberGroup)
+                //{
+                //    item.DateTimeLeftGroup = DateTime.Now;
+                //    PatronMemberGroup.Add(item);
+                //}
+
+                PatronMemberGroup.DateTimeLeftGroup = DateTime.Now;
+
+                _context.Entry(PatronMemberGroup).State = EntityState.Modified;
+
+                int result2 = _context.SaveChanges();
+                if (result2 == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                }
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
             }
             catch (Exception ex)
             {

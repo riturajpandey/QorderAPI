@@ -68,7 +68,7 @@ namespace DrinkingBuddy.Models
         public int PatronID { get; set; }
         public int HotelID { get; set; }
         public int PatronsGroupID { get; set; }
-        public List<GroupOrderMenu> OrderMenus { get; set; }
+        public List<GroupOrderMenu> GroupOrderMenus { get; set; }
         public decimal? FinalAmountForOrder { get; set; }
         public string PaymentGatewayReturnID { get; set; }
         public DateTime? DateTimeOfOrder { get; set; }

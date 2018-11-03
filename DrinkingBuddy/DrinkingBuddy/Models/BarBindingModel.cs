@@ -6,7 +6,10 @@ using DrinkingBuddy.Entities;
 
 namespace DrinkingBuddy.Models
 {
-    public class BarBindingModel { }
+    public class BarBindingModel
+    {
+
+    }
 
     public class BarMapModel
     {
@@ -120,18 +123,19 @@ namespace DrinkingBuddy.Models
     public class SpecialResponsemodel
     {
         private decimal? _DrinkPrice;
-      
+        private bool _IsFavourite;
         private string _Ingredient;
         private string _AlcoholPercent;
         private decimal? _DrinkSize;
         private string _DrinkName;
 
         public int HotelSpecialID { get; set; }
-     // public string CategoryName { get; set; }
-     // public string SubCategoryName { get; set; }
-    //  public Nullable<int> CategoryID { get; set; }
-    //  public Nullable<int> SubCategoryID { get; set; }
-        public string DrinkName {
+        // public string CategoryName { get; set; }
+        // public string SubCategoryName { get; set; }
+         public Nullable<int> CategoryID { get; set; }
+          public Nullable<int> SubCategoryID { get; set; }
+        public string DrinkName
+        {
             get
             {
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
@@ -148,14 +152,15 @@ namespace DrinkingBuddy.Models
                 }
                 return _DrinkName;
             }
-                
-                
-                }
+
+
+        }
         public Nullable<decimal> DrinkSize
         {
-            get { 
+            get
+            {
 
-             using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
                     var Catagory = _context.HotelMenus.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
                     if (Catagory == null)
@@ -236,12 +241,34 @@ namespace DrinkingBuddy.Models
             }
 
         }
+        public bool IsFavourite
+        {
+
+            get
+            {
+                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
+                {
+
+                    var data = _context.PatronsFavourites.Where(m=>m.HotelMenuID==this.HotelMenuID).FirstOrDefault();
+                    if (data == null)
+                    {
+                        _IsFavourite = false;
+
+                    }
+                    else
+                    {
+                        _IsFavourite = true;
+                    }
+                }
+                return _IsFavourite;
+
+            }
+        }
 
     }
+
+
 }
-
-
-
 
 
 
