@@ -22,6 +22,7 @@ using DrinkingBuddy.Results;
 using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Data.Entity;
+using System.Threading;
 
 namespace DrinkingBuddy.Controllers
 {
@@ -99,12 +100,15 @@ namespace DrinkingBuddy.Controllers
                     return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
                 }
                 //code to De-activate group after 5 hours.
-                var timer = new System.Threading.Timer(
+
+                var autoevent = new AutoResetEvent(true);
+                var timer = new Timer(
                             e => DeActivateGruopById(groupdetails.PatronsGroupID),
-                      null,
-                     TimeSpan.FromMinutes(3),
+                    autoevent,
+                     TimeSpan.FromHours(5),
                      TimeSpan.Zero);
 
+               
                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Response });
 
 
@@ -379,6 +383,11 @@ namespace DrinkingBuddy.Controllers
                     return BadRequest("Passed Parameter Invalid");
                 }
                 var patrons = _context.PatronsHotelLogIns.Where(m => m.HotelID == HotelID & m.PatronID != PatronID & m.LogoutDateTime == null).ToList();
+                if (patrons.Count() == 0)
+                {
+
+                    return Ok(new ResponseModel { Message = "No Patron Found in This Hotel.", Status = "Success" });
+                }
 
                 List<PatronByHotelResponse> response = new List<PatronByHotelResponse>();
                 foreach (var item in patrons)
@@ -386,23 +395,29 @@ namespace DrinkingBuddy.Controllers
                     PatronByHotelResponse single = new PatronByHotelResponse();
 
                     var data = _context.PatronsGroupInvitations.Where(m => m.PatronsGroupID == GroupID & m.PatronID == item.PatronID).FirstOrDefault();
+
                     if (data == null)
                     {
                         single.InvitationStatus = "Invite";
                     }
-                    if (data.IsAccepted == true)
+                    else
                     {
-                        single.InvitationStatus = "Accepted";
-                    }
-                    if (data.IsAccepted == false)
-                    {
-                        single.InvitationStatus = "Rejected";
-                    }
-                    if (data.IsAccepted == null)
-                    {
-                        single.InvitationStatus = "Invited";
-                    }
 
+
+                        if (data.IsAccepted == true)
+                        {
+                            single.InvitationStatus = "Accepted";
+                        }
+                        if (data.IsAccepted == false)
+                        {
+                            single.InvitationStatus = "Rejected";
+                        }
+                        if (data.IsAccepted == null)
+                        {
+                            single.InvitationStatus = "Invited";
+                        }
+
+                    }
                     single.PatronID = item.PatronID;
                     single.HotelID = item.HotelID;
                     response.Add(single);

@@ -24,6 +24,7 @@ using DrinkingBuddy.Results;
 using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Text;
+using System.Threading;
 
 namespace DrinkingBuddy.Controllers
 {
@@ -138,8 +139,8 @@ namespace DrinkingBuddy.Controllers
 
                     if (Patrnsorder.Count() == 0)
                     {
-                       // return BadRequest("No Order History found");
-                        return Ok(new ResponseModel { Message = "No Orders found for this parton.", Status = "Success",});
+                        // return BadRequest("No Order History found");
+                        return Ok(new ResponseModel { Message = "No Orders found for this parton.", Status = "Success", });
                     }
                     List<OrderHistoryResponse> _ListOrderHistory = new List<OrderHistoryResponse>();
 
@@ -167,7 +168,7 @@ namespace DrinkingBuddy.Controllers
                         if (orderdetails.Count() == 0)
                         {
 
-                           // return BadRequest("No Order Details Found");
+                            // return BadRequest("No Order Details Found");
                             return Ok(new ResponseModel { Message = "No Order Details found for this parton.", Status = "Success", });
                         }
                         List<DrinkHistory> _ListDrink = new List<DrinkHistory>();
@@ -227,7 +228,7 @@ namespace DrinkingBuddy.Controllers
                     var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).ToList();
                     if (order.Count() == 0)
                     {
-                      //  return BadRequest("No Current Order Exist.");
+                        //  return BadRequest("No Current Order Exist.");
                         return Ok(new ResponseModel { Message = "No Current Orders found for this parton.", Status = "Success", });
                     }
                     List<PatronsOrdersDetail> orderDetails = new List<PatronsOrdersDetail>();
@@ -629,9 +630,10 @@ namespace DrinkingBuddy.Controllers
                     //data.OrderMenus = dataOrderDetail;
 
                     // code to wait for the time set by patron.
-                    var timer = new System.Threading.Timer(
+                    var autoevent = new AutoResetEvent(true);
+                    var timer =new Timer(
                             e => InsertInOrders(PatronID, PatronsGroupID, OpenMinutes),
-                      null,
+                     autoevent,
                      TimeSpan.FromMinutes(OpenMinutes),
                      TimeSpan.Zero);
 
@@ -732,7 +734,7 @@ namespace DrinkingBuddy.Controllers
 
                     var trackorder = _context.TrackGroupOrders.Where(m => m.PatronID == PatronID & m.PatronsGroupID == GroupId & m.HotelID == HotelID).ToList();
 
-                    if (trackorder.Count()==0)
+                    if (trackorder.Count() == 0)
                     {
                         response.IsInitiated = false;
                         return Ok(new ResponseModel { Message = "This Group has not initiated any Order.", Status = "Success", Data = response });
@@ -750,7 +752,7 @@ namespace DrinkingBuddy.Controllers
 
                     foreach (var item in listsqldate)
                     {
-                       
+
                         if (item == today)
                         {
 
@@ -796,7 +798,7 @@ namespace DrinkingBuddy.Controllers
 
                     SHA256 mySHA256 = SHA256Managed.Create();
                     var patronsDetails = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
-                    if (patronsDetails==null)
+                    if (patronsDetails == null)
                     {
                         return BadRequest("No Patron Found");
                     }
@@ -865,7 +867,7 @@ namespace DrinkingBuddy.Controllers
 
                         SHA256 mySHA256 = SHA256Managed.Create();
                         var patronsDetails = _context.Patrons.Where(m => m.PatronsID == model.PatronsID).FirstOrDefault();
-                        if (patronsDetails==null)
+                        if (patronsDetails == null)
                         {
                             return BadRequest("No Patron Found with this Details");
                         }
