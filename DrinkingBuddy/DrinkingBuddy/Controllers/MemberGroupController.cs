@@ -50,6 +50,19 @@ namespace DrinkingBuddy.Controllers
 
                 }
 
+                var IsExist = _context.PatronsGroups.Where(m => m.HotelID == model.HotelID & m.MasterPatronID == model.MasterPatronID).FirstOrDefault();
+
+                if (IsExist != null)
+                {
+                    GroupByPatronResponse _response = new GroupByPatronResponse();
+                    _response.GroupID = IsExist.PatronsGroupID;
+                    _response.MasterPatronID = IsExist.MasterPatronID;
+                    _response.IsMaster = true;
+                    _response.MemeberPatrons = null;
+
+                    return Ok(new ResponseModel { Message = "A Group already Exist with the PatronId and hotelId.", Status = "Success", Data = _response });
+
+                }
 
                 var config = new MapperConfiguration(cfg =>
                 {
@@ -107,8 +120,8 @@ namespace DrinkingBuddy.Controllers
                     autoevent,
                      TimeSpan.FromHours(5),
                      TimeSpan.Zero);
+                autoevent = new AutoResetEvent(false);
 
-               
                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Response });
 
 
@@ -695,6 +708,11 @@ namespace DrinkingBuddy.Controllers
 
                     }
                     var groupdetails = _context.PatronsGroups.Where(m => m.PatronsGroupID == IsMemeber.PatronsGroupID).FirstOrDefault();
+                    if (groupdetails == null)
+                    {
+                        return Ok(new ResponseModel { Message = "No Record Found in Gruops", Status = "Success", });
+
+                    }
                     GroupByPatronResponse _response = new GroupByPatronResponse();
                     _response.GroupID = groupdetails.PatronsGroupID;
                     _response.MasterPatronID = groupdetails.MasterPatronID;
