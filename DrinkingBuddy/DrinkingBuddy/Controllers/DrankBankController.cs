@@ -84,7 +84,7 @@ namespace DrinkingBuddy.Controllers
                     foreach (var item in patroncredit)
                     {
                         TransectionsResponse single = new TransectionsResponse();
-                        single.TransectionType = "Deposite";
+                        single.TransectionType = "Deposit";
                         single.TransectionDate = item.CreditDatetime;
                         single.Amount = item.Credit_Amount;
 
@@ -99,7 +99,7 @@ namespace DrinkingBuddy.Controllers
                     foreach (var item in patrontransfer)
                     {
                         TransectionsResponse single = new TransectionsResponse();
-                        single.TransectionType = "Deposite";
+                        single.TransectionType = "Deposit";
                         single.TransectionDate = item.TransferDateTime;
                         single.Amount = item.Amount_Transfer;
 
@@ -240,7 +240,7 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (PatronID > 0 & Amount > 0)
+                if (PatronID == 0 & Amount == 0)
                 {
                     return BadRequest();
 
@@ -256,9 +256,9 @@ namespace DrinkingBuddy.Controllers
 
                 _context.Entry(data).State = EntityState.Modified;
                 int row = _context.SaveChanges();
-                if (row > 0)
+                if (row == 0)
                 {
-                    return Ok(new ResponseModel { Message = "No Patron was found with this detail.", Status = "Success" });
+                    return Ok(new ResponseModel { Message = "Updation Failed.", Status = "Success" });
                 }
                 PatronCreditTransection credit = new PatronCreditTransection();
                 credit.PatronID = PatronID;
@@ -272,10 +272,14 @@ namespace DrinkingBuddy.Controllers
                 int i = _context.SaveChanges();
                 if (i == 0)
                 {
-                    return Ok(new ResponseModel { Message = "No Patron was found with this detail.", Status = "Success" });
+                    return Ok(new ResponseModel { Message = "Updation Failed.", Status = "Success" });
                 }
 
                 var result = _context.PatronsWallets.Where(m => m.PatronID == PatronID).FirstOrDefault();
+                if (result==null)
+                {
+                    return Ok(new ResponseModel { Message = "Updation Failed.", Status = "Success" });
+                }
                 TransferResponsemodel response = new TransferResponsemodel();
                 response.UpdatedBalace = result.Balance;
 

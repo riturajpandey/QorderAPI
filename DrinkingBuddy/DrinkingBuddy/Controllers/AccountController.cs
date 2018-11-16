@@ -182,6 +182,84 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpGet]
+        [Route("IsUserAlreadyExist")]
+        public IHttpActionResult IsUserAlreadyExist(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return Ok(new ResponseModel { Message = "Invalid Parameter", Status = "Success" });
+            }
+            var user = new Patron();
+            long number = 0;
+            bool isnumber = long.TryParse(username, out number);
+            if (isnumber)
+            {
+                string strnumber = string.Concat("+",username);
+               
+                user = _context.Patrons.Where(m => m.PhoneMobile == strnumber).FirstOrDefault();
+
+            }
+            else
+            {
+                user = _context.Patrons.Where(m => m.EmailAddress == username).FirstOrDefault();
+            }
+
+
+
+            if (user == null)
+            {
+                return Ok(new ResponseModel { Message = "No Patron Found With this Detail", Status = "Success" });
+            }
+
+
+
+
+            var config = new MapperConfiguration(cfg =>
+            {
+
+                cfg.CreateMap<Patron, UserInformationModel>()
+                .ForMember(m => m.Token, option => option.Ignore());
+
+            });
+
+            IMapper mapper = config.CreateMapper();
+            var data = mapper.Map<UserInformationModel>(user);
+
+            if (data.Address == null)
+            { data.Address = ""; }
+            else { data.Address = data.Address; }
+            if (data.Suburb == null)
+            { data.Suburb = ""; }
+            else { data.Suburb = data.Suburb; }
+            if (data.PostCode == null)
+            { data.PostCode = ""; }
+            else { data.PostCode = data.PostCode; }
+            data.PhoneNumber = user.PhoneMobile;
+            var token = _context.PatronsSessionTokens.Where(m=>m.PatronID==data.PatronsID).FirstOrDefault();
+            if (token != null)
+            {
+
+                data.Token = token.SessionToken.ToString();
+            }
+            else
+            {
+                data.Token = "";
+
+            }
+            if (data.StateId == null)
+            {
+                data.StateId = 0;
+            }
+            else
+            {
+                data.StateId = data.StateId;
+            }
+
+            return Ok(new ResponseModel { Message = "Login succeeded", Status = "Success", Data = data });
+
+
+        }
 
         [HttpPost]
         [Route("Update")]
@@ -625,7 +703,7 @@ namespace DrinkingBuddy.Controllers
                                     return Ok(new ResponseModel { Message = "The Wallet Initialization could not be done.", Status = "Failed" });
                                 }
 
-                               
+
                             }
                             else
                             {
@@ -676,7 +754,117 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [Route("RegisterSocial")]
+        [HttpPost]
+        public IHttpActionResult RegisterSocial(RegistersocialBindingModel model)
+        {
+            try
+            {
+                if (model==null)
+                {
+                    return BadRequest();
+                }
 
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<RegistersocialBindingModel, Patron>()
+                    .ForMember(m => m.Gassword, option => option.Ignore());
+                    cfg.CreateMap<Patron, UserInformationModel>()
+                    .ForMember(m => m.Token, option => option.Ignore());
+
+                });
+                IMapper mapper = config.CreateMapper();
+                var patrons = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
+                if (patrons == null)
+                {
+
+                   
+                    var data = mapper.Map<Patron>(model);
+                    data.RegisterOn = System.DateTime.Now;
+                    data.Gassword = model.Password;
+                    data.PhoneMobile = model.PhoneNumber;
+                    _context.Patrons.Add(data);
+                    int result = _context.SaveChanges();
+
+                    var user = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
+                    if (user != null)
+                    {
+                        var token =  GetTokenForAPI(user, true);
+                        var Usermodel = mapper.Map<UserInformationModel>(user);
+                        Usermodel.Address = "";
+                        Usermodel.Suburb = "";
+                        Usermodel.PostCode = "";
+                        if (user.PhoneMobile == null)
+                        { Usermodel.PhoneNumber = ""; }
+                        else { Usermodel.PhoneNumber = user.PhoneMobile; }
+                        Usermodel.Token = token;
+                        Usermodel.StateId = 0;
+
+                        bool done = StartWallet(user.PatronsID);
+                        if (done == true)
+                        {
+                            return Ok(new ResponseModel { Message = "User have been Registered Sucessgully", Status = "Success", Data = Usermodel });
+                        }
+                        else
+                        {
+
+                            return Ok(new ResponseModel { Message = "The Wallet Initialization could not be done.", Status = "Failed" });
+                        }
+
+                    }
+
+
+
+                }
+
+                var isFb = _context.PatronsSessionTokens.Where(m=>m.PatronID==patrons.PatronsID).FirstOrDefault();
+                if (isFb==null)
+                {
+                    var fbuser = mapper.Map<UserInformationModel>(patrons);
+                    fbuser.Address = "";
+                    fbuser.Suburb = "";
+                    fbuser.PostCode = "";
+                    if (patrons.PhoneMobile == null)
+                    { fbuser.PhoneNumber = ""; }
+                    else { fbuser.PhoneNumber = patrons.PhoneMobile; }
+                    fbuser.Token = null;
+                    fbuser.StateId = 0;
+                    return Ok(new ResponseModel { Message = "User Exist Without Facebook Login", Status = "Success", Data = fbuser });
+
+                }
+                if(isFb.fbLogin)
+                {
+                    var fbuser = mapper.Map<UserInformationModel>(patrons);
+                    fbuser.Address = "";
+                    fbuser.Suburb = "";
+                    fbuser.PostCode = "";
+                    if (patrons.PhoneMobile == null)
+                    { fbuser.PhoneNumber = ""; }
+                    else { fbuser.PhoneNumber = patrons.PhoneMobile; }
+                    fbuser.Token =isFb.SessionToken.ToString();
+                    fbuser.StateId = 0;
+                    return Ok(new ResponseModel { Message = "User Exist with Facebook Login", Status = "Success", Data = fbuser });
+                }
+                else
+                {
+                    var fbuser = mapper.Map<UserInformationModel>(patrons);
+                    fbuser.Address = "";
+                    fbuser.Suburb = "";
+                    fbuser.PostCode = "";
+                    if (patrons.PhoneMobile == null)
+                    { fbuser.PhoneNumber = ""; }
+                    else { fbuser.PhoneNumber = patrons.PhoneMobile; }
+                    fbuser.Token = null;
+                    fbuser.StateId = 0;
+                    return Ok(new ResponseModel { Message = "User Exist Without Facebook Login", Status = "Success", Data = fbuser });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         // POST api/Account/RegisterExternal
