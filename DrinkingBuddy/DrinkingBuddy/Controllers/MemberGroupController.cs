@@ -22,7 +22,7 @@ using DrinkingBuddy.Results;
 using DrinkingBuddy.Notification;
 using AutoMapper;
 using System.Data.Entity;
-using System.Threading;
+using System.Timers;
 
 namespace DrinkingBuddy.Controllers
 {
@@ -114,13 +114,21 @@ namespace DrinkingBuddy.Controllers
                 }
                 //code to De-activate group after 5 hours.
 
-                var autoevent = new AutoResetEvent(true);
-                var timer = new Timer(
-                            e => DeActivateGruopById(groupdetails.PatronsGroupID),
-                    autoevent,
-                     TimeSpan.FromHours(5),
-                     TimeSpan.Zero);
-                autoevent = new AutoResetEvent(false);
+                //var autoevent = new AutoResetEvent(true);
+                //var timer = new Timer(
+                //            e => DeActivateGruopById(groupdetails.PatronsGroupID),
+                //    autoevent,
+                //     TimeSpan.FromMinutes(10),
+                //     TimeSpan.Zero);
+                //// autoevent = new AutoResetEvent(false);
+
+
+                var timer = new System.Timers.Timer();
+                timer.Interval = 18000000;
+                timer.Elapsed +=(sender,e)=> DeActivateGruopById(sender,e,groupdetails.PatronsGroupID);
+                timer.Start();
+                timer.AutoReset = false;
+
 
                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Response });
 
@@ -135,7 +143,7 @@ namespace DrinkingBuddy.Controllers
 
 
         //TODO:The method will Deactivated the group and the members associated with the gruop after 5 Hours.
-        private void DeActivateGruopById(int GroupID)
+        private void DeActivateGruopById(object sender,ElapsedEventArgs e,int GroupID)
         {
             try
             {
@@ -194,7 +202,7 @@ namespace DrinkingBuddy.Controllers
             }
             catch (Exception ex)
             {
-
+                return;
             }
         }
 

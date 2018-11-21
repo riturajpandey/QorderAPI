@@ -549,7 +549,7 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Parameters Invalid");
 
@@ -567,7 +567,7 @@ namespace DrinkingBuddy.Controllers
                 if (Rows == 0)
                 {
 
-                    return BadRequest("Parameters Invalid");
+                    return BadRequest("The Drinks Addition Failed.");
                 }
                 var Favourite = _context.PatronsFavourites.Where(m => m.HotelID == model.HotelID & m.PatronID == model.PatronID).FirstOrDefault();
                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = Favourite });

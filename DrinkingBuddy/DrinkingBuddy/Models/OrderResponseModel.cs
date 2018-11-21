@@ -163,9 +163,18 @@ namespace DrinkingBuddy.Models
     public class CheckInitialResponse
     {
         public bool IsInitiated { get; set; }
+        public int? PatronID { get; set; }
 
     }
 
+
+    public class CheckIntialIneral {
+
+        public string OrderTime { get; set; }
+        public int? PatronID { get; set; }
+
+
+    }
 }
 
 

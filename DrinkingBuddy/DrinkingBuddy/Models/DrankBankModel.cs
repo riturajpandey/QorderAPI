@@ -48,4 +48,14 @@ namespace DrinkingBuddy.Models
         public decimal? CurrentBalance { get; set; }
 
     }
+
+    public class PatronCardDetails
+    {
+        public int PatronsPaymentMethodID { get; set; }
+        public string PaymentCardholderName { get; set; }
+        public string PaymentCardType { get; set; }
+        public string PaymentCardNumberEncrypted { get; set; }
+
+
+    }
 }
