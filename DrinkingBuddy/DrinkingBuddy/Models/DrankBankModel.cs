@@ -27,6 +27,7 @@ namespace DrinkingBuddy.Models
         public string TransectionType { get; set; }
         public DateTime? TransectionDate { get; set; }
         public decimal? Amount { get; set; }
+        public string Details { get; set; }
         
     }
 

@@ -18,7 +18,7 @@ namespace DrinkingBuddy.Entities
         public int HotelMarketingCouponID { get; set; }
         public int PatronID { get; set; }
     
-        public virtual HotelMarketingCoupon HotelMarketingCoupon { get; set; }
         public virtual Patron Patron { get; set; }
+        public virtual HotelMarketingCoupon HotelMarketingCoupon { get; set; }
     }
 }

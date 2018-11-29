@@ -135,7 +135,7 @@ namespace DrinkingBuddy.Controllers
                 if (PatonID > 0)
                 {
 
-                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID & m.OrderCollected == true).ToList();
+                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID & m.OrderCollected == true).OrderByDescending(m=>m.DateTimeOfOrder).ToList();
 
                     if (Patrnsorder.Count() == 0)
                     {
@@ -225,7 +225,7 @@ namespace DrinkingBuddy.Controllers
             {
                 if (PatronID > 0)
                 {
-                    var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).ToList();
+                    var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).OrderByDescending(m=>m.DateTimeOfOrder).ToList();
                     if (order.Count() == 0)
                     {
                         //  return BadRequest("No Current Order Exist.");

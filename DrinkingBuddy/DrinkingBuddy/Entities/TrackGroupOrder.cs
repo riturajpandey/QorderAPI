@@ -23,5 +23,8 @@ namespace DrinkingBuddy.Entities
         public Nullable<System.DateTime> DateTimeOfOrder { get; set; }
         public string PatronsOrderNotes { get; set; }
         public Nullable<int> OpenMinutes { get; set; }
+    
+        public virtual Hotel Hotel { get; set; }
+        public virtual Patron Patron { get; set; }
     }
 }

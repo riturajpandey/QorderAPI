@@ -43,7 +43,6 @@ namespace DrinkingBuddy.Entities
         public virtual DbSet<HotelEmployeesAvailabilityTime> HotelEmployeesAvailabilityTimes { get; set; }
         public virtual DbSet<HotelEmployeesRoster> HotelEmployeesRosters { get; set; }
         public virtual DbSet<HotelInventory> HotelInventories { get; set; }
-        public virtual DbSet<HotelMarketingCoupon> HotelMarketingCoupons { get; set; }
         public virtual DbSet<HotelMarketingCouponsPatron> HotelMarketingCouponsPatrons { get; set; }
         public virtual DbSet<HotelMarketingNewsletter> HotelMarketingNewsletters { get; set; }
         public virtual DbSet<HotelMarketingNewslettersPatron> HotelMarketingNewslettersPatrons { get; set; }
@@ -93,6 +92,7 @@ namespace DrinkingBuddy.Entities
         public virtual DbSet<PatronTransferTransection> PatronTransferTransections { get; set; }
         public virtual DbSet<PatronWithdrawalTransection> PatronWithdrawalTransections { get; set; }
         public virtual DbSet<PatronsNotification> PatronsNotifications { get; set; }
+        public virtual DbSet<HotelMarketingCoupon> HotelMarketingCoupons { get; set; }
     
         [DbFunction("DrinkingBuddyEntities", "fnGetBestCurrentPriceForHotelMenuItem")]
         public virtual IQueryable<fnGetBestCurrentPriceForHotelMenuItem_Result> fnGetBestCurrentPriceForHotelMenuItem(Nullable<int> hotelID, Nullable<int> hotelMenuItemIDpassed)

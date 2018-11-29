@@ -35,6 +35,7 @@ namespace DrinkingBuddy.Entities
             this.PatronsHotelSubscriptions = new HashSet<PatronsHotelSubscription>();
             this.PatronsOrders = new HashSet<PatronsOrder>();
             this.PatronsOrdersRefunds = new HashSet<PatronsOrdersRefund>();
+            this.TrackGroupOrders = new HashSet<TrackGroupOrder>();
         }
     
         public int HotelID { get; set; }
@@ -91,5 +92,7 @@ namespace DrinkingBuddy.Entities
         public virtual ICollection<PatronsOrder> PatronsOrders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PatronsOrdersRefund> PatronsOrdersRefunds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TrackGroupOrder> TrackGroupOrders { get; set; }
     }
 }

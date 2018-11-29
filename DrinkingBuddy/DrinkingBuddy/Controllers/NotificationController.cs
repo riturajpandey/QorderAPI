@@ -17,6 +17,7 @@ using DrinkingBuddy.Notification;
 using DrinkingBuddy.Results;
 using AutoMapper;
 using System.Data.Entity;
+using DrinkingBuddy.SMS;
 using System;
 
 namespace DrinkingBuddy.Controllers
@@ -37,7 +38,7 @@ namespace DrinkingBuddy.Controllers
                 {
                     return BadRequest("Passed Parameter is not valid.");
                 }
-                var notifications = _context.PatronsNotifications.Where(m => m.PatronID == PatronID).Take(25);
+                var notifications = _context.PatronsNotifications.Where(m => m.PatronID == PatronID).OrderByDescending(m=>m.DateTimeSent).ToList();
                 if (notifications.Count() == 0)
                 {
                     return Ok(new ResponseModel { Message = "No Notification found for this patron.", Status = "Success" });
@@ -137,6 +138,18 @@ namespace DrinkingBuddy.Controllers
 
 
         }
+
+
+        [HttpGet]
+        [Route("SendOtpMessage")]
+        public IHttpActionResult SendOtpMessage()
+        {
+
+            SmsServices smsServices = new SmsServices();
+            string result= smsServices.SendMessage();
+            return Ok(result);
+        }
+
 
 
         //[HttpPost]

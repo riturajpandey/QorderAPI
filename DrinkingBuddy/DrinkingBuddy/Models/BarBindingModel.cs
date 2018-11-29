@@ -132,8 +132,8 @@ namespace DrinkingBuddy.Models
         public int HotelSpecialID { get; set; }
         // public string CategoryName { get; set; }
         // public string SubCategoryName { get; set; }
-         public Nullable<int> CategoryID { get; set; }
-          public Nullable<int> SubCategoryID { get; set; }
+        public Nullable<int> CategoryID { get; set; }
+        public Nullable<int> SubCategoryID { get; set; }
         public string DrinkName
         {
             get
@@ -249,7 +249,7 @@ namespace DrinkingBuddy.Models
                 using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
                 {
 
-                    var data = _context.PatronsFavourites.Where(m=>m.HotelMenuID==this.HotelMenuID).FirstOrDefault();
+                    var data = _context.PatronsFavourites.Where(m => m.HotelMenuID == this.HotelMenuID).FirstOrDefault();
                     if (data == null)
                     {
                         _IsFavourite = false;
@@ -264,6 +264,37 @@ namespace DrinkingBuddy.Models
 
             }
         }
+
+    }
+
+    public class CouponValidation
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime EndTime { get; set; }
+        public int? HotelMarketingCouponID { get; set; }
+
+    }
+
+    public class GetCouponResponse
+    {
+        public int? DiscountPercent { get; set; }
+        public decimal? NewAmount { get; set; }
+        public Freeitem Freeitem { get; set; }
+
+
+    }
+
+    public class Freeitem
+    {
+        public int ItemMenuID { get; set; }
+        public string DrinkName { get; set; }
+        public int? FreeItemQty { get; set; }
+        public decimal? DrinkSize { get; set; }
+        public string DrinkUnitMlLitreUnit { get; set; }
+        public string IngredientsForPatronsApp { get; set; }
+        public string PercentAlcoholForPatronsApp { get; set; }
 
     }
 

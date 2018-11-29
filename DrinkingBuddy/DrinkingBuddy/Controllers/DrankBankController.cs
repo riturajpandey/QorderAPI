@@ -32,7 +32,9 @@ namespace DrinkingBuddy.Controllers
     {
         DrinkingBuddyEntities _context = new DrinkingBuddyEntities();
         PushNotification push = new PushNotification();
+        PushNotification _push = new PushNotification();
         string Message;
+        string _Message;
 
         [HttpGet]
         [Route("GetCurrentBalance")]
@@ -75,39 +77,85 @@ namespace DrinkingBuddy.Controllers
                     return BadRequest("The passed Parameter");
                 }
                 List<TransectionsResponse> _listransectionsResponses = new List<TransectionsResponse>();
-                var patroncredit = _context.PatronCreditTransections.Where(m => m.PatronID == PatronID).ToList();
+
+                var patrontransfer = _context.PatronTransferTransections.Where(m => m.PatronID_Sender == PatronID).ToList();
+
 
                 List<TransectionsResponse> listtransectionsResponses = new List<TransectionsResponse>();
 
-                if (patroncredit.Count > 0)
+                if (patrontransfer.Count == 0)
                 {
-                    foreach (var item in patroncredit)
-                    {
-                        TransectionsResponse single = new TransectionsResponse();
-                        single.TransectionType = "Deposit";
-                        single.TransectionDate = item.CreditDatetime;
-                        single.Amount = item.Credit_Amount;
-
-                        listtransectionsResponses.Add(single);
-                    }
-
+                    goto credit;
                 }
-                var patrontransfer = _context.PatronTransferTransections.Where(m => m.PatronID_Sender == PatronID).ToList();
-
-                if (patrontransfer.Count > 0)
+                foreach (var item in patrontransfer)
                 {
-                    foreach (var item in patrontransfer)
+                    var reciverpatron = _context.Patrons.Where(m => m.PatronsID == item.PatronID_Reciver).FirstOrDefault();
+                    if (reciverpatron == null)
                     {
-                        TransectionsResponse single = new TransectionsResponse();
-                        single.TransectionType = "Deposit";
-                        single.TransectionDate = item.TransferDateTime;
-                        single.Amount = item.Amount_Transfer;
-
-                        listtransectionsResponses.Add(single);
+                        return Ok("The reciver patron does not Exist");
                     }
+                    TransectionsResponse single = new TransectionsResponse();
+                    single.TransectionType = "Transfer";
+                    DateTime utc = DateTime.SpecifyKind(item.TransferDateTime.Value, DateTimeKind.Utc);
+                    single.TransectionDate = utc;
+                    single.Amount =decimal.Round( item.Amount_Transfer.Value);
+                    
+                    //single.Details = item.Details;
+                    single.Details = "You transfered  $" + decimal.Round(item.Amount_Transfer.Value) + " to " + reciverpatron.FirstName + " " + reciverpatron.LastName;
 
+                    listtransectionsResponses.Add(single);
                 }
 
+                credit:
+
+                var patroncredit = (from c in _context.PatronCreditTransections where c.PatronID == PatronID select c).ToList();
+                // var patroncredit = from c in _context.PatronCreditTransections join s in _context.PatronsNotifications on c.PatronID equals s.PatronID where (c.PatronID==PatronID) && (s.PatronID==PatronID) select new { CreditDatetime=c.CreditDatetime, Credit_Amount=c.CreditDatetime, }
+
+                if (patroncredit.Count == 0)
+                {
+                    goto final;
+
+
+                }
+                foreach (var item in patroncredit)
+                {
+                    TransectionsResponse single = new TransectionsResponse();
+                    single.TransectionType = "Deposit";
+
+                    if (item.IsPatronTransfer == true && item.IsCardDeposite == false)
+                    {
+                        DateTime _utc = DateTime.SpecifyKind(item.CreditDatetime.Value, DateTimeKind.Utc);
+                        single.TransectionDate = _utc;
+
+                        single.Amount = decimal.Round(item.Credit_Amount.Value);
+                        var fndsender = _context.PatronTransferTransections.Where(m => m.PatronID_Reciver == item.PatronID && m.TransferDateTime == item.CreditDatetime).FirstOrDefault();
+                        if (fndsender==null)
+                        {
+                            goto final;
+                        }
+                        var sender= _context.Patrons.Where(m => m.PatronsID == fndsender.PatronID_Sender).FirstOrDefault();
+                        if (fndsender==null)
+                        {
+                            goto final;
+                        }
+                       
+                        single.Details = sender.FirstName + " " + sender.LastName + " Transfered $" + decimal.Round(item.Credit_Amount.Value) + " in Your Drank Bank Account";
+                    }
+                    else
+                    {
+                        DateTime _utc = DateTime.SpecifyKind(item.CreditDatetime.Value, DateTimeKind.Utc);
+                        single.TransectionDate = _utc;
+
+                        
+                        single.Amount= decimal.Round(item.Credit_Amount.Value);
+                        single.Details = "$" + decimal.Round( item.Credit_Amount.Value )+ " Deposited in your Drank Bank Account by Credit Card";
+
+                    }
+
+                    listtransectionsResponses.Add(single);
+                }
+
+                final:
                 if (listtransectionsResponses.Count() == 0)
                 {
 
@@ -115,7 +163,9 @@ namespace DrinkingBuddy.Controllers
 
                 }
 
-                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = listtransectionsResponses });
+                var _transection = listtransectionsResponses.OrderByDescending(m => m.TransectionDate);
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = _transection });
 
 
 
@@ -192,12 +242,16 @@ namespace DrinkingBuddy.Controllers
 
                                         var reciver = _context.Patrons.Where(m => m.EmailAddress == model.Email).FirstOrDefault();
                                         var sender = _context.Patrons.Where(m => m.PatronsID == model.SenderPatronID).FirstOrDefault();
+
+
                                         List<string> devicetoken = new List<string>();
-                                        string token = reciver.DeviceToken;
+                                        string token = sender.DeviceToken;
                                         devicetoken.Add(token);
 
 
-                                        Message = "$" + model.Amount + " have been transered in you account by" + sender.FirstName + " " + sender.LastName + Message;
+
+
+                                        Message = "You have send   $" + model.Amount + " to " + reciver.FirstName + " " + reciver.LastName;
                                         push.SendNotification(devicetoken, Message);
                                         NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
                                         notificationBindingModel.DateTimeSent = DateTime.Now;
@@ -205,6 +259,21 @@ namespace DrinkingBuddy.Controllers
                                         notificationBindingModel.NotificationContent = Message;
                                         notificationBindingModel.NotificationType = "Money";
                                         push.InsertNotification(notificationBindingModel);
+
+
+                                        List<string> _devicetoken = new List<string>();
+                                        string _token = reciver.DeviceToken;
+                                        _devicetoken.Add(_token);
+
+                                        _Message = "$" + model.Amount + " have been transered in your account by " + sender.FirstName + " " + sender.LastName;
+                                        _push.SendNotification(_devicetoken, _Message);
+                                        NotificationBindingModel _notificationBindingModel = new NotificationBindingModel();
+                                        _notificationBindingModel.DateTimeSent = DateTime.Now;
+                                        _notificationBindingModel.PatronID = reciver.PatronsID;
+                                        _notificationBindingModel.NotificationContent = _Message;
+                                        _notificationBindingModel.NotificationType = "Money";
+                                        _push.InsertNotification(_notificationBindingModel);
+
 
 
                                         return Ok(new ResponseModel { Message = "Transection Done Successfully.", Status = "Success", Data = response });
@@ -254,6 +323,7 @@ namespace DrinkingBuddy.Controllers
                 data.Balance = data.Balance + Amount;
                 data.LastTransDateTime = DateTime.Now;
 
+
                 _context.Entry(data).State = EntityState.Modified;
                 int row = _context.SaveChanges();
                 if (row == 0)
@@ -265,6 +335,7 @@ namespace DrinkingBuddy.Controllers
                 credit.Credit_Amount = Amount;
                 credit.IsCardDeposite = true;
                 credit.IsPatronTransfer = false;
+                credit.CreditDatetime = DateTime.Now;
                 credit.Previouse_Balance = data.Balance;
                 credit.Updated_Balance = data.Balance + Amount;
 
@@ -276,7 +347,7 @@ namespace DrinkingBuddy.Controllers
                 }
 
                 var result = _context.PatronsWallets.Where(m => m.PatronID == PatronID).FirstOrDefault();
-                if (result==null)
+                if (result == null)
                 {
                     return Ok(new ResponseModel { Message = "Updation Failed.", Status = "Success" });
                 }

@@ -10,7 +10,7 @@ namespace DrinkingBuddy.Models
     public class CouponResponseModel
     {
         private string _BarName;
-        private string _FreeItemMenu;
+      
         public int HotelMarketingCouponId { get; set; }
         public int HotelID { get; set; }
         public string CouponName { get; set; }
@@ -39,32 +39,9 @@ namespace DrinkingBuddy.Models
 
 
         }
-        public Nullable<System.DateTime> CouponEndTime { get; set; }
         public Nullable<System.DateTime> CouponEndDate { get; set; }
-        public Nullable<int> DiscountPercent { get; set; }
-        public Nullable<int> FreeItemMenuId { get; set; }
-        public string FreeItemMenu
-        {
-            get
-            {
-                using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-                {
-                    var Menu = _context.HotelMenus.Where(m => m.HotelMenuID == this.FreeItemMenuId).FirstOrDefault();
-                    if (Menu != null)
-                    {
-                        if (Menu.DrinkName != null)
-                        { _FreeItemMenu = Menu.DrinkName; }
-                        else { _FreeItemMenu = ""; }
-                    }
-                    else
-                    {
-                        _FreeItemMenu = "";
-                    }
-                }
-                return _FreeItemMenu;
-            }
-        }
-        public int FreeItemQty { get; set; }
+        public Nullable<System.DateTime> CouponEndTime { get; set; }
+
     }
 
     public class SpecialReponseModel
@@ -175,6 +152,10 @@ namespace DrinkingBuddy.Models
 
 
     }
+
+
+
+
 }
 
 

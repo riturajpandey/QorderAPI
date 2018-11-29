@@ -29,6 +29,7 @@ namespace DrinkingBuddy.Entities
             this.PatronsPreferences = new HashSet<PatronsPreference>();
             this.PatronsResetPasswordTokens = new HashSet<PatronsResetPasswordToken>();
             this.PatronsSessionTokens = new HashSet<PatronsSessionToken>();
+            this.TrackGroupOrders = new HashSet<TrackGroupOrder>();
         }
     
         public int PatronsID { get; set; }
@@ -73,5 +74,7 @@ namespace DrinkingBuddy.Entities
         public virtual ICollection<PatronsResetPasswordToken> PatronsResetPasswordTokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PatronsSessionToken> PatronsSessionTokens { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TrackGroupOrder> TrackGroupOrders { get; set; }
     }
 }
