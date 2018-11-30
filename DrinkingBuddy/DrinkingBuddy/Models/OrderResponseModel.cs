@@ -15,6 +15,8 @@ namespace DrinkingBuddy.Models
         public int HotelID { get; set; }
         public string CouponName { get; set; }
         public string CouponCode { get; set; }
+        public int? ItemMenuID { get; set; }
+        public string CouponType { get; set; }
         public string BarName
         {
             get

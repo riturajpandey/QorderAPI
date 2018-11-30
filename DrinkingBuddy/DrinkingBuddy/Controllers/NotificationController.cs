@@ -142,11 +142,11 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("SendOtpMessage")]
-        public IHttpActionResult SendOtpMessage()
+        public IHttpActionResult SendOtpMessage(string PhoneNumber)
         {
 
             SmsServices smsServices = new SmsServices();
-            string result= smsServices.SendMessage();
+            string result= smsServices.SendMessage(PhoneNumber);
             return Ok(result);
         }
 

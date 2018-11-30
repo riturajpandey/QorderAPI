@@ -137,41 +137,6 @@ namespace DrinkingBuddy.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("Bars")]
-        //public IHttpActionResult Bars()
-        //{
-        //    try
-        //    {
-        //        using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-        //        {
-        //            var BarList = _context.Hotels.ToList();
-        //            if (BarList.Count != 0)
-        //            {
-        //                var config = new MapperConfiguration(cfg =>
-        //                {
-        //                    cfg.CreateMap<Hotel, HotelResponseModel>();
-
-        //                });
-
-        //                IMapper mapper = config.CreateMapper();
-        //                var data = mapper.Map<List<HotelResponseModel>>(BarList);
-
-        //                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-        //            }
-        //            else
-        //            {
-        //                return Ok(new ResponseModel { Message = "Request Failed", Status = "Failed" });
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-
-        //    }
-        //}
-
         [HttpGet]
         [Route("MenusCatagories")]
         public IHttpActionResult MenusCatagories(int HotelId)
@@ -327,6 +292,65 @@ namespace DrinkingBuddy.Controllers
 
         }
 
+        [HttpPost]
+        [Route("LeaveBar")]
+        public IHttpActionResult LeaveBar(LeaveBarModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+
+                    return BadRequest("Provided data is not Appropriate");
+                }
+
+                var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID & m.LogoutDateTime == null).FirstOrDefault();
+                if (PatronHotelLogins == null)
+                {
+                    return BadRequest("Something went wrong");
+                }
+                PatronHotelLogins.LogoutDateTime = DateTime.Now;
+                _context.Entry(PatronHotelLogins).State = EntityState.Modified;
+                int result = _context.SaveChanges();
+                if (result == 0)
+                {
+                    return BadRequest("Something went wrong");
+
+                }
+                var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).FirstOrDefault();
+                if (PatronMemberGroup == null)
+                {
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+
+                }
+                //foreach (var item in PatronMemberGroup)
+                //{
+                //    item.DateTimeLeftGroup = DateTime.Now;
+                //    PatronMemberGroup.Add(item);
+                //}
+
+                PatronMemberGroup.DateTimeLeftGroup = DateTime.Now;
+
+                _context.Entry(PatronMemberGroup).State = EntityState.Modified;
+
+                int result2 = _context.SaveChanges();
+                if (result2 == 0)
+                {
+                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+                }
+
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region Coupons
 
         [HttpGet]
         [Route("Coupons")]
@@ -341,7 +365,7 @@ namespace DrinkingBuddy.Controllers
 
                 var couponsId = _context.HotelMarketingCouponsPatrons.Where(m => m.PatronID == PatronsId).ToList();
 
-                List<HotelMarketingCoupon> coupons = new List<HotelMarketingCoupon>();
+                List<CouponResponseModel> coupons = new List<CouponResponseModel>();
 
 
 
@@ -374,48 +398,95 @@ namespace DrinkingBuddy.Controllers
 
                         if (item.EndDate.Date > CurrentDate.Date)
                         {
-
+                            CouponResponseModel single = new CouponResponseModel();
                             var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
 
-                            if (singlecoupon.CouponName == null)
-                            { singlecoupon.CouponName = ""; }
+                            single.HotelMarketingCouponId = singlecoupon.HotelMarketingCouponID;
+                            single.CouponName = singlecoupon.CouponName;
+                            single.CouponCode = singlecoupon.CouponCode;
+                            if (singlecoupon.ItemMenuID==null)
+                            {
+                                single.ItemMenuID = 0;
+                            }
+                            single.ItemMenuID = singlecoupon.ItemMenuID;
+                            if (singlecoupon.CouponEndDate==null)
+                            {
+                                single.CouponEndDate = DateTime.MinValue;
+                            }
+                            single.CouponEndDate = singlecoupon.CouponEndDate;
+                            if (singlecoupon.CouponEndTime==null)
+                            {
+                                single.CouponEndTime = DateTime.MinValue;
+                            }
+                            single.CouponEndTime = singlecoupon.CouponEndTime;
+
+                            if (singlecoupon.DiscountOrFreeItem == "Discount")
+                            {
+                                if (singlecoupon.DiscountAmountOrPercent == "Percent")
+                                {
+                                    single.CouponType = "DiscountPercent";
+                                }
+                                else
+                                {
+
+                                    single.CouponType = "DiscountNewAmount";
+                                }
+
+                            }
                             else
-                            { singlecoupon.CouponName = singlecoupon.CouponName; }
-                            if (singlecoupon.CouponCode == null)
-                            { singlecoupon.CouponCode = ""; }
-                            else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
-                            if (singlecoupon.DiscountPercent == null)
-                            { singlecoupon.DiscountPercent = 0; }
-                            else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
-                            if (singlecoupon.ItemMenuID == null)
-                            { singlecoupon.ItemMenuID = 0; }
-                            else { singlecoupon.ItemMenuID = singlecoupon.ItemMenuID; }
+                            {
+                                single.CouponType = "FreeItem";
+                            }
+                           
 
-
-                            coupons.Add(singlecoupon);
+                            coupons.Add(single);
                         }
                         else if (item.EndDate.Date == CurrentDate.Date)
                         {
                             if (item.EndTime.TimeOfDay > CurrentTime.TimeOfDay)
                             {
+                                CouponResponseModel single = new CouponResponseModel();
                                 var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
 
-                                if (singlecoupon.CouponName == null)
-                                { singlecoupon.CouponName = ""; }
-                                else
-                                { singlecoupon.CouponName = singlecoupon.CouponName; }
-                                if (singlecoupon.CouponCode == null)
-                                { singlecoupon.CouponCode = ""; }
-                                else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
-                                if (singlecoupon.DiscountPercent == null)
-                                { singlecoupon.DiscountPercent = 0; }
-                                else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
+                                single.HotelMarketingCouponId = singlecoupon.HotelMarketingCouponID;
+                                single.CouponName = singlecoupon.CouponName;
+                                single.CouponCode = singlecoupon.CouponCode;
                                 if (singlecoupon.ItemMenuID == null)
-                                { singlecoupon.ItemMenuID = 0; }
-                                else { singlecoupon.ItemMenuID = singlecoupon.ItemMenuID; }
+                                {
+                                    single.ItemMenuID = 0;
+                                }
+                                single.ItemMenuID = singlecoupon.ItemMenuID;
+                                if (singlecoupon.CouponEndDate == null)
+                                {
+                                    single.CouponEndDate = DateTime.MinValue;
+                                }
+                                single.CouponEndDate = singlecoupon.CouponEndDate;
+                                if (singlecoupon.CouponEndTime == null)
+                                {
+                                    single.CouponEndTime = DateTime.MinValue;
+                                }
+                                single.CouponEndTime = singlecoupon.CouponEndTime;
 
+                                if (singlecoupon.DiscountOrFreeItem == "Discount")
+                                {
+                                    if (singlecoupon.DiscountAmountOrPercent == "Percent")
+                                    {
+                                        single.CouponType = "DiscountPercent";
+                                    }
+                                    else
+                                    {
 
-                                coupons.Add(singlecoupon);
+                                        single.CouponType = "DiscountNewAmount";
+                                    }
+
+                                }
+                                else
+                                {
+                                    single.CouponType = "FreeItem";
+
+                                }
+                               
+                                coupons.Add(single);
 
                             }
 
@@ -425,21 +496,48 @@ namespace DrinkingBuddy.Controllers
                     {
                         if (item.StartTime.TimeOfDay < CurrentTime.TimeOfDay)
                         {
+                            CouponResponseModel single = new CouponResponseModel();
                             var singlecoupon = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == item.HotelMarketingCouponID).FirstOrDefault();
 
-                            if (singlecoupon.CouponName == null)
-                            { singlecoupon.CouponName = ""; }
-                            else
-                            { singlecoupon.CouponName = singlecoupon.CouponName; }
-                            if (singlecoupon.CouponCode == null)
-                            { singlecoupon.CouponCode = ""; }
-                            else { singlecoupon.CouponCode = singlecoupon.CouponCode; }
-                            if (singlecoupon.DiscountPercent == null)
-                            { singlecoupon.DiscountPercent = 0; }
-                            else { singlecoupon.DiscountPercent = singlecoupon.DiscountPercent; }
+                            single.HotelMarketingCouponId = singlecoupon.HotelMarketingCouponID;
+                            single.CouponName = singlecoupon.CouponName;
+                            single.CouponCode = singlecoupon.CouponCode;
                             if (singlecoupon.ItemMenuID == null)
-                            { singlecoupon.ItemMenuID = 0; }
-                            else { singlecoupon.ItemMenuID = singlecoupon.ItemMenuID; }
+                            {
+                                single.ItemMenuID = 0;
+                            }
+                            single.ItemMenuID = singlecoupon.ItemMenuID;
+                            if (singlecoupon.CouponEndDate == null)
+                            {
+                                single.CouponEndDate = DateTime.MinValue;
+                            }
+                            single.CouponEndDate = singlecoupon.CouponEndDate;
+                            if (singlecoupon.CouponEndTime == null)
+                            {
+                                single.CouponEndTime = DateTime.MinValue;
+                            }
+                            single.CouponEndTime = singlecoupon.CouponEndTime;
+
+                            if (singlecoupon.DiscountOrFreeItem == "Discount")
+                            {
+                                if (singlecoupon.DiscountAmountOrPercent == "Percent")
+                                {
+                                    single.CouponType = "DiscountPercent";
+                                }
+                                else
+                                {
+
+                                    single.CouponType = "DiscountNewAmount";
+                                }
+
+                            }
+                            else
+                            {
+                                single.CouponType = "FreeItem";
+
+                            }
+                           
+                            coupons.Add(single);
 
                         }
 
@@ -451,17 +549,9 @@ namespace DrinkingBuddy.Controllers
                 {
                     return Ok(new ResponseModel { Message = "No Coupons found for this Patron.", Status = "Failed" });
                 }
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<HotelMarketingCoupon, CouponResponseModel>();
-                    cfg.CreateMap<CouponResponseModel, HotelMarketingCoupon>();
+               
 
-                });
-
-                IMapper mapper = config.CreateMapper();
-                var data = mapper.Map<List<CouponResponseModel>>(coupons);
-
-                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = coupons });
             }
             catch (Exception ex)
             {
@@ -483,6 +573,7 @@ namespace DrinkingBuddy.Controllers
             }
 
             GetCouponResponse getCouponResponse = new GetCouponResponse();
+            Freeitem _freeitem = new Freeitem();
 
             var hotelpatroncoupons = _context.HotelMarketingCoupons.Where(m => m.HotelMarketingCouponID == HotelMarketingCouponID).FirstOrDefault();
             if (hotelpatroncoupons == null)
@@ -506,113 +597,70 @@ namespace DrinkingBuddy.Controllers
                 {
                     getCouponResponse.DiscountPercent = hotelpatroncoupons.DiscountPercent;
                     getCouponResponse.NewAmount = 0;
-
+                    getCouponResponse.itemId = hotelpatroncoupons.ItemMenuID;
+                    getCouponResponse.CouponType = "DiscountPercent";
                     return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = getCouponResponse });
                 }
 
                 getCouponResponse.NewAmount = hotelpatroncoupons.NewAmount;
                 getCouponResponse.DiscountPercent = 0;
+                getCouponResponse.CouponType = "DiscountNewAmount";
+                getCouponResponse.itemId = hotelpatroncoupons.ItemMenuID;
                 return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = getCouponResponse });
 
             }
 
             getCouponResponse.NewAmount = 0;
             getCouponResponse.DiscountPercent = 0;
+            getCouponResponse.CouponType = "FreeItem";
+            getCouponResponse.itemId = hotelpatroncoupons.ItemMenuID;
+
             var freeitem = _context.HotelMenus.Where(m => m.HotelMenuID == hotelpatroncoupons.ItemMenuID).FirstOrDefault();
+
             if (freeitem == null)
             {
                 return Ok("No item available with this ItemID");
             }
-            if (freeitem.HotelMenuID == 0)
-            {
-                getCouponResponse.Freeitem.ItemMenuID = 0;
-            }
-            getCouponResponse.Freeitem.ItemMenuID = freeitem.HotelMenuID;
+
             if (freeitem.DrinkName == null)
             {
-                getCouponResponse.Freeitem.DrinkName = "";
+                _freeitem.DrinkName = "";
             }
-            getCouponResponse.Freeitem.DrinkName = freeitem.DrinkName;
+            _freeitem.DrinkName = freeitem.DrinkName;
             if (freeitem.DrinkSize == null || freeitem.DrinkSize == 0)
             {
-                getCouponResponse.Freeitem.DrinkSize = 0;
+                _freeitem.DrinkSize = 0;
             }
-            getCouponResponse.Freeitem.DrinkSize = freeitem.DrinkSize;
+            _freeitem.DrinkSize = freeitem.DrinkSize;
             if (freeitem.DrinkUnitMlLitreUnit == null)
             {
-                getCouponResponse.Freeitem.DrinkUnitMlLitreUnit = "";
+                _freeitem.DrinkUnitMlLitreUnit = "";
 
             }
-            getCouponResponse.Freeitem.DrinkUnitMlLitreUnit = freeitem.DrinkUnitMlLitreUnit;
+            _freeitem.DrinkUnitMlLitreUnit = freeitem.DrinkUnitMlLitreUnit;
             if (freeitem.IngredientsForPatronsApp == null)
             {
-                getCouponResponse.Freeitem.IngredientsForPatronsApp = "";
+                _freeitem.IngredientsForPatronsApp = "";
 
             }
-            getCouponResponse.Freeitem.IngredientsForPatronsApp = freeitem.IngredientsForPatronsApp;
+            _freeitem.IngredientsForPatronsApp = freeitem.IngredientsForPatronsApp;
             if (freeitem.PercentAlcoholForPatronsApp == null)
             {
-                getCouponResponse.Freeitem.PercentAlcoholForPatronsApp = "";
+                _freeitem.PercentAlcoholForPatronsApp = "";
             }
-            getCouponResponse.Freeitem.PercentAlcoholForPatronsApp = freeitem.PercentAlcoholForPatronsApp;
-            getCouponResponse.Freeitem.FreeItemQty = hotelpatroncoupons.FreeItemQty;
+            _freeitem.PercentAlcoholForPatronsApp = freeitem.PercentAlcoholForPatronsApp;
+            _freeitem.FreeItemQty = hotelpatroncoupons.FreeItemQty;
+
+            getCouponResponse.Freeitem = _freeitem;
 
             return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = getCouponResponse });
 
         }
 
 
+        #endregion
 
-
-
-
-        //[HttpPost]
-        //[Route("CouponUsed")]
-        //public IHttpActionResult CouponUsed(CouponBindingModel model)
-        //{
-        //    try
-        //    {
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            using (DrinkingBuddyEntities _context = new DrinkingBuddyEntities())
-        //            {
-        //                var config = new MapperConfiguration(cfg =>
-        //                {
-        //                    cfg.CreateMap<HotelMarketingCouponsPatron, CouponBindingModel>();
-        //                    cfg.CreateMap<CouponBindingModel, HotelMarketingCoupon>();
-
-        //                });
-
-        //                IMapper mapper = config.CreateMapper();
-        //                var data = mapper.Map<HotelMarketingCouponsPatron>(model);
-
-        //                _context.HotelMarketingCouponsPatrons.Add(data);
-        //                int _result = _context.SaveChanges();
-        //                if (_result == 0)
-        //                {
-        //                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success", Data = data });
-        //                }
-        //                else
-        //                {
-        //                    return Ok(new ResponseModel { Message = "Request Execution Failed.", Status = "Failed" });
-        //                }
-
-
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Parameter's Invalid");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
+        #region SpecialOffer
         [HttpGet]
         [Route("SpecialOffer")]
         public IHttpActionResult SpecialOffer(int HotelID)
@@ -671,6 +719,7 @@ namespace DrinkingBuddy.Controllers
             }
 
         }
+        #endregion
 
 
         #region Favorites
@@ -788,62 +837,8 @@ namespace DrinkingBuddy.Controllers
 
         #endregion
 
-        [HttpPost]
-        [Route("LeaveBar")]
-        public IHttpActionResult LeaveBar(LeaveBarModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
 
-                    return BadRequest("Provided data is not Appropriate");
-                }
 
-                var PatronHotelLogins = _context.PatronsHotelLogIns.Where(m => m.PatronID == model.PatronID & m.LogoutDateTime == null).FirstOrDefault();
-                if (PatronHotelLogins == null)
-                {
-                    return BadRequest("Something went wrong");
-                }
-                PatronHotelLogins.LogoutDateTime = DateTime.Now;
-                _context.Entry(PatronHotelLogins).State = EntityState.Modified;
-                int result = _context.SaveChanges();
-                if (result == 0)
-                {
-                    return BadRequest("Something went wrong");
-
-                }
-                var PatronMemberGroup = _context.PatronsGroupsMembers.Where(m => m.MemberPatronID == model.PatronID).FirstOrDefault();
-                if (PatronMemberGroup == null)
-                {
-                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-
-                }
-                //foreach (var item in PatronMemberGroup)
-                //{
-                //    item.DateTimeLeftGroup = DateTime.Now;
-                //    PatronMemberGroup.Add(item);
-                //}
-
-                PatronMemberGroup.DateTimeLeftGroup = DateTime.Now;
-
-                _context.Entry(PatronMemberGroup).State = EntityState.Modified;
-
-                int result2 = _context.SaveChanges();
-                if (result2 == 0)
-                {
-                    return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-                }
-
-                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        #endregion
     }
 }
 

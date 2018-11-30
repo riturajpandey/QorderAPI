@@ -25,7 +25,7 @@ namespace DrinkingBuddy.SMS
         //}
 
 
-        public string SendMessage()
+        public string SendMessage(string ReciverNumber)
         {
             // Find your Account Sid and Token at twilio.com/console
             const string accountSid = "AC5ef153fbe9bc874f51c8aa15cc3dd092";
@@ -35,9 +35,9 @@ namespace DrinkingBuddy.SMS
 
             try { 
             var message = MessageResource.Create(
-                body: "This is the ship that made the Kessel Run in fourteen parsecs?",
+                body: "This is a Text Message For Testing Puspose?",
                 from: new Twilio.Types.PhoneNumber("+61488855893"),
-                to: new Twilio.Types.PhoneNumber("+918103577630")
+                to: new Twilio.Types.PhoneNumber(ReciverNumber)
             );
                return message.Sid;
             }

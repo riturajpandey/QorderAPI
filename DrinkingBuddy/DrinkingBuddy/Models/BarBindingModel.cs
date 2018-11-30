@@ -281,6 +281,8 @@ namespace DrinkingBuddy.Models
     {
         public int? DiscountPercent { get; set; }
         public decimal? NewAmount { get; set; }
+        public int? itemId { get; set; }
+        public string CouponType { get; set; }
         public Freeitem Freeitem { get; set; }
 
 
@@ -288,7 +290,7 @@ namespace DrinkingBuddy.Models
 
     public class Freeitem
     {
-        public int ItemMenuID { get; set; }
+      
         public string DrinkName { get; set; }
         public int? FreeItemQty { get; set; }
         public decimal? DrinkSize { get; set; }
