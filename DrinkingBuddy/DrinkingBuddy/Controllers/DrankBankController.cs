@@ -148,7 +148,7 @@ namespace DrinkingBuddy.Controllers
 
                         
                         single.Amount= decimal.Round(item.Credit_Amount.Value);
-                        single.Details = "$" + decimal.Round( item.Credit_Amount.Value )+ " Deposited in your Drank Bank Account by Credit Card";
+                        single.Details = "$" + decimal.Round( item.Credit_Amount.Value )+ " Credited in your Drank Bank Account by Credit Card";
 
                     }
 
@@ -251,7 +251,7 @@ namespace DrinkingBuddy.Controllers
 
 
 
-                                        Message = "You have send   $" + model.Amount + " to " + reciver.FirstName + " " + reciver.LastName;
+                                        Message = "You have transfered $" + model.Amount + " to " + reciver.FirstName + " " + reciver.LastName;
                                         push.SendNotification(devicetoken, Message);
                                         NotificationBindingModel notificationBindingModel = new NotificationBindingModel();
                                         notificationBindingModel.DateTimeSent = DateTime.Now;
@@ -265,7 +265,7 @@ namespace DrinkingBuddy.Controllers
                                         string _token = reciver.DeviceToken;
                                         _devicetoken.Add(_token);
 
-                                        _Message = "$" + model.Amount + " have been transered in your account by " + sender.FirstName + " " + sender.LastName;
+                                        _Message = sender.FirstName + " " + sender.LastName+" has transfered $" + model.Amount + "  in your account";
                                         _push.SendNotification(_devicetoken, _Message);
                                         NotificationBindingModel _notificationBindingModel = new NotificationBindingModel();
                                         _notificationBindingModel.DateTimeSent = DateTime.Now;

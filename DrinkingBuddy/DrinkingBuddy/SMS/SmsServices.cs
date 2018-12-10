@@ -25,7 +25,7 @@ namespace DrinkingBuddy.SMS
         //}
 
 
-        public string SendMessage(string ReciverNumber)
+        public string SendMessage(string ReciverNumber,string Code)
         {
             // Find your Account Sid and Token at twilio.com/console
             const string accountSid = "AC5ef153fbe9bc874f51c8aa15cc3dd092";
@@ -33,9 +33,9 @@ namespace DrinkingBuddy.SMS
 
             TwilioClient.Init(accountSid, authToken);
 
-            try { 
-            var message = MessageResource.Create(
-                body: "This is a Text Message For Testing Puspose?",
+            try {
+                var message = MessageResource.Create(
+                    body: "Your OTP for mobile verification is #" + Code+"",
                 from: new Twilio.Types.PhoneNumber("+61488855893"),
                 to: new Twilio.Types.PhoneNumber(ReciverNumber)
             );

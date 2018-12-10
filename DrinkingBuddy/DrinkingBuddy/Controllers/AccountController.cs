@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Linq;
+using DrinkingBuddy.SMS;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
@@ -195,8 +196,8 @@ namespace DrinkingBuddy.Controllers
             bool isnumber = long.TryParse(username, out number);
             if (isnumber)
             {
-                string strnumber = string.Concat("+",username);
-               
+                string strnumber = string.Concat("+", username);
+
                 user = _context.Patrons.Where(m => m.PhoneMobile == strnumber).FirstOrDefault();
 
             }
@@ -236,7 +237,7 @@ namespace DrinkingBuddy.Controllers
             { data.PostCode = ""; }
             else { data.PostCode = data.PostCode; }
             data.PhoneNumber = user.PhoneMobile;
-            var token = _context.PatronsSessionTokens.Where(m=>m.PatronID==data.PatronsID).FirstOrDefault();
+            var token = _context.PatronsSessionTokens.Where(m => m.PatronID == data.PatronsID).FirstOrDefault();
             if (token != null)
             {
 
@@ -659,6 +660,8 @@ namespace DrinkingBuddy.Controllers
                     if (resultuser.Succeeded)
                     {
 
+                       
+
                         var config = new MapperConfiguration(cfg =>
                         {
                             cfg.CreateMap<RegisterBindingModel, Patron>()
@@ -719,13 +722,8 @@ namespace DrinkingBuddy.Controllers
                     }
                     else
                     {
-                        //List<string> mesages = new List<string>();
-                        //foreach (string error in resultuser.Errors)
-                        //{
-                        //    mesages.Add(error);
-                        //}
-                        //return Ok(new RegisterResponseModel { Message = mesages, Status = "Success",});
-                        return Ok(new ResponseModel { Message = "User already exist", Status = "Failed" });
+                       
+                        return Ok(new ResponseModel { Message = resultuser.Errors.ToList()[0], Status = "Failed" });
                     }
 
                 }
@@ -744,7 +742,7 @@ namespace DrinkingBuddy.Controllers
                         }
                     }
 
-                    return Ok(new RegisterResponseModel { Message = mesages, Status = "Success" });
+                    return Ok(new ResponseModel { Message = ModelState.Values.ToList()[0].Errors[0].ErrorMessage, Status = "Failed" });
                 }
             }
             catch (Exception ex)
@@ -761,7 +759,7 @@ namespace DrinkingBuddy.Controllers
         {
             try
             {
-                if (model==null)
+                if (model == null)
                 {
                     return BadRequest();
                 }
@@ -779,7 +777,7 @@ namespace DrinkingBuddy.Controllers
                 if (patrons == null)
                 {
 
-                   
+
                     var data = mapper.Map<Patron>(model);
                     data.RegisterOn = System.DateTime.Now;
                     data.Gassword = model.Password;
@@ -790,7 +788,7 @@ namespace DrinkingBuddy.Controllers
                     var user = _context.Patrons.Where(m => m.EmailAddress == model.EmailAddress).FirstOrDefault();
                     if (user != null)
                     {
-                        var token =  GetTokenForAPI(user, true);
+                        var token = GetTokenForAPI(user, true);
                         var Usermodel = mapper.Map<UserInformationModel>(user);
                         Usermodel.Address = "";
                         Usermodel.Suburb = "";
@@ -818,8 +816,8 @@ namespace DrinkingBuddy.Controllers
 
                 }
 
-                var isFb = _context.PatronsSessionTokens.Where(m=>m.PatronID==patrons.PatronsID).FirstOrDefault();
-                if (isFb==null)
+                var isFb = _context.PatronsSessionTokens.Where(m => m.PatronID == patrons.PatronsID).FirstOrDefault();
+                if (isFb == null)
                 {
                     var fbuser = mapper.Map<UserInformationModel>(patrons);
                     fbuser.Address = "";
@@ -833,7 +831,7 @@ namespace DrinkingBuddy.Controllers
                     return Ok(new ResponseModel { Message = "User Exist Without Facebook Login", Status = "Success", Data = fbuser });
 
                 }
-                if(isFb.fbLogin)
+                if (isFb.fbLogin)
                 {
                     var fbuser = mapper.Map<UserInformationModel>(patrons);
                     fbuser.Address = "";
@@ -842,7 +840,7 @@ namespace DrinkingBuddy.Controllers
                     if (patrons.PhoneMobile == null)
                     { fbuser.PhoneNumber = ""; }
                     else { fbuser.PhoneNumber = patrons.PhoneMobile; }
-                    fbuser.Token =isFb.SessionToken.ToString();
+                    fbuser.Token = isFb.SessionToken.ToString();
                     fbuser.StateId = 0;
                     return Ok(new ResponseModel { Message = "User Exist with Facebook Login", Status = "Success", Data = fbuser });
                 }
@@ -863,6 +861,30 @@ namespace DrinkingBuddy.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [Route("SendOtp")]
+        [HttpGet]
+        public IHttpActionResult SendOtp(string Number)
+        {
+            if (Number == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                int OTP = GenerateRandomNo();
+
+                SmsServices smsServices = new SmsServices();
+                string result = smsServices.SendMessage(Number, OTP.ToString());
+                return Ok(new ResponseModel { Message = "Request Executed successfully.", Status = "Success",Data= OTP });
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
             }
         }
 
@@ -1071,6 +1093,14 @@ namespace DrinkingBuddy.Controllers
             {
                 return false;
             }
+        }
+
+        private int GenerateRandomNo()
+        {
+            int _min = 1000;
+            int _max = 9999;
+            Random _rdm = new Random();
+            return _rdm.Next(_min, _max);
         }
 
         [HttpPost]

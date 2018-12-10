@@ -128,14 +128,14 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("OrderHistory")]
-        public IHttpActionResult OrderHistory(int PatonID)
+        public IHttpActionResult OrderHistory(int PatonID, int HotelID)
         {
             try
             {
                 if (PatonID > 0)
                 {
 
-                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID & m.OrderCollected == true).OrderByDescending(m=>m.DateTimeOfOrder).ToList();
+                    var Patrnsorder = _context.PatronsOrders.Where(m => m.PatronID == PatonID & m.HotelID == HotelID & m.BarCompletedOrder == true).OrderByDescending(m => m.DateTimeOfOrder).ToList();
 
                     if (Patrnsorder.Count() == 0)
                     {
@@ -219,13 +219,13 @@ namespace DrinkingBuddy.Controllers
 
         [HttpGet]
         [Route("CurrentOrders")]
-        public IHttpActionResult CurrentOrders(int PatronID)
+        public IHttpActionResult CurrentOrders(int PatronID, int HotelID)
         {
             try
             {
                 if (PatronID > 0)
                 {
-                    var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.BarCompletedOrder != true & m.OrderCollected != true).OrderByDescending(m=>m.DateTimeOfOrder).ToList();
+                    var order = _context.PatronsOrders.Where(m => m.PatronID == PatronID & m.HotelID == HotelID).OrderByDescending(m => m.DateTimeOfOrder).ToList();
                     if (order.Count() == 0)
                     {
                         //  return BadRequest("No Current Order Exist.");
@@ -412,12 +412,12 @@ namespace DrinkingBuddy.Controllers
                 }
 
                 var order = _context.PatronsOrders.Where(m => m.PatronsOrdersID == OrderID & m.PatronID == PatronID).FirstOrDefault();
-                if (order==null)
+                if (order == null)
                 {
                     return Ok(new ResponseModel { Message = "No Order found with the details.", Status = "Success" });
                 }
-                var orderdetails = _context.PatronsOrdersDetails.Where(m=>m.PatronsOrdersID==order.PatronsOrdersID).ToList();
-                if (orderdetails.Count()==0)
+                var orderdetails = _context.PatronsOrdersDetails.Where(m => m.PatronsOrdersID == order.PatronsOrdersID).ToList();
+                if (orderdetails.Count() == 0)
                 {
                     return Ok(new ResponseModel { Message = "NO Order details found with this details.", Status = "Success" });
                 }
@@ -444,17 +444,17 @@ namespace DrinkingBuddy.Controllers
                 var dataOrderDetail2 = mapper.Map<List<PatronsOrdersDetail>>(dataOrderDetail);
 
 
-                DateTime ordertime= System.DateTime.Now;
+                DateTime ordertime = System.DateTime.Now;
 
                 dataOrder2.DateTimeOfOrder = ordertime;
                 PatronsOrder patronorder = new PatronsOrder();
-               // patronorder = order;
-               //// patronorder.PatronsOrdersID = 0;
-               // patronorder.DateTimeOfOrder = ordertime;
+                // patronorder = order;
+                //// patronorder.PatronsOrdersID = 0;
+                // patronorder.DateTimeOfOrder = ordertime;
 
                 _context.PatronsOrders.Add(dataOrder2);
                 int row = _context.SaveChanges();
-                if (row==0)
+                if (row == 0)
                 {
                     return Ok(new ResponseModel { Message = "Order Addition Failed.", Status = "Success" });
                 }
@@ -463,7 +463,7 @@ namespace DrinkingBuddy.Controllers
                 List<PatronsOrdersDetail> listpatronsdetails = new List<PatronsOrdersDetail>();
                 foreach (var item in updatedorder)
                 {
-                    if (item.DateTimeOfOrder==ordertime)
+                    if (item.DateTimeOfOrder == ordertime)
                     {
                         patronorder = item;
                     }
@@ -471,7 +471,7 @@ namespace DrinkingBuddy.Controllers
 
                 foreach (var item in dataOrderDetail2)
                 {
-                   // item.PatronsOrdersDetailsID = 0;
+                    // item.PatronsOrdersDetailsID = 0;
                     item.PatronsOrdersID = patronorder.PatronsOrdersID;
 
                     listpatronsdetails.Add(item);
